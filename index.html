@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Navanso — Redirection…</title>
+<style>
+  body{margin:0;font-family:system-ui,Segoe UI,sans-serif;
+       display:grid;place-items:center;min-height:100vh;
+       background:linear-gradient(140deg,#EEF3FD,#E6F6EF);color:#16202E;text-align:center;padding:24px}
+  .card{background:#fff;border-radius:16px;padding:28px 30px;
+        box-shadow:0 20px 60px rgba(16,24,40,.12);max-width:420px}
+  h1{font-size:20px;margin:0 0 10px;font-weight:800}
+  p{color:#5B6678;line-height:1.55;margin:0 0 16px;font-size:14.5px}
+  .spinner{width:22px;height:22px;border:3px solid #E5E9F0;border-top-color:#2456B5;
+           border-radius:50%;animation:s 0.8s linear infinite;margin:6px auto 0}
+  @keyframes s{to{transform:rotate(360deg)}}
+</style>
+<script>
+  // Preserve any ?mode=… / hash so links shared on WhatsApp keep their mode
+  const target = '03_CODED_MVP/navanso-coded-mvp-v1/walkthrough.html'
+               + (location.search || '')
+               + (location.hash || '');
+  location.replace(target);
+</script>
+<meta http-equiv="refresh" content="0; url=03_CODED_MVP/navanso-coded-mvp-v1/walkthrough.html"/>
+</head>
+<body>
+  <div class="card">
+    <h1>Navanso · Parcours commenté</h1>
+    <p>Redirection vers le parcours…</p>
+    <div class="spinner"></div>
+    <p style="margin-top:14px;font-size:13px">Si rien ne se passe, <a href="03_CODED_MVP/navanso-coded-mvp-v1/walkthrough.html">cliquez ici</a>.</p>
+  </div>
+</body>
+</html>
