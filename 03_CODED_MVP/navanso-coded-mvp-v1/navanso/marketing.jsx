@@ -447,14 +447,12 @@ function Landing({go}){
 }
 
 function Footer({go}){
+  /* Minimal footer — the header already carries the navigation, so the
+     footer just anchors the brand and shows a copyright line. */
   return <div style={{borderTop:'1px solid var(--line)',background:'#fff'}}>
-    <div style={{maxWidth:1200,margin:'0 auto',padding:'34px 40px',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:20}}>
-      <Logo size={36} sub/>
-      <div className="row gap-20">
-        {[['parent-search','Trouver un enseignant'],['pricing','Tarifs'],['roadmap','Vision'],['dashboard','Espace enseignant']].map(([id,l])=>
-          <a key={id} className="t-14 muted w-600" style={{cursor:'pointer'}} onClick={()=>go(id)}>{l}</a>)}
-      </div>
-      <span className="faint t-13">© 2026 Navanso · Ouargla, Algérie</span>
+    <div style={{maxWidth:1200,margin:'0 auto',padding:'28px 40px',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:16}}>
+      <Logo size={32} sub/>
+      <span className="faint t-13">© 2026 Navanso. Tous droits réservés.</span>
     </div>
   </div>;
 }
