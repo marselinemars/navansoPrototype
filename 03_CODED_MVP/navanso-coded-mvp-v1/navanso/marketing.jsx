@@ -124,7 +124,9 @@ function NavHero({go}){
       {/* LEFT — message */}
       <div className="nvh-copy">
         <span className="nvh-eyebrow nvh-up">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z"/><path d="M12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/></svg>
+          <b style={{color:'var(--green-700)',letterSpacing:'.04em'}}>Nous progressons ensemble</b>
+          <span style={{opacity:.55,margin:'0 8px'}}>·</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{width:13,height:13,marginRight:4}}><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z"/><path d="M12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/></svg>
           Soutien scolaire en Algérie
         </span>
         <h1 className="nvh-h1 nvh-up d1">
@@ -161,13 +163,14 @@ function NavHero({go}){
         <div className="nvh-ring-dash"></div>
         <div className="nvh-bead"><i></i></div>
         {/* Center = the student (the Navanso mark anchored at the middle).
-            The caption is removed — the orbital composition already conveys
-            that the student (logo) is at the centre of the loop. */}
+            The "L'élève" cap is now an absolutely-positioned chip floating just
+            under the disc, so it never pushes the disc off the orbital centre. */}
         <div className="nvh-center">
           <div className="disc">
             <div className="halo"></div>
             <img className="nvh-logo" src="assets/navanso-mark.png" alt="Navanso"/>
           </div>
+          <span className="cap">L'élève</span>
         </div>
         {/* PARENT node */}
         <div className="nvh-node parent">
