@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Navanso — Prototype</title>
+<link rel="stylesheet" href="navanso/styles.css?v=33"/>
+<style>html,body,#root{height:100%}body{overflow:hidden}</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="navanso/data.jsx?v=33"></script>
+<script type="text/babel" src="navanso/icons.jsx?v=33"></script>
+<script type="text/babel" src="navanso/ui.jsx?v=33"></script>
+<script type="text/babel" src="navanso/marketing.jsx?v=34"></script>
+<script type="text/babel" src="navanso/marketing2.jsx?v=33"></script>
+<script type="text/babel" src="navanso/parent.jsx?v=36"></script>
+<script type="text/babel" src="navanso/parent2.jsx?v=33"></script>
+<script type="text/babel" src="navanso/parent-report.jsx?v=35"></script>
+<script type="text/babel" src="navanso/tutor.jsx?v=34"></script>
+<script type="text/babel" src="navanso/tutor1b.jsx?v=36"></script>
+<script type="text/babel" src="navanso/tutor2.jsx?v=33"></script>
+<script type="text/babel" src="navanso/tutor3.jsx?v=33"></script>
+<script type="text/babel" src="navanso/messages.jsx?v=33"></script>
+<script type="text/babel" src="navanso/sessions.jsx?v=33"></script>
+<script type="text/babel" src="navanso/planning.jsx?v=33"></script>
+<script type="text/babel" src="navanso/parent-home.jsx?v=33"></script>
+<script type="text/babel" src="navanso/create-forms.jsx?v=33"></script>
+<script type="text/babel" src="navanso/todos.jsx?v=33"></script>
+<script type="text/babel" src="navanso/reports-batch.jsx?v=33"></script>
+<script type="text/babel" src="navanso/students-list.jsx?v=33"></script>
+<script type="text/babel" src="navanso/payments.jsx?v=36"></script>
+<script type="text/babel" src="navanso/shortlist.jsx?v=36"></script>
+<script type="text/babel" data-presets="react">
+/* NAVANSO — App router + prototype navigation chrome (inlined so it is never
+   dropped when many instances boot at once, e.g. the screens canvas) */
+const {useState,useEffect} = React;
+
+const SCREENS = {
+  'landing':{c:'Landing',t:'Landing',grp:'Vitrine'},
+  'parent-search':{c:'ParentSearch',t:'Recherche parent',grp:'Parent'},
+  'shortlist':{c:'Shortlist',t:'Mes présélections',grp:'Parent'},
+  'tutor-profile':{c:'TutorProfile',t:'Profil enseignant',grp:'Parent'},
+  'inquiry':{c:'InquiryForm',t:'Demander une place',grp:'Parent'},
+  'parent-home':{c:'ParentHome',t:'Espace parent',grp:'Parent',phone:true},
+  'parent-thread':{c:'ParentThread',t:'Fil parent',grp:'Parent',phone:true},
+  'parent-report':{c:'ParentReport',t:'Rapport parent',grp:'Parent',phone:true},
+  'whatsapp-share':{c:'WhatsAppShare',t:'Partage WhatsApp',grp:'Parent',phone:true},
+  'tutor-onboarding':{c:'Onboarding',t:'Création de profil',grp:'Enseignant'},
+  'dashboard':{c:'Dashboard',t:'Tableau de bord',grp:'Enseignant'},
+  'groups':{c:'Groups',t:'Groupes',grp:'Enseignant'},
+  'group-detail':{c:'GroupDetail',t:'Détail du groupe',grp:'Enseignant'},
+  'create-group':{c:'CreateGroup',t:'Nouveau groupe',grp:'Enseignant'},
+  'add-student':{c:'AddStudent',t:'Ajouter un élève',grp:'Enseignant'},
+  'students':{c:'StudentsList',t:'Mes élèves',grp:'Enseignant'},
+  'student-profile':{c:'StudentProfile',t:'Profil élève',grp:'Enseignant'},
+  'attendance':{c:'Attendance',t:'Présence',grp:'Enseignant'},
+  'session-entry':{c:'SessionEntry',t:'Saisie de séance',grp:'Enseignant'},
+  'assessment':{c:'Assessment',t:'Évaluation',grp:'Enseignant'},
+  'report-gen':{c:'ReportGen',t:'Génération de rapport',grp:'Enseignant'},
+  'messages':{c:'MessagesInbox',t:'Messages',grp:'Enseignant'},
+  'thread':{c:'ThreadView',t:'Conversation',grp:'Enseignant'},
+  'group-broadcast':{c:'GroupBroadcast',t:'Message au groupe',grp:'Enseignant'},
+  'todos':{c:'TodosList',t:'Mes tâches',grp:'Enseignant'},
+  'planning':{c:'Planning',t:'Planning',grp:'Enseignant'},
+  'session-plan':{c:'SessionPlan',t:'Planifier une séance',grp:'Enseignant'},
+  'reports-batch':{c:'ReportsBatch',t:'Rapports en lot',grp:'Enseignant'},
+  'reports':{c:'ReportsHub',t:'Rapports',grp:'Enseignant'},
+  'payments':{c:'Payments',t:'Paiements',grp:'Enseignant'},
+  'pricing':{c:'Pricing',t:'Tarifs',grp:'Vitrine'},
+  'roadmap':{c:'Roadmap',t:'Vision',grp:'Vitrine'},
+};
+const FLOW = ['landing','parent-search','tutor-profile','inquiry','dashboard','messages','thread','group-detail','session-entry','student-profile','report-gen','parent-report','parent-home'];
+const GROUPS = ['Vitrine','Parent','Enseignant'];
+
+function App(){
+  const embed = new URLSearchParams(location.search).has('embed');
+  const parse = ()=>{
+    const h = (location.hash||'').replace(/^#/,'');
+    const [s,...rest] = h.split('/');
+    return {screen: SCREENS[s]?s:'', param: rest.join('/') || null};
+  };
+  const initial = (()=>{ const p=parse(); if(p.screen) return p;
+    const saved=localStorage.getItem('nav_screen')||'landing'; return {screen:SCREENS[saved]?saved:'landing', param:null}; })();
+  const [screen,setScreen]=useState(initial.screen);
+  const [param,setParam]=useState(initial.param);
+  const [menu,setMenu]=useState(false);
+  const go=(id, p=null)=>{ if(!SCREENS[id])return; setScreen(id); setParam(p); setMenu(false);
+    localStorage.setItem('nav_screen',id);
+    location.hash = p ? `${id}/${p}` : id;
+    requestAnimationFrame(()=>{document.querySelector('.app-scroll')?.scrollTo(0,0);}); };
+  useEffect(()=>{const f=()=>{const p=parse(); if(p.screen && (p.screen!==screen||p.param!==param)){setScreen(p.screen);setParam(p.param);}};
+    window.addEventListener('hashchange',f);return()=>window.removeEventListener('hashchange',f);},[screen,param]);
+  useEffect(()=>{const f=(e)=>{if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;
+    const i=FLOW.indexOf(screen);
+    if(e.key==='ArrowRight'&&i>=0&&i<FLOW.length-1)go(FLOW[i+1]);
+    if(e.key==='ArrowLeft'&&i>0)go(FLOW[i-1]);};
+    window.addEventListener('keydown',f);return()=>window.removeEventListener('keydown',f);},[screen]);
+
+  const Comp = window[SCREENS[screen].c];
+  const fi = FLOW.indexOf(screen);
+  // Auth gate — only the 'Enseignant' group is gated. Vitrine + Parent are open.
+  const isAuthed = useAuth();
+  const needsAuth = SCREENS[screen].grp==='Enseignant' && !isAuthed;
+
+  return <div style={{height:'100vh',display:'flex',flexDirection:'column'}}>
+    <div className="app-scroll scroll" style={{flex:1,overflowY:'auto',overflowX:'hidden'}} data-screen-label={SCREENS[screen].t}>
+      {needsAuth ? <LoginOverlay go={go} intended={screen} intendedParam={param}/> :
+      Comp? <Comp go={go} id={param} param={param} embed={embed}/> : <div className="col center" style={{minHeight:'100%',gap:16,padding:40,textAlign:'center'}}>
+        <div className="icn" style={{width:60,height:60,borderRadius:18,background:'var(--blue-50)',color:'var(--blue-700)',display:'grid',placeItems:'center'}}><Icon name="grid" size={28}/></div>
+        <div className="col gap-6" style={{maxWidth:380}}><h2 style={{fontSize:22}}>Écran à venir</h2><p className="muted t-15 lh-14">Cette section fait partie de la feuille de route Navanso. Le prototype actuel se concentre sur la boucle de suivi enseignant–parent.</p></div>
+        <div className="row gap-10"><Btn variant="ghost" icon="arrowl" onClick={()=>go('dashboard')}>Tableau de bord</Btn><Btn variant="primary" iconR="arrow" onClick={()=>go('roadmap')}>Voir la vision</Btn></div>
+      </div>}
+    </div>
+
+    {!embed && menu && <div onClick={()=>setMenu(false)} style={{position:'fixed',inset:0,background:'rgba(16,24,40,.4)',backdropFilter:'blur(2px)',zIndex:90}}></div>}
+    {!embed && <div className="proto-pill" title="Ce prototype simule le parcours principal de Navanso">
+      <span className="pdot"></span>
+      <span>Prototype expérimental <span className="sub">— parcours principal simulé</span></span>
+    </div>}
+    {!embed && <div style={{position:'fixed',right:20,bottom:20,zIndex:100,display:'flex',flexDirection:'column',alignItems:'flex-end',gap:12}}>
+      {menu && <div className="card screen-anim" style={{width:340,padding:16,borderRadius:18,boxShadow:'var(--sh-4)',maxHeight:'72vh',overflowY:'auto'}}>
+        <div className="row between" style={{marginBottom:12}}>
+          <div className="row gap-10"><LogoMark size={28}/><span className="w-800" style={{fontFamily:'var(--font-d)'}}>Navanso · Prototype</span></div>
+          <button className="btn btn-ghost btn-icon btn-sm" onClick={()=>setMenu(false)}><Icon name="x" size={16}/></button>
+        </div>
+        <div className="card-flat" style={{padding:'10px 12px',borderRadius:11,background:'var(--blue-50)',border:'none',marginBottom:14}}>
+          <p className="t-12 lh-14" style={{color:'var(--blue-800)'}}>Suivez l’histoire de démo avec <b>← →</b>, ou sautez à n’importe quel écran ci-dessous.</p>
+        </div>
+        {GROUPS.map(grp=><div key={grp} style={{marginBottom:12}}>
+          <div className="nav-l" style={{padding:'0 4px 8px'}}>{grp}</div>
+          <div className="col gap-3">
+            {Object.entries(SCREENS).filter(([,v])=>v.grp===grp).map(([id,v])=>
+              <button key={id} className={`nav-i ${screen===id?'on':''}`} style={{width:'100%'}} onClick={()=>go(id)}>
+                <Icon name={v.phone?'phone':grp==='Vitrine'?'home':grp==='Parent'?'heart':'dash'} size={17}/>
+                <span className="grow" style={{textAlign:'left'}}>{v.t}</span>
+                {v.phone&&<span className="chip chip-gray" style={{fontSize:10,padding:'2px 6px'}}>mobile</span>}
+              </button>)}
+          </div>
+        </div>)}
+        <div className="hr" style={{margin:'4px 0 12px'}}></div>
+        <a className="row gap-8 t-13 w-600" style={{color:'var(--blue-700)',cursor:'pointer',padding:'2px 4px'}} href="Navanso Screens.html"><Icon name="grid" size={16}/>Voir tous les écrans (canvas)</a>
+      </div>}
+
+      <div className="row gap-8">
+        {fi>=0 && <div className="card" style={{display:'flex',alignItems:'center',gap:4,padding:6,borderRadius:99,boxShadow:'var(--sh-3)'}}>
+          <button className="btn btn-ghost btn-icon btn-sm" style={{borderRadius:99}} onClick={()=>fi>0&&go(FLOW[fi-1])} disabled={fi<=0}><Icon name="arrowl" size={16}/></button>
+          <span className="t-12 w-700 tnum" style={{padding:'0 4px',color:'var(--muted)'}}>{fi+1}/{FLOW.length}</span>
+          <button className="btn btn-ghost btn-icon btn-sm" style={{borderRadius:99}} onClick={()=>fi<FLOW.length-1&&go(FLOW[fi+1])} disabled={fi>=FLOW.length-1}><Icon name="arrow" size={16}/></button>
+        </div>}
+        <button className="btn btn-primary" style={{borderRadius:99,boxShadow:'var(--sh-4)',padding:'12px 18px'}} onClick={()=>setMenu(m=>!m)}>
+          <Icon name={menu?'x':'menu'} size={18}/>{menu?'Fermer':'Écrans'}
+        </button>
+      </div>
+    </div>}
+  </div>;
+}
+
+function LoginOverlay({go, intended, intendedParam}){
+  return <div className="screen-anim" style={{minHeight:'100%',display:'flex',alignItems:'center',justifyContent:'center',
+    background:'radial-gradient(800px 500px at 50% -10%, var(--blue-50), var(--bg) 60%)',padding:'40px 16px'}}>
+    <div className="card pad-24 col gap-16" style={{maxWidth:440,width:'100%',boxShadow:'var(--sh-3)'}}>
+      <div className="row gap-12">
+        <LogoMark size={42}/>
+        <div className="col"><h2 style={{fontSize:22}}>Espace enseignant</h2>
+          <span className="muted t-13">Cette zone est privée. Connectez-vous pour continuer.</span></div>
+      </div>
+      <div className="card-flat" style={{padding:14,borderRadius:12,background:'var(--blue-50)',border:'1px solid var(--blue-100)'}}>
+        <span className="row gap-8 w-700 t-13" style={{color:'var(--blue-800)'}}><Icon name="user" size={15}/>Mode démo</span>
+        <p className="t-13 lh-14" style={{color:'var(--blue-900)',marginTop:6}}>Le prototype simule un seul enseignant. Cliquez ci-dessous pour entrer en tant que Mme Amina Belkacem.</p>
+      </div>
+      <Field label="Email"><input className="input" defaultValue="amina.belkacem@navanso.dz" disabled style={{opacity:.7}}/></Field>
+      <Field label="Mot de passe"><input className="input" type="password" defaultValue="••••••••" disabled style={{opacity:.7}}/></Field>
+      <Btn variant="primary" icon="check" block onClick={()=>{
+        NavAuth.login();
+        // navigate to intended screen after a tick so the useAuth subscriber fires
+        setTimeout(()=>{ if(intended) go(intended, intendedParam); }, 30);
+        navToast('Bienvenue Mme Amina','green');
+      }}>Continuer en tant que Mme Amina</Btn>
+      <div className="row between" style={{marginTop:4}}>
+        <a className="t-13 w-600" style={{color:'var(--blue-700)',cursor:'pointer'}} onClick={()=>go('landing')}>← Retour à l'accueil</a>
+        <span className="faint t-13">Pas encore de profil ? <a style={{color:'var(--blue-700)',cursor:'pointer',fontWeight:600}} onClick={()=>{NavAuth.login(); setTimeout(()=>go('tutor-onboarding'),30);}}>Créer un profil</a></span>
+      </div>
+    </div>
+  </div>;
+}
+
+function mountApp(tries){
+  const ready = window.Landing && window.Dashboard && window.ReportGen && window.ParentReport && window.Pricing && window.Onboarding;
+  if(!ready && (tries||0) < 400){ return setTimeout(()=>mountApp((tries||0)+1), 25); }
+  ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+}
+mountApp(0);
+</script>
+</body>
+</html>

@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Navanso · Parcours commenté</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --blue-700:#2456B5; --blue-800:#1E3A8A; --blue-600:#3A76E8; --blue-100:#D9E4FB; --blue-50:#EEF3FD;
+  --green-700:#1F8A6D; --green-600:#27A085; --green-100:#D6F0E2; --green-50:#E6F6EF;
+  --orange-600:#D8632E; --orange-500:#EE8147; --orange-50:#FDEEDF;
+  --ink:#16202E; --ink-2:#243042; --muted:#5B6678; --faint:#8D97AB;
+  --line:#E5E9F0; --line-2:#F0F2F7; --bg:#F4F6FA;
+  --font:'Inter',system-ui,sans-serif;
+  --font-d:'Plus Jakarta Sans','Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;padding:0}
+body{font-family:var(--font);background:#0B1220;color:var(--ink);overflow:hidden}
+button{font-family:inherit}
+
+.stage{
+  display:grid;
+  grid-template-columns:1fr 400px;
+  grid-template-rows:64px 1fr 76px;
+  grid-template-areas:
+    "topbar topbar"
+    "frame  commentary"
+    "footer footer";
+  height:100vh; width:100vw;
+}
+
+/* TOPBAR */
+.topbar{
+  grid-area:topbar; background:#0B1220; color:#fff;
+  display:flex; align-items:center; gap:16px;
+  padding:0 22px; border-bottom:1px solid #1B2435;
+}
+.topbar .brand{display:flex;align-items:center;gap:10px;font-family:var(--font-d);font-weight:800;letter-spacing:-.01em;font-size:18px}
+.topbar .brand img{height:26px;width:26px}
+.topbar .title{font-weight:600;color:#A8B2C6;font-size:13.5px}
+.topbar .spacer{flex:1}
+.topbar .pick{
+  background:#162033; color:#fff; border:1px solid #243049; border-radius:9px;
+  padding:7px 11px; font-size:13px; outline:none; min-width:280px;
+}
+.topbar .help-btn{
+  background:transparent; color:#A8B2C6; border:1px solid #243049; border-radius:9px;
+  padding:7px 12px; font-size:12.5px; font-weight:600; cursor:pointer;
+}
+.topbar .help-btn:hover{background:#162033;color:#fff}
+.mode-seg{
+  display:inline-flex; background:#162033; border:1px solid #243049; border-radius:9px; padding:3px;
+}
+.mode-seg button{
+  background:transparent; color:#A8B2C6; border:0; padding:6px 12px; font-size:12.5px;
+  font-weight:600; border-radius:7px; cursor:pointer; transition:.15s ease;
+}
+.mode-seg button.on{background:linear-gradient(135deg,#3A76E8,#2456B5); color:#fff; box-shadow:0 1px 0 rgba(255,255,255,.06) inset}
+.mode-seg button:hover:not(.on){background:rgba(255,255,255,.05); color:#fff}
+
+/* FRAME PANE */
+.frame-pane{grid-area:frame; position:relative; background:#0F1521; overflow:hidden}
+.frame-wrap{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  padding:20px; overflow:hidden;
+}
+.iframe-desktop{
+  width:1440px; height:900px; border:0; background:#fff;
+  box-shadow:0 30px 80px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.05);
+  border-radius:14px; transform:scale(0.62); transform-origin:center center;
+  transition:opacity .25s ease;
+}
+.iframe-mobile-wrap{
+  position:relative; width:400px; height:740px; padding:12px;
+  background:#0F1521; border:1.5px solid #1F2840; border-radius:42px;
+  box-shadow:0 30px 80px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.04);
+}
+.iframe-mobile-wrap::before{
+  content:''; position:absolute; top:6px; left:50%; transform:translateX(-50%);
+  width:88px; height:5px; background:#1F2840; border-radius:99px;
+}
+.iframe-mobile{
+  width:100%; height:100%; border:0; background:#fff; border-radius:30px;
+}
+.frame-loading{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  color:#5C6885; font-size:13px; pointer-events:none; opacity:0; transition:opacity .2s;
+}
+.frame-loading.on{opacity:1}
+.no-frame{
+  display:flex; align-items:center; justify-content:center;
+  background:radial-gradient(ellipse at 50% 0%, rgba(46,168,108,.10), transparent 60%),
+             radial-gradient(ellipse at 80% 100%, rgba(58,118,232,.10), transparent 60%),
+             #0B1220;
+}
+.no-frame .card{
+  background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08);
+  border-radius:18px; padding:54px 56px; max-width:680px; text-align:center; color:#E2E7F3;
+  box-shadow:0 20px 60px rgba(0,0,0,.40);
+}
+.no-frame .card .kicker{
+  color:#86E5C7; font-size:12px; font-weight:700; letter-spacing:.10em; text-transform:uppercase;
+  margin-bottom:14px;
+}
+.no-frame .card h2{
+  font-family:var(--font-d); font-size:34px; font-weight:800; line-height:1.12;
+  margin:0 0 18px; letter-spacing:-.015em;
+}
+.no-frame .card p{margin:0 0 14px; color:#B6C0D4; font-size:15.5px; line-height:1.55}
+.no-frame .layers{display:grid;gap:14px;margin-top:24px;text-align:left}
+.no-frame .layer{
+  display:flex;align-items:flex-start;gap:14px;
+  padding:14px 16px;background:rgba(255,255,255,.04);border-radius:12px;border:1px solid rgba(255,255,255,.06);
+}
+.no-frame .layer .num{
+  flex:none; width:32px;height:32px;border-radius:9px;display:grid;place-items:center;
+  font-family:var(--font-d);font-weight:800;font-size:14px;color:#fff;
+}
+.no-frame .layer.l1 .num{background:linear-gradient(135deg,#27A085,#1F8A6D)}
+.no-frame .layer.l2 .num{background:linear-gradient(135deg,#3A76E8,#2456B5)}
+.no-frame .layer.l3 .num{background:linear-gradient(135deg,#EE8147,#D8632E)}
+.no-frame .layer h4{margin:0 0 4px;font-size:14.5px;font-weight:700;color:#fff;font-family:var(--font-d)}
+.no-frame .layer p{margin:0;font-size:13px;color:#9AA5BB;line-height:1.5}
+
+/* COMMENTARY */
+.comm-pane{
+  grid-area:commentary; background:#fff; padding:30px 28px 24px;
+  overflow-y:auto; border-left:1px solid var(--line);
+  display:flex; flex-direction:column; gap:0;
+}
+.act-row{display:flex; align-items:center; gap:10px; margin-bottom:18px}
+.act-badge{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:5px 11px; border-radius:99px; font-size:11.5px; font-weight:700;
+  letter-spacing:.05em; text-transform:uppercase;
+}
+.act-badge.intro{background:#F1F4FB;color:var(--muted)}
+.act-badge.a1{background:var(--green-50);color:var(--green-700)}
+.act-badge.a2{background:var(--blue-50);color:var(--blue-700)}
+.act-badge.a3{background:var(--orange-50);color:var(--orange-600)}
+.act-badge.outils{background:#EEF1F7;color:#3F4A60}
+.act-badge.close{background:#0B1220;color:#86E5C7}
+.act-badge.valid-parent{background:var(--green-50);color:var(--green-700)}
+.act-badge.valid-tutor{background:var(--blue-50);color:var(--blue-700)}
+.step-num{font-size:11.5px; font-weight:700; color:var(--faint); letter-spacing:.04em}
+.title{
+  font-family:var(--font-d); font-size:24px; font-weight:800; line-height:1.2;
+  margin:0 0 12px; letter-spacing:-.01em; color:var(--ink);
+}
+.subtitle{font-size:13px; color:var(--faint); font-weight:600; margin:0 0 18px}
+.commentary p{font-size:14.5px; line-height:1.6; color:var(--ink-2); margin:0 0 12px}
+.why{
+  margin-top:18px; padding:14px 16px; border-radius:12px;
+  background:linear-gradient(140deg, var(--blue-50), #fff 70%);
+  border:1px solid var(--blue-100);
+}
+.why .eyebrow{
+  font-size:11px; font-weight:800; color:var(--blue-700); letter-spacing:.06em;
+  text-transform:uppercase; margin-bottom:6px; display:block;
+}
+.why p{font-size:13.5px; line-height:1.55; color:var(--ink-2); margin:0}
+.quote{
+  margin-top:14px; padding:12px 14px; border-left:3px solid var(--green-600);
+  background:var(--green-50); border-radius:0 8px 8px 0;
+}
+.quote span{
+  font-size:11px; font-weight:800; color:var(--green-700); letter-spacing:.05em;
+  text-transform:uppercase; display:block; margin-bottom:4px;
+}
+.quote p{font-size:13px; line-height:1.5; color:var(--green-700); margin:0; font-style:italic}
+
+/* FOOTER */
+.footer{
+  grid-area:footer; background:#0F1521; color:#fff;
+  display:flex; align-items:center; gap:14px; padding:0 22px;
+  border-top:1px solid #1B2435;
+}
+.btn{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:9px 16px; border-radius:10px; font-size:13.5px; font-weight:700;
+  border:1px solid #243049; background:#162033; color:#fff; cursor:pointer;
+  transition:all .15s ease;
+}
+.btn:hover:not(:disabled){background:#1E2A42;border-color:#324A75}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn.primary{background:linear-gradient(135deg,#3A76E8,#2456B5);border-color:transparent}
+.btn.primary:hover{background:linear-gradient(135deg,#4685F3,#2A60C8)}
+.progress{flex:1; display:flex; flex-direction:column; gap:6px}
+.progress .bar{
+  height:4px; background:#1B2435; border-radius:2px; overflow:hidden;
+}
+.progress .bar i{
+  display:block; height:100%; background:linear-gradient(90deg,#27A085,#3A76E8,#EE8147);
+  border-radius:2px; transition:width .35s ease;
+}
+.progress .label{font-size:11.5px; color:#86919E; font-weight:600; letter-spacing:.04em}
+
+/* HELP OVERLAY */
+.help-overlay{
+  position:fixed; inset:0; background:rgba(8,12,22,.78); z-index:50;
+  display:flex; align-items:center; justify-content:center; padding:20px;
+  opacity:0; pointer-events:none; transition:opacity .2s;
+}
+.help-overlay.on{opacity:1; pointer-events:auto}
+.help-overlay .box{
+  background:#fff; border-radius:18px; max-width:520px; width:100%;
+  padding:30px 32px; box-shadow:0 30px 80px rgba(0,0,0,.50);
+}
+.help-overlay h3{font-family:var(--font-d); font-size:20px; margin:0 0 14px; font-weight:800}
+.help-overlay .key{
+  display:inline-block; min-width:34px; padding:3px 8px; background:var(--bg);
+  border:1px solid var(--line); border-radius:6px; font-family:Menlo,monospace; font-size:12px;
+  text-align:center; font-weight:700; margin-right:8px;
+}
+.help-overlay .kr{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:13.5px;color:var(--ink-2)}
+
+/* Mid-size screens — keep the side-by-side layout but shrink the iframe */
+@media (max-width: 1280px){
+  .stage{grid-template-columns:1fr 360px}
+  .iframe-desktop{transform:scale(0.54)}
+}
+@media (max-width: 1100px){
+  .stage{grid-template-columns:1fr 320px}
+  .iframe-desktop{transform:scale(0.46)}
+}
+
+/* Mobile hint banner — hidden by default (desktop), shown only on mobile */
+.mobile-hint{display:none}
+
+/* B19.2 + B19.3 — Mobile (tablets in portrait + phones).
+   Layout uses flex column with explicit `order` so the commentary appears
+   ABOVE the iframe. The iframe gets a phone-bezel look (rounded corners +
+   notch indicator) so it visually reads as an interactive phone screen,
+   and a hint banner above it tells the user it's tappable/scrollable. */
+@media (max-width: 860px){
+  html, body{overflow:auto; height:auto}
+  .stage{
+    display:flex; flex-direction:column;
+    height:auto; min-height:100vh; width:100%;
+    grid-template-columns:none; grid-template-rows:none; grid-template-areas:none;
+  }
+
+  /* Order: topbar → commentary → frame (with hint inside) → footer */
+  .topbar    {order:1; position:sticky; top:0;    z-index:30; height:56px; padding:0 12px; gap:8px}
+  .comm-pane {order:2}
+  .frame-pane{order:3}
+  .footer    {order:4; position:sticky; bottom:0; z-index:30; height:60px; padding:0 14px; gap:10px}
+
+  /* Topbar cleanup */
+  .topbar .brand{font-size:15px}
+  .topbar .brand img{height:22px;width:22px}
+  .topbar .title{display:none}
+  .topbar .help-btn{display:none}
+  .topbar .pick{display:none}
+  .topbar .spacer{display:none}
+  .mode-seg{padding:2px; margin-left:auto}
+  .mode-seg button{padding:6px 9px; font-size:11.5px; border-radius:6px}
+
+  /* Commentary above the iframe — with a left accent stripe coloured
+     by the current act, for a smoother visual tie to the content. */
+  .comm-pane{
+    grid-area:auto; background:#fff;
+    border-left:0; border-bottom:1px solid var(--line);
+    padding:18px 20px 20px;
+    max-height:none; overflow:visible;
+    position:relative;
+  }
+  .comm-pane::before{
+    content:''; position:absolute;
+    left:0; top:18px; bottom:18px; width:3px;
+    background:var(--act-color, var(--blue-700));
+    border-radius:0 3px 3px 0;
+  }
+  .title{font-size:20px; line-height:1.2; margin:0 0 10px; letter-spacing:-.01em}
+  .commentary p{font-size:14px; line-height:1.55; margin-bottom:10px; color:var(--ink-2)}
+  .why{margin-top:14px; padding:11px 13px; background:var(--bg); border:1px solid var(--line); border-radius:10px}
+  .why .eyebrow{font-size:10.5px}
+  .why p{font-size:13px; line-height:1.5}
+  .quote{margin-top:12px; padding:10px 13px}
+  .quote p{font-size:12.5px; line-height:1.5}
+  .quote span{font-size:10.5px}
+  .act-row{margin-bottom:12px; gap:8px}
+  .act-badge{font-size:10.5px; padding:4px 9px}
+  .step-num{font-size:11px}
+
+  /* Mobile hint banner — shows "scroll/tap to interact" cue */
+  .mobile-hint{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    padding:11px 14px;
+    background:linear-gradient(180deg,#162033,#0F1521);
+    color:#B6C0D4; font-size:12.5px; font-weight:600;
+    border-bottom:1px solid #1F2840;
+  }
+  .mobile-hint .ic{font-size:15px}
+
+  /* Frame pane = phone bezel area */
+  .frame-pane{
+    grid-area:auto; display:flex; flex-direction:column;
+    overflow:visible; padding:0; min-height:560px;
+    background:#0B1220;
+  }
+  .frame-wrap{
+    position:relative; inset:auto;
+    padding:16px 12px 22px;
+    flex:1;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:flex-start;
+  }
+  /* Notch indicator (small pill at top of the frame) */
+  .frame-wrap::before{
+    content:''; display:block;
+    width:70px; height:4px; background:#1F2840;
+    border-radius:99px; margin:0 auto 12px;
+  }
+
+  /* All iframes (desktop + mobile screens) look like phone-screens on mobile */
+  .iframe-desktop, .iframe-mobile{
+    width:100%; max-width:360px; margin:0 auto;
+    display:block; background:#fff;
+    border-radius:18px; transform:none;
+    box-shadow:0 10px 28px rgba(0,0,0,.40);
+  }
+  .iframe-desktop{height:540px}
+  .iframe-mobile{height:540px}
+
+  /* Mobile-only slides had their own bezel — strip it (frame-wrap is the bezel now) */
+  .iframe-mobile-wrap{
+    width:auto; max-width:none; height:auto;
+    padding:0; margin:0;
+    background:transparent; border:0; box-shadow:none;
+  }
+  .iframe-mobile-wrap::before{display:none}
+
+  /* Intro / closing / validation slides have NO iframe; the commentary panel
+     already shows their content. Drop the duplicate no-frame card on mobile. */
+  body.no-iframe-slide .frame-pane{display:none}
+  body.no-iframe-slide .mobile-hint{display:none}
+
+  .btn{padding:8px 12px; font-size:12.5px}
+  .progress .label{font-size:10.5px}
+}
+
+/* Extra-narrow phones — hide brand text, shrink mode buttons further */
+@media (max-width: 420px){
+  .topbar .brand span{display:none}
+  .mode-seg button{padding:5px 7px; font-size:11px}
+  .btn{padding:7px 10px; font-size:12px}
+}
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="brand">
+      <img src="assets/navanso-mark.png" alt="Navanso"/>
+      <span>Navanso</span>
+    </div>
+    <span class="title">Parcours commenté</span>
+    <div class="spacer"></div>
+    <div class="mode-seg" id="modeSeg">
+      <button data-mode="defense" title="Parcours défense — 11 slides, ≈ 4 min">Défense</button>
+      <button data-mode="parent"  title="Validation côté parent — 9 slides, ≈ 3-4 min">Parent</button>
+      <button data-mode="tutor"   title="Validation côté enseignant — 10 slides, ≈ 5-6 min">Enseignant</button>
+      <button data-mode="full"    title="Walkthrough complet — 26 slides">Complet</button>
+    </div>
+    <select id="picker" class="pick" title="Aller à un écran"></select>
+    <button class="help-btn" id="helpBtn">⌨ Raccourcis</button>
+  </header>
+
+  <!-- FRAME -->
+  <div class="frame-pane" id="framePane">
+    <!-- Hint banner shown only on mobile; hidden on text-only slides -->
+    <div class="mobile-hint" id="mobileHint">
+      <span class="ic">👆</span>
+      <span>Faites défiler ou touchez l'écran pour interagir comme dans l'application.</span>
+    </div>
+    <div class="frame-wrap" id="frameWrap"></div>
+    <div class="frame-loading" id="frameLoading">Chargement…</div>
+  </div>
+
+  <!-- COMMENTARY -->
+  <aside class="comm-pane" id="commPane"></aside>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <button class="btn" id="prevBtn">← Précédent</button>
+    <div class="progress">
+      <div class="bar"><i id="progBar"></i></div>
+      <div class="label"><span id="progLbl">—</span></div>
+    </div>
+    <button class="btn primary" id="nextBtn">Suivant →</button>
+  </footer>
+</div>
+
+<!-- HELP -->
+<div class="help-overlay" id="helpOv">
+  <div class="box">
+    <h3>Raccourcis clavier</h3>
+    <div class="kr"><span class="key">→</span> Slide suivante</div>
+    <div class="kr"><span class="key">←</span> Slide précédente</div>
+    <div class="kr"><span class="key">Home</span> Première slide</div>
+    <div class="kr"><span class="key">End</span> Dernière slide</div>
+    <div class="kr"><span class="key">F</span> Plein écran (recommandé pour le jury)</div>
+    <div class="kr"><span class="key">?</span> Cette aide</div>
+    <div class="kr"><span class="key">Esc</span> Fermer</div>
+  </div>
+</div>
+
+<script>
+const PROTO = 'Navanso%20Prototype.html';
+
+/* SLIDES — 26 étapes en 3 actes + intro + outils + closing.
+   - hash      : route du prototype (vide = pas de frame, slide texte)
+   - mobile    : true → cadre téléphone vertical
+   - preCmd    : JS exécuté dans le contexte iframe avant la navigation
+   - scrollTo  : sélecteur d'élément à scroller dans l'iframe après chargement
+   - act       : intro | a1 | a2 | a3 | outils | close (classe CSS du badge)
+   - actLabel  : libellé du badge en haut
+   - title, body[], why, quote
+*/
+const SLIDES = [
+
+  // ─── INTRO ───────────────────────────────────────────────────────────
+  {
+    act:'intro', actLabel:'Avant-propos', step:'00',
+    title:'Une boucle de confiance entre parents et enseignants',
+    body:[
+      'Navanso est une plateforme de soutien scolaire en petits groupes, conçue pour la réalité algérienne. Sa promesse : <b>aider les parents à trouver un enseignant de confiance, et rendre visible le progrès de l\'élève après l\'inscription</b>.',
+      'Cette présentation parcourt le prototype en trois actes : l\'acquisition côté parent, l\'organisation côté enseignant, et la preuve du progrès partagée entre les deux.'
+    ],
+    quote:'Navanso part de la boucle de confiance parent-enseignant. Autour de cette boucle viennent des outils pratiques qui correspondent au quotidien réel des enseignants.',
+    layers:true
+  },
+
+  // ─── ACTE 1 — LE PARENT VEUT DE LA CONFIANCE ────────────────────────
+  {
+    act:'a1', actLabel:'Acte 1 · Le parent cherche un enseignant', step:'01',
+    title:'Page d\'accueil — l\'élève au centre',
+    hash:'landing',
+    body:[
+      'Trois figures gravitent autour de la marque Navanso : le parent, l\'enseignant et le rapport partagé. L\'élève, symbolisé par le logo central, est ce qui les relie.',
+      'Deux appels à l\'action distincts : <b>Trouver un enseignant</b> pour les parents, <b>Devenir enseignant</b> pour les enseignants.'
+    ],
+    why:'Navanso s\'adresse à deux audiences qui vivent dans la même plateforme : les parents qui cherchent un suivi de qualité, et les enseignants qui veulent mieux organiser leur travail.'
+  },
+  {
+    act:'a1', actLabel:'Acte 1 · Le parent cherche un enseignant', step:'02',
+    title:'Le parcours en quatre étapes',
+    hash:'landing', scrollText:'parcours',
+    body:[
+      'Quatre cartes résument l\'expérience du parent : <b>Je trouve un enseignant · Je demande une séance d\'essai · L\'enseignant suit mon enfant · Je reçois un rapport clair</b>.',
+      'Le parcours est raconté à la première personne pour rendre le projet immédiatement concret.'
+    ],
+    why:'La séance d\'essai est placée délibérément au milieu du parcours : elle correspond à la pratique réelle où parents et enseignants se rencontrent avant tout engagement.'
+  },
+  {
+    act:'a1', actLabel:'Acte 1 · Le parent cherche un enseignant', step:'03',
+    title:'Recherche d\'enseignants',
+    hash:'parent-search',
+    body:[
+      'Filtres par matière, niveau, wilaya et format (présentiel ou en ligne). Chaque carte affiche la capacité du groupe — par exemple <b>4 places restantes sur 8</b> — et une fourchette de prix indicative.',
+      'L\'icône cœur permet de sauvegarder un enseignant pour le comparer plus tard.'
+    ],
+    why:'Voir la capacité du groupe et les places disponibles avant tout contact aide les parents à filtrer leurs choix sans appel inutile.'
+  },
+  {
+    act:'a1', actLabel:'Acte 1 · Le parent cherche un enseignant', step:'04',
+    title:'Profil de l\'enseignant',
+    hash:'tutor-profile/t1',
+    body:[
+      'Présentation, matières enseignées, niveaux couverts, méthode pédagogique, groupes disponibles et vitrine avec les preuves fournies par l\'enseignant (diplômes, photos, témoignages).',
+      'Un panneau de contact accompagne le parent tout au long de la lecture, avec un bouton WhatsApp et un exemple de rapport pour rassurer avant l\'échange.'
+    ],
+    why:'Le profil enseignant est l\'écran qui établit la confiance avant le premier contact. Il remplace les recommandations informelles par une présentation structurée et vérifiable.'
+  },
+  {
+    act:'a1', actLabel:'Acte 1 · Le parent cherche un enseignant', step:'05',
+    title:'Présélection et comparaison',
+    hash:'shortlist',
+    preCmd:'Nav.shortlistClear&&Nav.shortlistClear();["t1","t3","t4"].forEach(id=>Nav.shortlistToggle&&Nav.shortlistToggle(id));',
+    body:[
+      'Tableau de comparaison côte à côte : tarif, places disponibles, taille maximale, format, localisation, note moyenne, disponibilité d\'une séance d\'essai.',
+      'Une note rappelle que beaucoup de parents préfèrent appeler deux ou trois enseignants par WhatsApp avant de choisir.'
+    ],
+    why:'Cette étape de comparaison existe déjà dans les habitudes des parents — Navanso la structure sans remplacer le contact direct.'
+  },
+  {
+    act:'a1', actLabel:'Acte 1 · Le parent cherche un enseignant', step:'06',
+    title:'Demande d\'inscription ou de séance d\'essai',
+    hash:'inquiry/t1',
+    body:[
+      'Formulaire structuré : nom de l\'enfant, niveau, créneaux préférés, objectif. Une case à cocher permet de demander une <b>séance d\'essai gratuite</b>.',
+      'À l\'envoi, l\'enseignant reçoit une notification et une conversation s\'ouvre automatiquement avec un message de bienvenue.'
+    ],
+    why:'La séance d\'essai offre au parent et à l\'enseignant l\'occasion de se rencontrer avant tout engagement, créant une transition plus douce entre la recherche et l\'inscription.'
+  },
+
+  // ─── ACTE 2 — L'ENSEIGNANT A BESOIN D'ORGANISATION ──────────────────
+  {
+    act:'a2', actLabel:'Acte 2 · L\'enseignant organise son suivi', step:'07',
+    title:'Tableau de bord de l\'enseignant',
+    hash:'dashboard',
+    preCmd:'NavAuth&&NavAuth.login&&NavAuth.login();',
+    body:[
+      'Après la prise de contact, Navanso ne s\'arrête pas à la mise en relation : la plateforme aide l\'enseignante à structurer le suivi réel de l\'élève.',
+      'En haut, une carte met en avant la <b>prochaine séance</b> avec son sujet, les points à reprendre et le lieu. Trois actions rapides en dessous : ajouter un élève, générer un rapport, voir les élèves à suivre.',
+      'Une section liste les élèves qui méritent une attention particulière — présence en baisse ou rapport en attente d\'envoi.'
+    ],
+    why:'L\'enseignant voit immédiatement ce qui demande son attention, sans avoir à fouiller dans plusieurs menus.'
+  },
+  {
+    act:'a2', actLabel:'Acte 2 · L\'enseignant organise son suivi', step:'08',
+    title:'Navigation : Espace et Outils',
+    hash:'dashboard',
+    body:[
+      'La barre latérale est organisée en deux groupes : <b>Espace</b> pour le suivi quotidien (tableau de bord, groupes, élèves, messages, évaluations, rapports), et <b>Outils</b> pour les fonctions complémentaires (planning, tâches, paiements).',
+      'Cette séparation traduit la priorité accordée au suivi pédagogique par rapport à la gestion administrative.'
+    ],
+    why:'L\'organisation visuelle reflète la philosophie de Navanso : le suivi de l\'élève et la communication avec le parent passent avant la cadence administrative.'
+  },
+  {
+    act:'a2', actLabel:'Acte 2 · L\'enseignant organise son suivi', step:'09',
+    title:'Mes groupes',
+    hash:'groups',
+    body:[
+      'Vue d\'ensemble filtrable : groupes actifs, complets, archivés. Chaque carte montre la capacité du groupe, les places restantes, la prochaine séance et le nombre d\'élèves nécessitant un suivi.',
+      'Un bouton met en avant la création d\'un nouveau groupe.'
+    ],
+    why:'Les enseignants de soutien algériens travaillent presque toujours en petits groupes. L\'organisation par groupe correspond à leur réalité quotidienne.'
+  },
+  {
+    act:'a2', actLabel:'Acte 2 · L\'enseignant organise son suivi', step:'10',
+    title:'Détail d\'un groupe',
+    hash:'group-detail/g1',
+    body:[
+      'Trois onglets organisent la vie du groupe : <b>Élèves · Séances · Paiements</b>. Un panneau latéral résume la prochaine séance et propose des actions comme l\'envoi d\'un message groupé sur WhatsApp.',
+      'Toutes les opérations liées à un groupe se font depuis cette seule page.'
+    ],
+    why:'Tout ce qui concerne un groupe — élèves, séances, paiements, communication — est accessible depuis le même endroit, évitant la dispersion entre plusieurs écrans.'
+  },
+  {
+    act:'a2', actLabel:'Acte 2 · L\'enseignant organise son suivi', step:'11',
+    title:'Profil d\'un élève',
+    hash:'student-profile/s1',
+    body:[
+      'Trois onglets : <b>Suivi · Historique · Rapports</b>. Le suivi affiche les points faibles en cours et ceux déjà résolus, avec une progression visuelle.',
+      'L\'historique liste toutes les séances passées avec présence et remarques ; l\'onglet rapports archive les envois précédents.'
+    ],
+    why:'Le profil élève conserve la mémoire de toutes les séances passées et des progrès réalisés, séance après séance.'
+  },
+  {
+    act:'a2', actLabel:'Acte 2 · L\'enseignant organise son suivi', step:'12',
+    title:'Préparation d\'une séance',
+    hash:'session-plan/sess4',
+    body:[
+      'Avant la séance, l\'enseignant définit le sujet, les items à couvrir et les points reportés de la séance précédente. Une option permet de cloner rapidement la séance précédente.',
+      'La préparation est distincte de la saisie qui aura lieu après le cours.'
+    ],
+    why:'Préparer une séance, même brièvement, améliore la qualité du suivi et permet de reprendre exactement là où la séance précédente s\'était arrêtée.'
+  },
+  {
+    act:'a2', actLabel:'Acte 2 · L\'enseignant organise son suivi', step:'13',
+    title:'Saisie d\'une séance',
+    hash:'session-entry/sess4',
+    body:[
+      'Pour chaque élève : statut <b>Présent · Retard · Absent · Excusé</b>, remarque libre, et une note attribuée en un clic (8/10/12/14/16/18) ou saisie librement.',
+      'L\'enseignant coche aussi ce qui a été couvert dans le programme, ajoute des items improvisés, note les devoirs et ce qu\'il veut retenir pour la prochaine séance.'
+    ],
+    why:'La saisie est conçue pour prendre environ trente secondes par élève après une séance, sans transformer l\'enseignant en agent administratif.'
+  },
+  {
+    act:'a2', actLabel:'Acte 2 · L\'enseignant organise son suivi', step:'14',
+    title:'Évaluations agrégées',
+    hash:'assessment',
+    body:[
+      'Vue d\'ensemble des points faibles sur l\'ensemble du groupe, avec le nombre d\'élèves concernés par chaque sujet.',
+      'Permet d\'identifier ce qui mérite d\'être retravaillé collectivement lors des prochaines séances.'
+    ],
+    why:'Les remarques saisies pendant les séances alimentent plusieurs vues : suivi individuel, vue par groupe, et génération des rapports parents.'
+  },
+  {
+    act:'a2', actLabel:'Acte 2 · L\'enseignant organise son suivi', step:'15',
+    title:'Boîte de réception des messages',
+    hash:'messages',
+    body:[
+      'Vue unifiée des conversations avec les parents, organisée par statut : <b>Nouveau · En cours · Lu</b>. Un aperçu de la dernière remarque de séance donne le contexte avant ouverture.',
+      'Les premiers contacts (demandes d\'inscription sans suite) sont distingués des conversations actives.'
+    ],
+    why:'La communication parent-enseignant est centralisée avec le contexte de l\'élève à portée de main, sans remplacer les canaux personnels comme WhatsApp.'
+  },
+  {
+    act:'a2', actLabel:'Acte 2 · L\'enseignant organise son suivi', step:'16',
+    title:'Conversation avec un parent',
+    hash:'thread/th1',
+    body:[
+      'L\'en-tête rappelle l\'élève concerné, son groupe et la dernière séance. Les statuts <b>Vu</b> et <b>Lu</b> apparaissent sur les messages sortants.',
+      'Un message de bienvenue est généré automatiquement au moment de l\'inscription d\'un nouveau parent.'
+    ],
+    why:'Chaque conversation est ancrée dans son contexte — élève concerné, groupe, dernière séance — pour des échanges plus précis.'
+  },
+
+  // ─── ACTE 3 — LE PROGRÈS DEVIENT VISIBLE ────────────────────────────
+  {
+    act:'a3', actLabel:'Acte 3 · Le progrès devient visible', step:'17',
+    title:'Génération d\'un rapport',
+    hash:'report-gen/s1',
+    preCmd:'NavAuth&&NavAuth.login&&NavAuth.login();',
+    body:[
+      'À partir des remarques saisies au fil des séances, un assistant propose une rédaction structurée : présence, note récente, points forts, points faibles, recommandation pour la maison.',
+      'L\'enseignant relit, modifie chaque section et <b>valide</b> avant l\'envoi. Aucun rapport ne part sans validation humaine.'
+    ],
+    why:'L\'assistant aide à structurer les observations en un rapport clair, mais l\'enseignant garde le contrôle complet : il édite et valide chaque section avant le partage.'
+  },
+  {
+    act:'a3', actLabel:'Acte 3 · Le progrès devient visible', step:'18',
+    title:'Centre de gestion des rapports',
+    hash:'reports',
+    body:[
+      'Liste organisée par statut : à envoyer, envoyés, accusés de réception reçus du parent. Une option permet de générer les rapports d\'un groupe entier en une fois.',
+      'Quand un parent ouvre puis confirme la réception, la notification revient à l\'enseignant.'
+    ],
+    why:'L\'enseignant suit l\'état de chaque rapport : à envoyer, envoyé, lu, accusé réception par le parent.'
+  },
+  {
+    act:'a3', actLabel:'Acte 3 · Le progrès devient visible', step:'19',
+    title:'Rapport reçu par le parent (mobile)',
+    hash:'parent-report/r-yacine-mai-2026', mobile:true,
+    body:[
+      'Le rapport est composé de sept blocs courts : en-tête validé · ce mois en une phrase · présence et note · progrès du mois · points à travailler · ce qu\'il y a à faire à la maison · note personnelle de l\'enseignant.',
+      'En bas de page, le parent peut accuser réception, partager sur WhatsApp, télécharger ou imprimer le rapport.'
+    ],
+    why:'Le rapport est conçu pour être lu rapidement sur téléphone et facilement partagé avec la famille. Les blocs sont courts pour garder l\'essentiel sans alourdir.'
+  },
+  {
+    act:'a3', actLabel:'Acte 3 · Le progrès devient visible', step:'20',
+    title:'Partage WhatsApp',
+    hash:'whatsapp-share', mobile:true,
+    body:[
+      'Aperçu du message tel qu\'il arrivera dans la conversation WhatsApp du parent : une carte résumée du rapport et un texte d\'accompagnement.',
+      'Un sélecteur permet d\'envoyer le message en <b>français</b> ou en <b>mélange arabe-français</b>, selon les préférences du parent.'
+    ],
+    why:'Le rapport est partagé sur WhatsApp, le canal que les parents utilisent déjà au quotidien — Navanso s\'intègre à cet usage plutôt que de chercher à le remplacer.'
+  },
+  {
+    act:'a3', actLabel:'Acte 3 · Le progrès devient visible', step:'21',
+    title:'Espace parent — vue famille',
+    hash:'parent-home/pa1', mobile:true,
+    body:[
+      'Vue synthétique pour les parents : prochaine séance par enfant, archive des rapports reçus, statut des paiements (à jour, en attente, en retard).',
+      'L\'interface est volontairement légère, sans flux d\'activités ni notifications répétées.'
+    ],
+    why:'L\'espace parent vise la rassurance, pas la surveillance — une vue calme qui donne les informations essentielles sans alourdir.'
+  },
+
+  // ─── OUTILS (LAYER 3) ───────────────────────────────────────────────
+  {
+    act:'outils', actLabel:'Outils complémentaires', step:'22',
+    title:'Planning hebdomadaire',
+    hash:'planning',
+    preCmd:'NavAuth&&NavAuth.login&&NavAuth.login();',
+    body:[
+      'Calendrier de la semaine, du dimanche au samedi — adapté au calendrier algérien où le weekend tombe en milieu de semaine.',
+      'Navigation entre les semaines précédentes et suivantes ; un clic ouvre la séance pour la préparer ou la saisir.'
+    ],
+    why:'Un calendrier hebdomadaire pour visualiser les séances à venir et passer rapidement d\'une séance à l\'autre.'
+  },
+  {
+    act:'outils', actLabel:'Outils complémentaires', step:'23',
+    title:'Mes tâches',
+    hash:'todos',
+    body:[
+      'Liste des tâches que l\'enseignant veut retenir, rattachées à un élève, un groupe ou une séance. Une tâche non terminée se reporte automatiquement à la séance suivante.',
+      'Un composer rapide permet d\'ajouter une tâche en un instant.'
+    ],
+    why:'Les tâches peuvent être rattachées à un élève, un groupe ou une séance, et se reportent automatiquement si elles n\'ont pas été faites.'
+  },
+  {
+    act:'outils', actLabel:'Outils complémentaires', step:'24',
+    title:'Suivi des paiements',
+    hash:'payments',
+    body:[
+      'Suivi des paiements mensuels par groupe et par élève. Statuts : <b>payé · en attente · en retard</b>, avec un récapitulatif en haut de page.',
+      'Aucun traitement de paiement en ligne — il s\'agit d\'un simple suivi des règlements cash, adapté à la pratique courante en Algérie.'
+    ],
+    why:'Suivi simple des paiements cash mensuels, sans intégration de paiement en ligne — adapté à la réalité du marché algérien.'
+  },
+
+  // ─── CLOSING ────────────────────────────────────────────────────────
+  {
+    act:'close', actLabel:'Synthèse · trois couches, une boucle', step:'25',
+    title:'Trois couches, une boucle de confiance',
+    body:[
+      'Couche 1 — <b>Promesse cœur</b> : aider les parents à trouver un enseignant de confiance, et rendre visible le progrès de l\'élève.',
+      'Couche 2 — <b>Suivi opérationnel</b> : groupes, séances, remarques et rapports — ce qui rend la promesse possible au quotidien.',
+      'Couche 3 — <b>Outils complémentaires</b> : paiements, planning et tâches — ce qui rend le quotidien de l\'enseignant plus simple, sans détourner l\'attention du suivi.'
+    ],
+    quote:'Navanso se concentre sur la boucle de suivi et de confiance, avec des outils de gestion complémentaires qui facilitent l\'adoption.',
+    closing:true
+  },
+
+  // ─── VALIDATION CLOSINGS ────────────────────────────────────────────
+  // Slides 26 et 27 ne sont visibles qu'en mode parent et mode enseignant
+  // respectivement. Filtrées hors mode complet.
+  {
+    act:'valid-parent', actLabel:'Validation · côté parent', step:'26',
+    title:'Merci d\'avoir parcouru Navanso',
+    body:[
+      'Vous venez de découvrir le parcours côté parent : la recherche d\'un enseignant, la consultation des profils, la demande de séance d\'essai, et la réception d\'un rapport de suivi clair.',
+      'Votre retour est précieux. Quelques questions courtes (≈ 3 minutes) pour comprendre ce qui vous a paru utile, rassurant, ou ce qui manquerait à votre tranquillité.'
+    ],
+    quote:'Lien du questionnaire parent : [à insérer]',
+    closing:true,
+    validationClosing:true
+  },
+  {
+    act:'valid-tutor', actLabel:'Validation · côté enseignant', step:'27',
+    title:'Merci d\'avoir parcouru Navanso',
+    body:[
+      'Vous venez de découvrir le parcours côté enseignant : la visibilité de votre profil, l\'organisation des groupes, la saisie d\'une séance et la génération d\'un rapport pour le parent.',
+      'Votre retour est précieux. Quelques questions courtes (≈ 5 minutes) sur l\'utilité, le réalisme de la saisie, la valeur pour vos parents d\'élèves, et votre disposition à utiliser ce type d\'outil au quotidien.'
+    ],
+    quote:'Lien du questionnaire enseignant : [à insérer]',
+    closing:true,
+    validationClosing:true
+  },
+];
+
+/* ───────── runtime ───────── */
+const frameWrap = document.getElementById('frameWrap');
+const frameLoading = document.getElementById('frameLoading');
+const commPane  = document.getElementById('commPane');
+const progBar   = document.getElementById('progBar');
+const progLbl   = document.getElementById('progLbl');
+const prevBtn   = document.getElementById('prevBtn');
+const nextBtn   = document.getElementById('nextBtn');
+const picker    = document.getElementById('picker');
+const helpBtn   = document.getElementById('helpBtn');
+const helpOv    = document.getElementById('helpOv');
+
+/* B19 — Four viewing modes:
+   - "defense" : 11-slide spine for the jury (~ 4 min)
+   - "parent"  : 9-slide validation path for parents (~ 3-4 min)
+   - "tutor"   : 10-slide validation path for tutors (~ 5-6 min)
+   - "full"    : all 26 product slides for axe 6 / mémoire / internal review
+   Validation closings (slides 26, 27) only appear in parent/tutor modes. */
+const MODES = {
+  defense: { label:'Défense',     indexes:[0, 1, 3, 4, 6, 7, 13, 17, 19, 20, 25] },
+  parent:  { label:'Parent',      indexes:[0, 1, 3, 4, 5, 6, 19, 20, 26] },
+  tutor:   { label:'Enseignant',  indexes:[0, 4, 7, 10, 13, 11, 17, 20, 24, 27] },
+  full:    { label:'Complet',     indexes:null }, // null = all non-validation slides
+};
+
+// Mode resolution order:
+//   1. URL param ?mode=parent|tutor|defense|full (lets us share pre-configured links)
+//   2. localStorage previous choice
+//   3. fallback 'defense'
+// Old 'demo' key migrates to 'defense'.
+const urlMode = new URLSearchParams(location.search).get('mode');
+const savedMode = localStorage.getItem('nv_wt_mode');
+let mode = MODES[urlMode] ? urlMode
+         : (savedMode === 'demo') ? 'defense'
+         : (MODES[savedMode] ? savedMode : 'defense');
+// If the URL forced a mode, persist it so refreshes keep the same view.
+if(MODES[urlMode]) localStorage.setItem('nv_wt_mode', urlMode);
+
+function computeViewSlides(){
+  const def = MODES[mode] || MODES.defense;
+  if(def.indexes) return def.indexes.map(idx => SLIDES[idx]);
+  // 'full' = every slide except validation closings (26, 27)
+  return SLIDES.filter(s => !s.validationClosing);
+}
+let viewSlides = computeViewSlides();
+
+let i = 0;
+let currentFrame = null;
+let lastHash = null;
+let lastMobile = null;
+
+const modeBtns = [...document.querySelectorAll('.mode-seg [data-mode]')];
+
+function syncModeButtons(){
+  modeBtns.forEach(b => b.classList.toggle('on', b.dataset.mode === mode));
+}
+
+/* (Re)build the picker dropdown based on current mode */
+function rebuildPicker(){
+  picker.innerHTML = '';
+  viewSlides.forEach((s, idx) => {
+    const o = document.createElement('option');
+    o.value = idx;
+    o.textContent = `${String(idx+1).padStart(2,'0')} · ${s.title}`;
+    picker.appendChild(o);
+  });
+}
+rebuildPicker();
+syncModeButtons();
+picker.addEventListener('change', e => goTo(+e.target.value));
+
+function setMode(m){
+  if(m === mode || !MODES[m]) return;
+  mode = m;
+  localStorage.setItem('nv_wt_mode', m);
+  viewSlides = computeViewSlides();
+  i = 0;
+  rebuildPicker();
+  syncModeButtons();
+  render();
+}
+
+modeBtns.forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+
+function buildFrame(slide){
+  // (re)create the frame element only if mobile/desktop changed or hash differs.
+  const wantMobile = !!slide.mobile;
+  if(lastMobile === wantMobile && currentFrame && lastHash !== slide.hash){
+    // reuse: just update src
+    setSrc(slide);
+    return;
+  }
+  frameWrap.innerHTML = '';
+  if(!slide.hash){
+    renderNoFrame(slide);
+    currentFrame = null; lastMobile = null; lastHash = null;
+    return;
+  }
+  if(wantMobile){
+    const wrap = document.createElement('div');
+    wrap.className = 'iframe-mobile-wrap';
+    const f = document.createElement('iframe');
+    f.className = 'iframe-mobile';
+    f.id = 'protoFrame';
+    wrap.appendChild(f);
+    frameWrap.appendChild(wrap);
+    currentFrame = f;
+  } else {
+    const f = document.createElement('iframe');
+    f.className = 'iframe-desktop';
+    f.id = 'protoFrame';
+    frameWrap.appendChild(f);
+    currentFrame = f;
+  }
+  lastMobile = wantMobile;
+  setSrc(slide);
+}
+
+function setSrc(slide){
+  if(!currentFrame) return;
+  frameLoading.classList.add('on');
+  /* embed=1 tells the prototype to hide its internal pager ("Écrans"
+     button + 5/13 counter + "Prototype expérimental" pill) — they would
+     otherwise compete with the walkthrough's own numbering. */
+  const url = `${PROTO}?embed=1&wt=${Date.now()}#${slide.hash}`;
+  currentFrame.onload = () => {
+    // Wait a beat for Babel + React mount before running preCmd / scroll
+    setTimeout(()=>{
+      try{
+        const win = currentFrame.contentWindow;
+        if(slide.preCmd && win){ try{ win.eval(slide.preCmd); }catch(e){console.warn('preCmd',e);} }
+        // Re-trigger the hash routing so screen mounts (preCmd may have mutated store)
+        if(win){ win.location.hash = slide.hash; }
+        // Hide the prototype's internal scrollbar so we don't have two
+        // competing scroll surfaces on mobile (page + iframe).
+        try{
+          const doc = currentFrame.contentDocument;
+          if(doc && !doc.querySelector('#wt-scroll-hide')){
+            const s = doc.createElement('style');
+            s.id = 'wt-scroll-hide';
+            s.textContent = '.app-scroll::-webkit-scrollbar{display:none}.app-scroll{scrollbar-width:none}html,body{scrollbar-width:none}html::-webkit-scrollbar,body::-webkit-scrollbar{display:none}';
+            doc.head.appendChild(s);
+          }
+        }catch(e){}
+        if(slide.scrollText){
+          setTimeout(()=>{
+            try{
+              const doc = currentFrame.contentDocument;
+              const target = [...doc.querySelectorAll('h1,h2,h3,.eyebrow')].find(h=>h.textContent.toLowerCase().includes(slide.scrollText.toLowerCase()));
+              if(target) target.scrollIntoView({block:'start', behavior:'instant'});
+            }catch(e){}
+          }, 700);
+        }
+      }catch(e){console.warn(e);}
+      frameLoading.classList.remove('on');
+    }, 600);
+  };
+  currentFrame.src = url;
+  lastHash = slide.hash;
+}
+
+function renderNoFrame(slide){
+  const wrap = document.createElement('div');
+  wrap.className = 'no-frame';
+  let html = `<div class="card"><span class="kicker">${slide.actLabel}</span><h2>${slide.title}</h2>`;
+  (slide.body||[]).forEach(p=>{ html += `<p>${p}</p>`; });
+  if(slide.layers){
+    html += `<div class="layers">
+      <div class="layer l1"><div class="num">1</div><div><h4>Promesse cœur — trust & progress</h4><p>Trouver un enseignant de confiance et prouver le progrès de l'élève.</p></div></div>
+      <div class="layer l2"><div class="num">2</div><div><h4>Workflow opérationnel</h4><p>Groupes · séances · attendance · remarques · rapports.</p></div></div>
+      <div class="layer l3"><div class="num">3</div><div><h4>Outils complémentaires</h4><p>Paiements · planning · tâches · broadcasts.</p></div></div>
+    </div>`;
+  }
+  html += `</div>`;
+  wrap.innerHTML = html;
+  frameWrap.appendChild(wrap);
+}
+
+function renderCommentary(slide){
+  const cls = slide.act || 'intro';
+  let html = `
+    <div class="act-row">
+      <span class="act-badge ${cls}">${slide.actLabel}</span>
+      <span class="step-num">${String(i+1).padStart(2,'0')} / ${viewSlides.length}</span>
+    </div>
+    <h2 class="title">${slide.title}</h2>
+    <div class="commentary">`;
+  (slide.body||[]).forEach(p=>{ html += `<p>${p}</p>`; });
+  html += `</div>`;
+  if(slide.why){
+    html += `<div class="why"><span class="eyebrow">Pourquoi ça compte</span><p>${slide.why}</p></div>`;
+  }
+  if(slide.quote){
+    html += `<div class="quote"><span>En une phrase</span><p>« ${slide.quote} »</p></div>`;
+  }
+  commPane.innerHTML = html;
+  commPane.scrollTop = 0;
+}
+
+/* Map each act to a brand colour. Used to tint the left accent stripe on the
+   commentary panel so the eye instantly recognises which part of the story
+   the screen belongs to. */
+const ACT_COLORS = {
+  intro:'#5B6678',
+  a1:'#1F8A6D', a2:'#2456B5', a3:'#D8632E',
+  outils:'#3F4A60',
+  close:'#86E5C7',
+  'valid-parent':'#1F8A6D',
+  'valid-tutor':'#2456B5',
+};
+
+function render(){
+  if(i >= viewSlides.length) i = viewSlides.length - 1;
+  const slide = viewSlides[i];
+  buildFrame(slide);
+  renderCommentary(slide);
+  // Hide the mobile hint on text-only slides (intro/closing/validation)
+  const hint = document.getElementById('mobileHint');
+  if(hint) hint.style.display = slide.hash ? '' : 'none';
+  // Mark the body when the slide has no iframe — used by mobile CSS to
+  // hide the duplicated no-frame card (commentary already carries the same text)
+  document.body.classList.toggle('no-iframe-slide', !slide.hash);
+  // Set the commentary accent stripe colour for this act
+  commPane.style.setProperty('--act-color', ACT_COLORS[slide.act] || ACT_COLORS.intro);
+  // progress
+  const denom = Math.max(1, viewSlides.length - 1);
+  const pct = (i/denom) * 100;
+  progBar.style.width = pct + '%';
+  progLbl.textContent = `Slide ${i+1} sur ${viewSlides.length} — ${slide.actLabel}`;
+  picker.value = i;
+  prevBtn.disabled = i===0;
+  nextBtn.disabled = i===viewSlides.length-1;
+}
+
+function next(){ if(i<viewSlides.length-1){ i++; render(); } }
+function prev(){ if(i>0){ i--; render(); } }
+function goTo(n){ i = Math.max(0, Math.min(viewSlides.length-1, n)); render(); }
+
+prevBtn.addEventListener('click', prev);
+nextBtn.addEventListener('click', next);
+
+document.addEventListener('keydown', e => {
+  if(helpOv.classList.contains('on')){
+    if(e.key==='Escape' || e.key==='?') { helpOv.classList.remove('on'); }
+    return;
+  }
+  if(e.target.tagName==='SELECT' || e.target.tagName==='INPUT') return;
+  if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' ') { e.preventDefault(); next(); }
+  else if(e.key==='ArrowLeft'||e.key==='PageUp')             { e.preventDefault(); prev(); }
+  else if(e.key==='Home')                                     { e.preventDefault(); goTo(0); }
+  else if(e.key==='End')                                      { e.preventDefault(); goTo(viewSlides.length-1); }
+  else if(e.key==='f'||e.key==='F'){
+    if(!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  }
+  else if(e.key==='?'){ helpOv.classList.add('on'); }
+});
+
+helpBtn.addEventListener('click', ()=> helpOv.classList.add('on'));
+helpOv.addEventListener('click', e => { if(e.target===helpOv) helpOv.classList.remove('on'); });
+
+render();
+</script>
+</body>
+</html>

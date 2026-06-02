@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Navanso — Tous les écrans</title>
+<link rel="stylesheet" href="navanso/styles.css"/>
+<style>html,body,#root{height:100%;margin:0}</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="navanso/icons.jsx"></script>
+<script type="text/babel" src="navanso/design-canvas.jsx"></script>
+<script type="text/babel">
+const {useState,useEffect,useRef} = React;
+
+// stagger iframe loads so 15 full app instances don't boot simultaneously;
+// IntersectionObserver promotes a frame to load sooner if scrolled into view.
+let FRAME_IDX=0;
+function Frame({hash, w, h, phone}){
+  const ref=useRef(null);
+  const [src,setSrc]=useState(null);
+  useEffect(()=>{
+    const idx=FRAME_IDX++;
+    let done=false, io=null;
+    const load=()=>{ if(done)return; done=true; setSrc(`Navanso Prototype.html?embed=1#${hash}`); io&&io.disconnect(); clearTimeout(t); };
+    const t=setTimeout(load, 400 + idx*450);
+    io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting)load();});},{root:null,rootMargin:'800px'});
+    if(ref.current) io.observe(ref.current);
+    return ()=>{done=true;io.disconnect();clearTimeout(t);};
+  },[hash]);
+  return <div ref={ref} style={{width:w,height:h,background:phone?'#eef1f7':'#fff',position:'relative',overflow:'hidden'}}>
+    {src
+      ? <iframe src={src} title={hash} style={{width:w,height:h,border:'none',display:'block'}}></iframe>
+      : <div className="row center" style={{width:'100%',height:'100%',color:'#9aa3b4'}}>
+          <div className="col center gap-10"><div style={{width:40,height:40,borderRadius:12,background:'#fff',border:'1px solid #e5e9f0',display:'grid',placeItems:'center'}}><Icon name="grid" size={20} style={{color:'#b6bfce'}}/></div><span className="t-13 w-600">Chargement…</span></div>
+        </div>}
+  </div>;
+}
+
+const DESK={w:1320,h:840};
+const PH={w:470,h:910};
+
+// plain function (NOT a component) so the returned element's type is DCArtboard,
+// which DCSection matches by type.
+function board(id,label,hash,phone){
+  const s=phone?PH:DESK;
+  return <DCArtboard key={id} id={id} label={label} width={s.w} height={s.h}><Frame hash={hash} w={s.w} h={s.h} phone={phone}/></DCArtboard>;
+}
+
+function Canvas(){
+  return <DesignCanvas>
+    <DCSection id="vitrine" title="Vitrine" subtitle="Pages marketing — confiance & positionnement">
+      {board('landing','Landing','landing')}
+      {board('pricing','Tarifs (DZD · à valider)','pricing')}
+      {board('roadmap','Vision / Roadmap','roadmap')}
+    </DCSection>
+    <DCSection id="parent" title="Parcours parent" subtitle="Découverte → confiance → preuve du progrès">
+      {board('search','Recherche — taille de groupe & places','parent-search')}
+      {board('profile','Profil enseignant public','tutor-profile')}
+      {board('preport','Rapport parent (mobile)','parent-report',true)}
+      {board('wa','Partage WhatsApp (mobile)','whatsapp-share',true)}
+    </DCSection>
+    <DCSection id="tutor" title="Espace enseignant" subtitle="Gestion des petits groupes & rapports validés">
+      {board('onb','Création de profil','tutor-onboarding')}
+      {board('dash','Tableau de bord','dashboard')}
+      {board('groups','Groupes','groups')}
+      {board('gdetail','Détail du groupe','group-detail')}
+      {board('student','Profil élève / progrès','student-profile')}
+      {board('att','Présence — saisie rapide','attendance')}
+      {board('assess','Évaluation & points faibles','assessment')}
+      {board('report','Génération de rapport (assistant)','report-gen')}
+    </DCSection>
+  </DesignCanvas>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Canvas/>);
+</script>
+</body>
+</html>

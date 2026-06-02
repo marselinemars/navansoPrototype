@@ -1,0 +1,23 @@
+# OS / editor junk
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+*~
+
+# Build / install
+node_modules/
+__pycache__/
+*.pyc
+
+# Logs / temporary
+*.log
+*.tmp
+
+# Old screenshot artifacts from prototyping sessions (not needed in repo)
+03_CODED_MVP/navanso-coded-mvp-v1/shots/
+
+# OS-specific archives
+.archives/

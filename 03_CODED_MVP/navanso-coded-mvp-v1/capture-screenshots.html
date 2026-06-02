@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<title>Navanso — Capture all screens</title>
+<script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js"></script>
+<style>
+  body{font-family:system-ui,Segoe UI,sans-serif;margin:0;padding:24px;background:#F4F6FA;color:#16202E}
+  .wrap{max-width:1100px;margin:0 auto}
+  h1{font-size:24px;margin:0 0 8px}
+  p{color:#5B6678;line-height:1.55}
+  button{padding:13px 22px;font-size:15px;font-weight:600;cursor:pointer;border-radius:10px;border:none;background:#1E3A8A;color:#fff;box-shadow:0 1px 2px rgba(16,24,40,.06)}
+  button:hover{background:#1A357E}
+  button:disabled{opacity:.5;cursor:wait}
+  .log{background:#fff;border:1px solid #E5E9F0;padding:14px 18px;margin-top:20px;border-radius:10px;
+       font-family:Menlo,Consolas,monospace;font-size:12px;max-height:420px;overflow-y:auto;line-height:1.6}
+  .log .ok{color:#1F8A6D}
+  .log .err{color:#C0392B}
+  .log .info{color:#1E3A8A}
+  .frame-wrap{margin-top:24px;border:1px solid #E5E9F0;border-radius:10px;overflow:hidden;background:#fff;
+              max-width:1100px;height:520px;position:relative}
+  iframe{width:1440px;height:900px;border:0;transform:scale(0.5);transform-origin:top left;
+         display:block}
+  .progress{height:6px;background:#EEF1F6;border-radius:4px;margin-top:14px;overflow:hidden}
+  .progress > i{display:block;height:100%;background:linear-gradient(90deg,#27A085,#2456B5);width:0;transition:width .3s ease}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Navanso · Capture de tous les écrans</h1>
+  <p>Ce script ouvre chaque écran du prototype dans le cadre ci-dessous, le capture en PNG avec <code>html2canvas</code>, et regroupe le tout dans un fichier <b>ZIP</b> téléchargé à la fin.</p>
+  <p>L'archive est organisée en 3 dossiers (<code>00_public/</code>, <code>01_parent/</code>, <code>02_tutor/</code>). Extrayez-la dans <code>05_SCREENSHOTS/</code>.</p>
+  <button id="go">🎬 Lancer la capture (≈ 2 min)</button>
+  <div class="progress"><i id="bar"></i></div>
+  <div class="log" id="log"></div>
+  <div class="frame-wrap"><iframe id="frame" src="about:blank"></iframe></div>
+</div>
+
+<script>
+/* Each entry: hash route + filename. preCmd is JS to run in the iframe context
+   before navigating (e.g. login, seed shortlist). */
+const SCREENS = [
+  // 00_public
+  {section:'00_public', hash:'landing',          name:'01-landing'},
+  {section:'00_public', hash:'pricing',          name:'02-pricing'},
+  {section:'00_public', hash:'roadmap',          name:'03-roadmap'},
+  // 01_parent
+  {section:'01_parent', hash:'parent-search',    name:'01-parent-search',
+    preCmd:'Nav.shortlistClear(); Nav.shortlistToggle("t1"); Nav.shortlistToggle("t3"); Nav.shortlistToggle("t4");'},
+  {section:'01_parent', hash:'tutor-profile/t1', name:'02-tutor-profile'},
+  {section:'01_parent', hash:'shortlist',        name:'03-shortlist'},
+  {section:'01_parent', hash:'inquiry/t1',       name:'04-inquiry'},
+  {section:'01_parent', hash:'parent-home/pa1',  name:'05-parent-home'},
+  {section:'01_parent', hash:'parent-thread/th1', name:'06-parent-thread'},
+  {section:'01_parent', hash:'parent-report/r-yacine-mai-2026', name:'07-parent-report'},
+  {section:'01_parent', hash:'whatsapp-share',   name:'08-whatsapp-share'},
+  // 02_tutor (login first)
+  {section:'02_tutor', hash:'dashboard',          name:'01-dashboard',
+    preCmd:'NavAuth.login();'},
+  {section:'02_tutor', hash:'groups',             name:'02-groups'},
+  {section:'02_tutor', hash:'group-detail/g1',    name:'03-group-detail'},
+  {section:'02_tutor', hash:'create-group/g1',    name:'04-edit-group'},
+  {section:'02_tutor', hash:'add-student/g1',     name:'05-add-student'},
+  {section:'02_tutor', hash:'students',           name:'06-students-list'},
+  {section:'02_tutor', hash:'student-profile/s1', name:'07-student-profile'},
+  {section:'02_tutor', hash:'session-plan/sess4', name:'08-session-plan'},
+  {section:'02_tutor', hash:'session-entry/sess4', name:'09-session-entry'},
+  {section:'02_tutor', hash:'assessment',         name:'10-assessment'},
+  {section:'02_tutor', hash:'reports',            name:'11-reports-hub'},
+  {section:'02_tutor', hash:'reports-batch/g1',   name:'12-reports-batch'},
+  {section:'02_tutor', hash:'report-gen/s1',      name:'13-report-gen'},
+  {section:'02_tutor', hash:'messages',           name:'14-messages-inbox'},
+  {section:'02_tutor', hash:'thread/th1',         name:'15-thread'},
+  {section:'02_tutor', hash:'group-broadcast/g1', name:'16-group-broadcast'},
+  {section:'02_tutor', hash:'todos',              name:'17-mes-taches'},
+  {section:'02_tutor', hash:'planning',           name:'18-planning'},
+  {section:'02_tutor', hash:'payments',           name:'19-paiements'},
+  {section:'02_tutor', hash:'tutor-onboarding',   name:'20-onboarding'},
+];
+
+const logEl = document.getElementById('log');
+const bar = document.getElementById('bar');
+const log = (msg, cls) => {
+  const line = document.createElement('div');
+  line.className = cls || '';
+  line.innerHTML = msg;
+  logEl.appendChild(line);
+  logEl.scrollTop = logEl.scrollHeight;
+};
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+document.getElementById('go').addEventListener('click', async () => {
+  const btn = document.getElementById('go');
+  btn.disabled = true;
+  btn.textContent = '⏳ Capture en cours…';
+  const zip = new JSZip();
+  const frame = document.getElementById('frame');
+  const total = SCREENS.length;
+
+  log('Chargement du prototype dans le cadre…', 'info');
+  frame.src = 'Navanso%20Prototype.html#landing';
+  await new Promise(r => frame.onload = r);
+  log('  Cadre chargé, attente de Babel (~ 10s)…', 'info');
+  await sleep(10000);
+
+  // Wait until window.Landing exists (signal that all JSX loaded)
+  for (let i=0; i<40; i++) {
+    if (frame.contentWindow.Landing) break;
+    await sleep(500);
+  }
+  log('  ✓ Prototype prêt', 'ok');
+
+  for (let i = 0; i < total; i++) {
+    const s = SCREENS[i];
+    bar.style.width = ((i / total) * 100) + '%';
+    log(`(${i+1}/${total}) ${s.section}/${s.name}…`);
+    const win = frame.contentWindow;
+    try {
+      if (s.preCmd) {
+        try { win.eval(s.preCmd); } catch(e) { log('  ! preCmd: ' + e.message, 'err'); }
+        await sleep(400);
+      }
+      win.location.hash = s.hash;
+      await sleep(2200); // render
+      // Try to scroll to top
+      try { frame.contentDocument.querySelector('.app-scroll')?.scrollTo(0, 0); } catch(e){}
+      try { frame.contentDocument.documentElement.scrollTop = 0; } catch(e){}
+      await sleep(200);
+      const canvas = await html2canvas(frame.contentDocument.documentElement, {
+        scale: 1, backgroundColor: '#F4F6FA', logging: false,
+        width: 1440, height: 900, windowWidth: 1440, windowHeight: 900,
+      });
+      const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+      zip.file(`${s.section}/${s.name}.png`, blob);
+      log(`  ✓ ${s.name}.png · ${(blob.size/1024|0)} KB`, 'ok');
+    } catch (e) {
+      log(`  ✗ Erreur: ${e.message || e}`, 'err');
+    }
+  }
+
+  bar.style.width = '100%';
+  log('Génération du ZIP…', 'info');
+  const content = await zip.generateAsync({ type: 'blob' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(content);
+  a.download = 'navanso-screenshots.zip';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  log(`<b>✓ Terminé !</b> Le fichier <code>navanso-screenshots.zip</code> est dans votre dossier de téléchargements.`, 'ok');
+  log(`Extrayez son contenu dans <code>05_SCREENSHOTS/</code> pour avoir les 3 sous-dossiers.`, 'info');
+  btn.textContent = '✓ Capture terminée';
+});
+</script>
+</body>
+</html>
