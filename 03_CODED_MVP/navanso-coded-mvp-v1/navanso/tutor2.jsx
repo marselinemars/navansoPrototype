@@ -17,20 +17,31 @@ function Multi({options, value, set, tone}){
 }
 
 function Onboarding({go}){
-  const isMobile = useIsMobile();
+  const isMobile = useIsNarrow();
   const [subjects,setSubjects]=React.useState(['Mathématiques']);
   const [levels,setLevels]=React.useState(['4e AM (BEM)']);
   const [formats,setFormats]=React.useState(['Petit groupe','Présentiel']);
   const [cap,setCap]=React.useState(8);
-  return <AppShell go={go} active="tutor-onboarding" title="Créer mon profil enseignant" maxw={1100}
-    crumbs={[{t:'Espace',go:()=>go('dashboard')},{t:'Mon profil'}]}
-    actions={<Btn variant="primary" icon="check" onClick={()=>{navToast('Profil publié');go('tutor-profile');}}>Publier le profil</Btn>}>
-    {/* callout */}
-    <div className="card pad-20 row gap-14" style={{marginBottom:20,background:'var(--blue-50)',border:'1px solid var(--blue-100)'}}>
-      <div className="icn" style={{width:40,height:40,borderRadius:12,background:'#fff',color:'var(--blue-700)',display:'grid',placeItems:'center',boxShadow:'var(--sh-1)',flex:'none'}}><Icon name="heart" size={20}/></div>
-      <p className="t-15 lh-14" style={{color:'var(--blue-900)'}}>Votre profil aide les parents à comprendre votre méthode, vos groupes et votre sérieux <b>avant de vous contacter</b>.</p>
-    </div>
-    <div style={{display:'grid',gridTemplateColumns:isMobile?'1fr':'1fr 320px',gap:20,alignItems:'start'}}>
+  /* B21 — l'onboarding s'adresse à un futur enseignant qui n'a encore ni
+     groupes, ni élèves, ni messages : on bascule de l'AppShell (sidebar du
+     dashboard) vers la nav marketing publique, plus cohérente avec un flow
+     d'inscription. */
+  return <div className="screen-anim" style={{minHeight:'100%',background:'var(--bg)'}}>
+    <MarketingNav go={go}/>
+    <div style={{maxWidth:1100,margin:'0 auto',padding:isMobile?'20px 16px 56px':'30px 40px 72px'}}>
+      <div className="row between wrap" style={{marginBottom:isMobile?16:22,gap:14,alignItems:'flex-end'}}>
+        <div className="col gap-4">
+          <span className="eyebrow" style={{color:'var(--blue-700)'}}>Devenir enseignant</span>
+          <h1 style={{fontSize:isMobile?22:28,lineHeight:1.15}}>Créer mon profil enseignant</h1>
+        </div>
+        <Btn variant="primary" icon="check" onClick={()=>{navToast('Profil publié');go('tutor-profile');}}>Publier le profil</Btn>
+      </div>
+      {/* callout */}
+      <div className="card pad-20 row gap-14" style={{marginBottom:20,background:'var(--blue-50)',border:'1px solid var(--blue-100)'}}>
+        <div className="icn" style={{width:40,height:40,borderRadius:12,background:'#fff',color:'var(--blue-700)',display:'grid',placeItems:'center',boxShadow:'var(--sh-1)',flex:'none'}}><Icon name="heart" size={20}/></div>
+        <p className="t-15 lh-14" style={{color:'var(--blue-900)'}}>Votre profil aide les parents à comprendre votre méthode, vos groupes et votre sérieux <b>avant de vous contacter</b>.</p>
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:isMobile?'1fr':'1fr 320px',gap:20,alignItems:'start'}}>
       <div className="col gap-18">
         <OnbSection n="1" title="Informations de base" desc="Comment les parents vous identifient." done>
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14}}>
@@ -87,7 +98,9 @@ function Onboarding({go}){
         </div>
       </div>
     </div>
-  </AppShell>;
+    </div>
+    <Footer go={go}/>
+  </div>;
 }
 
 /* ---------------- ATTENDANCE ---------------- */
