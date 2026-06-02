@@ -124,16 +124,15 @@ function NavHero({go}){
       {/* LEFT — message */}
       <div className="nvh-copy">
         <span className="nvh-eyebrow nvh-up">
-          <b style={{color:'var(--green-700)',letterSpacing:'.04em'}}>Nous progressons ensemble</b>
-          <span style={{opacity:.55,margin:'0 8px'}}>·</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{width:13,height:13,marginRight:4}}><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z"/><path d="M12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z"/><path d="M12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/></svg>
           Soutien scolaire en Algérie
         </span>
         <h1 className="nvh-h1 nvh-up d1">
           Une seule boucle entre le <span className="g">parent</span> et l'<span className="b">enseignant</span>.
         </h1>
+        <p className="nvh-tagline nvh-up d1b">Nous progressons ensemble.</p>
         <p className="nvh-lede nvh-up d2">
-          Chaque séance nourrit un suivi clair pour l'élève : présence, progrès et rapports validés — partagés là où les parents sont déjà, sur WhatsApp.
+          Chaque séance nourrit un suivi clair pour <span className="nvh-eleve">l'élève</span> : présence, progrès et rapports validés — partagés là où les parents sont déjà, sur WhatsApp.
         </p>
         <div className="nvh-points nvh-up d3">
           <span className="nvh-point">
@@ -163,14 +162,13 @@ function NavHero({go}){
         <div className="nvh-ring-dash"></div>
         <div className="nvh-bead"><i></i></div>
         {/* Center = the student (the Navanso mark anchored at the middle).
-            The "L'élève" cap is now an absolutely-positioned chip floating just
-            under the disc, so it never pushes the disc off the orbital centre. */}
+            "L'élève" is named in the lede copy with an orange accent, so we
+            keep the orbital composition free of conflicting text. */}
         <div className="nvh-center">
           <div className="disc">
             <div className="halo"></div>
             <img className="nvh-logo" src="assets/navanso-mark.png" alt="Navanso"/>
           </div>
-          <span className="cap">L'élève</span>
         </div>
         {/* PARENT node */}
         <div className="nvh-node parent">
