@@ -160,13 +160,14 @@ function NavHero({go}){
         <div className="nvh-ring"></div>
         <div className="nvh-ring-dash"></div>
         <div className="nvh-bead"><i></i></div>
-        {/* Center = the student (the Navanso mark anchored at the middle) */}
+        {/* Center = the student (the Navanso mark anchored at the middle).
+            The caption is removed — the orbital composition already conveys
+            that the student (logo) is at the centre of the loop. */}
         <div className="nvh-center">
           <div className="disc">
             <div className="halo"></div>
             <img className="nvh-logo" src="assets/navanso-mark.png" alt="Navanso"/>
           </div>
-          <span className="cap">L'élève au centre</span>
         </div>
         {/* PARENT node */}
         <div className="nvh-node parent">
