@@ -23,6 +23,7 @@ function MarketingNav({go, active}){
           <div className="hr" style={{margin:'10px 0'}}/>
           <Btn variant="green" size="sm" icon="search" block onClick={()=>{setOpen(false);go('parent-search');}}>Trouver un enseignant</Btn>
           <Btn variant="primary" size="sm" icon="user" block onClick={()=>{setOpen(false);go('tutor-onboarding');}}>Devenir enseignant</Btn>
+          <Btn variant="ghost" size="sm" block onClick={()=>{setOpen(false);go('dashboard');}}>Espace enseignant</Btn>
         </div>
       </>}
     </>;
@@ -34,6 +35,7 @@ function MarketingNav({go, active}){
         style={active===id?{color:'var(--blue-700)'}:{}}>{l}</a>)}
     </div>
     <div className="row gap-10" style={{marginLeft:'auto'}}>
+      <Btn variant="ghost" size="sm" onClick={()=>go('dashboard')}>Espace enseignant</Btn>
       <Btn variant="green" size="sm" icon="search" onClick={()=>go('parent-search')}>Trouver un enseignant</Btn>
       <Btn variant="primary" size="sm" icon="user" onClick={()=>go('tutor-onboarding')}>Devenir enseignant</Btn>
     </div>
