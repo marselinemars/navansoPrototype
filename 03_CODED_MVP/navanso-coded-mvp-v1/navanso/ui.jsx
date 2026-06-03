@@ -6,11 +6,13 @@ function LogoMark({size=34}){
   </div>;
 }
 function Logo({size=34, sub=false, name=true}){
+  useLang();
+  const isAr = NavI18n.lang === 'ar';
   return <div className="logo">
     <LogoMark size={size}/>
     {name && <div className="col" style={{gap:1}}>
       <span className="logo-name" style={{fontSize:size*0.6}}>Navanso</span>
-      {sub && <span className="logo-sub">Nous progressons, ensemble.</span>}
+      {sub && <span className="logo-sub">{isAr?'نتقدّم معاً.':'Nous progressons, ensemble.'}</span>}
     </div>}
   </div>;
 }
@@ -24,8 +26,10 @@ function Chip({children, tone='gray', icon}){
 }
 
 function Places({places, cap}){
+  if(typeof useLang === 'function') useLang();
+  const isAr = (typeof NavI18n !== 'undefined') && NavI18n.lang === 'ar';
   const tone = places===0?'full':places<=2?'low':'open';
-  const label = places===0 ? 'Complet' : `${places} place${places>1?'s':''} disponible${places>1?'s':''}`;
+  const label = places===0 ? (isAr?'كامل':'Complet') : (isAr?`${places} مكان متوفّر`:`${places} place${places>1?'s':''} disponible${places>1?'s':''}`);
   return <span className={`places places-${tone}`}><span className="dot"></span>{label}</span>;
 }
 
@@ -73,12 +77,14 @@ function Btn({children, variant='primary', size, icon, iconR, block, onClick, st
 }
 
 function Stars({rating, reviews, size=14}){
+  if(typeof useLang === 'function') useLang();
+  const isAr = (typeof NavI18n !== 'undefined') && NavI18n.lang === 'ar';
   return <span className="row gap-6">
     <span className="row gap-2" style={{color:'var(--orange-500)'}}>
       <Icon name="star" size={size} strokeWidth={1.6} style={{fill:'var(--orange-500)'}}/>
     </span>
     <span className="w-700 t-14">{rating}</span>
-    {reviews!=null && <span className="faint t-13">({reviews} avis)</span>}
+    {reviews!=null && <span className="faint t-13">({reviews} {isAr?'تقييم':'avis'})</span>}
   </span>;
 }
 
@@ -88,8 +94,10 @@ function Ph({label, h=160, style}){
 
 /* validated-report seal */
 function ValidSeal({small}){
+  if(typeof useLang === 'function') useLang();
+  const isAr = (typeof NavI18n !== 'undefined') && NavI18n.lang === 'ar';
   return <span className="badge badge-verified" style={small?{}:{padding:'7px 12px',fontSize:13}}>
-    <Icon name="checkc" size={small?14:16}/> Rapport validé par l’enseignant
+    <Icon name="checkc" size={small?14:16}/> {isAr?'تقرير موثّق من طرف الأستاذ':'Rapport validé par l’enseignant'}
   </span>;
 }
 
@@ -143,15 +151,24 @@ function Stepper({steps, current}){
 /* ===== PROTOTYPE SCOPE LABELS ===== */
 /* "Fonctionnalité future" — marks marketplace-like elements not in the MVP */
 function FutureTag({children='Fonctionnalité future', icon='clock', style}){
-  return <span className="scope scope-future" style={style}><Icon name={icon} size={12}/>{children}</span>;
+  if(typeof useLang === 'function') useLang();
+  const isAr = (typeof NavI18n !== 'undefined') && NavI18n.lang === 'ar';
+  const label = children === 'Fonctionnalité future' && isAr ? 'وظيفة مستقبلية' : children;
+  return <span className="scope scope-future" style={style}><Icon name={icon} size={12}/>{label}</span>;
 }
 /* "Données démo" — marks illustrative ratings / testimonials */
-function DemoTag({children='Données démo', style}){
-  return <span className="scope scope-demo" style={style}><span className="dot"></span>{children}</span>;
+function DemoTag({children, style}){
+  if(typeof useLang === 'function') useLang();
+  const isAr = (typeof NavI18n !== 'undefined') && NavI18n.lang === 'ar';
+  const label = children !== undefined ? children : (isAr?'بيانات تجريبيّة':'Données démo');
+  return <span className="scope scope-demo" style={style}><span className="dot"></span>{label}</span>;
 }
 /* privacy reassurance strip */
-function PrivacyNote({children='Données élève privées — visibles uniquement par l’enseignant et le parent autorisé.', style}){
-  return <div className="privacy" style={style}><Icon name="lock" size={15}/><span>{children}</span></div>;
+function PrivacyNote({children, style}){
+  if(typeof useLang === 'function') useLang();
+  const isAr = (typeof NavI18n !== 'undefined') && NavI18n.lang === 'ar';
+  const label = children !== undefined ? children : (isAr?'بيانات التّلميذ خاصّة — مرئيّة فقط للأستاذ والوالد المُرخَّص له.':'Données élève privées — visibles uniquement par l’enseignant et le parent autorisé.');
+  return <div className="privacy" style={style}><Icon name="lock" size={15}/><span>{label}</span></div>;
 }
 /* time-saving microcopy */
 function TimeSave({children, icon='clock', style}){

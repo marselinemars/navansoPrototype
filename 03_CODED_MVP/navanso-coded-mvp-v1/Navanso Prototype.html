@@ -20,28 +20,28 @@
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 <script type="text/babel" src="navanso/data.jsx?v=33"></script>
-<script type="text/babel" src="navanso/i18n.jsx?v=1"></script>
+<script type="text/babel" src="navanso/i18n.jsx?v=7"></script>
 <script type="text/babel" src="navanso/icons.jsx?v=33"></script>
-<script type="text/babel" src="navanso/ui.jsx?v=33"></script>
+<script type="text/babel" src="navanso/ui.jsx?v=45"></script>
 <script type="text/babel" src="navanso/marketing.jsx?v=40"></script>
 <script type="text/babel" src="navanso/marketing2.jsx?v=33"></script>
-<script type="text/babel" src="navanso/parent.jsx?v=36"></script>
-<script type="text/babel" src="navanso/parent2.jsx?v=33"></script>
-<script type="text/babel" src="navanso/parent-report.jsx?v=35"></script>
-<script type="text/babel" src="navanso/tutor.jsx?v=34"></script>
-<script type="text/babel" src="navanso/tutor1b.jsx?v=36"></script>
-<script type="text/babel" src="navanso/tutor2.jsx?v=37"></script>
-<script type="text/babel" src="navanso/tutor3.jsx?v=33"></script>
-<script type="text/babel" src="navanso/messages.jsx?v=33"></script>
-<script type="text/babel" src="navanso/sessions.jsx?v=33"></script>
-<script type="text/babel" src="navanso/planning.jsx?v=33"></script>
-<script type="text/babel" src="navanso/parent-home.jsx?v=33"></script>
-<script type="text/babel" src="navanso/create-forms.jsx?v=33"></script>
-<script type="text/babel" src="navanso/todos.jsx?v=33"></script>
-<script type="text/babel" src="navanso/reports-batch.jsx?v=33"></script>
-<script type="text/babel" src="navanso/students-list.jsx?v=33"></script>
-<script type="text/babel" src="navanso/payments.jsx?v=36"></script>
-<script type="text/babel" src="navanso/shortlist.jsx?v=36"></script>
+<script type="text/babel" src="navanso/parent.jsx?v=41"></script>
+<script type="text/babel" src="navanso/parent2.jsx?v=41"></script>
+<script type="text/babel" src="navanso/parent-report.jsx?v=43"></script>
+<script type="text/babel" src="navanso/tutor.jsx?v=49"></script>
+<script type="text/babel" src="navanso/tutor1b.jsx?v=51"></script>
+<script type="text/babel" src="navanso/tutor2.jsx?v=49"></script>
+<script type="text/babel" src="navanso/tutor3.jsx?v=45"></script>
+<script type="text/babel" src="navanso/messages.jsx?v=51"></script>
+<script type="text/babel" src="navanso/sessions.jsx?v=51"></script>
+<script type="text/babel" src="navanso/planning.jsx?v=51"></script>
+<script type="text/babel" src="navanso/parent-home.jsx?v=51"></script>
+<script type="text/babel" src="navanso/create-forms.jsx?v=45"></script>
+<script type="text/babel" src="navanso/todos.jsx?v=51"></script>
+<script type="text/babel" src="navanso/reports-batch.jsx?v=45"></script>
+<script type="text/babel" src="navanso/students-list.jsx?v=45"></script>
+<script type="text/babel" src="navanso/payments.jsx?v=45"></script>
+<script type="text/babel" src="navanso/shortlist.jsx?v=41"></script>
 <script type="text/babel" data-presets="react">
 /* NAVANSO — App router + prototype navigation chrome (inlined so it is never
    dropped when many instances boot at once, e.g. the screens canvas) */
@@ -83,8 +83,97 @@ const SCREENS = {
 };
 const FLOW = ['landing','parent-search','tutor-profile','inquiry','dashboard','messages','thread','group-detail','session-entry','student-profile','report-gen','parent-report','parent-home'];
 const GROUPS = ['Vitrine','Parent','Enseignant'];
+const APP_AR = {
+  groups:{Vitrine:'الواجهة', Parent:'الوالد', Enseignant:'الأستاذ'},
+  screens:{
+    landing:'الرئيسية',
+    'parent-search':'بحث الوالد',
+    shortlist:'قائمتي المختصرة',
+    'tutor-profile':'ملف الأستاذ',
+    inquiry:'طلب مكان',
+    'parent-home':'فضاء الوالد',
+    'parent-thread':'محادثة الوالد',
+    'parent-report':'تقرير الوالد',
+    'whatsapp-share':'مشاركة WhatsApp',
+    'tutor-onboarding':'إنشاء الملف',
+    dashboard:'لوحة التحكم',
+    groups:'الأفواج',
+    'group-detail':'تفاصيل الفوج',
+    'create-group':'فوج جديد',
+    'add-student':'إضافة تلميذ',
+    students:'تلاميذي',
+    'student-profile':'ملف التلميذ',
+    attendance:'تسجيل الحضور',
+    'session-entry':'إدخال الحصة',
+    assessment:'تقييم',
+    'report-gen':'إعداد تقرير',
+    messages:'الرسائل',
+    thread:'المحادثة',
+    'group-broadcast':'رسالة إلى الفوج',
+    todos:'مهامي',
+    planning:'الجدول',
+    'session-plan':'برمجة حصة',
+    'reports-batch':'تقارير دفعة',
+    reports:'التقارير',
+    payments:'المدفوعات',
+    pricing:'الأسعار',
+    roadmap:'الرؤية',
+  },
+  ui:{
+    comingTitle:'شاشة قادمة',
+    comingText:'هذا القسم جزء من خارطة طريق Navanso. يركّز النموذج الحالي على حلقة المتابعة بين الأستاذ والوالد.',
+    dashboard:'لوحة التحكم',
+    vision:'عرض الرؤية',
+    protoTitle:'هذا النموذج يحاكي المسار الرئيسي في Navanso',
+    proto:'نموذج تجريبي',
+    protoSub:'— مسار رئيسي محاكى',
+    menuHelp:'اتبع قصة العرض باستعمال ← →، أو انتقل إلى أي شاشة من الأسفل.',
+    mobile:'هاتف',
+    allScreens:'عرض كل الشاشات (canvas)',
+    close:'إغلاق',
+    screens:'الشاشات',
+    tutorSpace:'فضاء الأستاذ',
+    privateZone:'هذه المنطقة خاصة. سجّل الدخول للمتابعة.',
+    demoMode:'وضع تجريبي',
+    demoText:'يحاكي النموذج أستاذة واحدة. اضغط أدناه للدخول باسم السيدة أمينة بلقاسم.',
+    password:'كلمة المرور',
+    continueAmina:'المتابعة باسم السيدة أمينة',
+    welcome:'مرحبا السيدة أمينة',
+    backHome:'العودة إلى الرئيسية',
+    noProfile:'ليس لديك ملف بعد؟',
+    createProfile:'إنشاء ملف',
+  }
+};
+function appIsAr(){ return typeof NavI18n !== 'undefined' && NavI18n.lang === 'ar'; }
+function appUi(k){ return appIsAr() ? (APP_AR.ui[k] || k) : ({
+  comingTitle:'Écran à venir',
+  comingText:'Cette section fait partie de la feuille de route Navanso. Le prototype actuel se concentre sur la boucle de suivi enseignant–parent.',
+  dashboard:'Tableau de bord',
+  vision:'Voir la vision',
+  protoTitle:'Ce prototype simule le parcours principal de Navanso',
+  proto:'Prototype expérimental',
+  protoSub:'— parcours principal simulé',
+  menuHelp:'Suivez l’histoire de démo avec ← →, ou sautez à n’importe quel écran ci-dessous.',
+  mobile:'mobile',
+  allScreens:'Voir tous les écrans (canvas)',
+  close:'Fermer',
+  screens:'Écrans',
+  tutorSpace:'Espace enseignant',
+  privateZone:'Cette zone est privée. Connectez-vous pour continuer.',
+  demoMode:'Mode démo',
+  demoText:'Le prototype simule un seul enseignant. Cliquez ci-dessous pour entrer en tant que Mme Amina Belkacem.',
+  password:'Mot de passe',
+  continueAmina:'Continuer en tant que Mme Amina',
+  welcome:'Bienvenue Mme Amina',
+  backHome:"← Retour à l'accueil",
+  noProfile:'Pas encore de profil ?',
+  createProfile:'Créer un profil',
+}[k] || k); }
+function screenTitle(id){ return appIsAr() ? (APP_AR.screens[id] || SCREENS[id]?.t || id) : (SCREENS[id]?.t || id); }
+function groupTitle(grp){ return appIsAr() ? (APP_AR.groups[grp] || grp) : grp; }
 
 function App(){
+  if(typeof useLang === 'function') useLang();
   const embed = new URLSearchParams(location.search).has('embed');
   const parse = ()=>{
     const h = (location.hash||'').replace(/^#/,'');
@@ -115,19 +204,19 @@ function App(){
   const needsAuth = SCREENS[screen].grp==='Enseignant' && !isAuthed;
 
   return <div style={{height:'100vh',display:'flex',flexDirection:'column'}}>
-    <div className="app-scroll scroll" style={{flex:1,overflowY:'auto',overflowX:'hidden'}} data-screen-label={SCREENS[screen].t}>
+    <div className="app-scroll scroll" style={{flex:1,overflowY:'auto',overflowX:'hidden'}} data-screen-label={screenTitle(screen)}>
       {needsAuth ? <LoginOverlay go={go} intended={screen} intendedParam={param}/> :
       Comp? <Comp go={go} id={param} param={param} embed={embed}/> : <div className="col center" style={{minHeight:'100%',gap:16,padding:40,textAlign:'center'}}>
         <div className="icn" style={{width:60,height:60,borderRadius:18,background:'var(--blue-50)',color:'var(--blue-700)',display:'grid',placeItems:'center'}}><Icon name="grid" size={28}/></div>
-        <div className="col gap-6" style={{maxWidth:380}}><h2 style={{fontSize:22}}>Écran à venir</h2><p className="muted t-15 lh-14">Cette section fait partie de la feuille de route Navanso. Le prototype actuel se concentre sur la boucle de suivi enseignant–parent.</p></div>
-        <div className="row gap-10"><Btn variant="ghost" icon="arrowl" onClick={()=>go('dashboard')}>Tableau de bord</Btn><Btn variant="primary" iconR="arrow" onClick={()=>go('roadmap')}>Voir la vision</Btn></div>
+        <div className="col gap-6" style={{maxWidth:380}}><h2 style={{fontSize:22}}>{appUi('comingTitle')}</h2><p className="muted t-15 lh-14">{appUi('comingText')}</p></div>
+        <div className="row gap-10"><Btn variant="ghost" icon="arrowl" onClick={()=>go('dashboard')}>{appUi('dashboard')}</Btn><Btn variant="primary" iconR="arrow" onClick={()=>go('roadmap')}>{appUi('vision')}</Btn></div>
       </div>}
     </div>
 
     {!embed && menu && <div onClick={()=>setMenu(false)} style={{position:'fixed',inset:0,background:'rgba(16,24,40,.4)',backdropFilter:'blur(2px)',zIndex:90}}></div>}
-    {!embed && <div className="proto-pill" title="Ce prototype simule le parcours principal de Navanso">
+    {!embed && <div className="proto-pill" title={appUi('protoTitle')}>
       <span className="pdot"></span>
-      <span>Prototype expérimental <span className="sub">— parcours principal simulé</span></span>
+      <span>{appUi('proto')} <span className="sub">{appUi('protoSub')}</span></span>
     </div>}
     {!embed && <div style={{position:'fixed',right:20,bottom:20,zIndex:100,display:'flex',flexDirection:'column',alignItems:'flex-end',gap:12}}>
       {menu && <div className="card screen-anim" style={{width:340,padding:16,borderRadius:18,boxShadow:'var(--sh-4)',maxHeight:'72vh',overflowY:'auto'}}>
@@ -136,21 +225,21 @@ function App(){
           <button className="btn btn-ghost btn-icon btn-sm" onClick={()=>setMenu(false)}><Icon name="x" size={16}/></button>
         </div>
         <div className="card-flat" style={{padding:'10px 12px',borderRadius:11,background:'var(--blue-50)',border:'none',marginBottom:14}}>
-          <p className="t-12 lh-14" style={{color:'var(--blue-800)'}}>Suivez l’histoire de démo avec <b>← →</b>, ou sautez à n’importe quel écran ci-dessous.</p>
+          <p className="t-12 lh-14" style={{color:'var(--blue-800)'}}>{appUi('menuHelp')}</p>
         </div>
         {GROUPS.map(grp=><div key={grp} style={{marginBottom:12}}>
-          <div className="nav-l" style={{padding:'0 4px 8px'}}>{grp}</div>
+          <div className="nav-l" style={{padding:'0 4px 8px'}}>{groupTitle(grp)}</div>
           <div className="col gap-3">
             {Object.entries(SCREENS).filter(([,v])=>v.grp===grp).map(([id,v])=>
               <button key={id} className={`nav-i ${screen===id?'on':''}`} style={{width:'100%'}} onClick={()=>go(id)}>
                 <Icon name={v.phone?'phone':grp==='Vitrine'?'home':grp==='Parent'?'heart':'dash'} size={17}/>
-                <span className="grow" style={{textAlign:'left'}}>{v.t}</span>
-                {v.phone&&<span className="chip chip-gray" style={{fontSize:10,padding:'2px 6px'}}>mobile</span>}
+                <span className="grow" style={{textAlign:'left'}}>{screenTitle(id)}</span>
+                {v.phone&&<span className="chip chip-gray" style={{fontSize:10,padding:'2px 6px'}}>{appUi('mobile')}</span>}
               </button>)}
           </div>
         </div>)}
         <div className="hr" style={{margin:'4px 0 12px'}}></div>
-        <a className="row gap-8 t-13 w-600" style={{color:'var(--blue-700)',cursor:'pointer',padding:'2px 4px'}} href="Navanso Screens.html"><Icon name="grid" size={16}/>Voir tous les écrans (canvas)</a>
+        <a className="row gap-8 t-13 w-600" style={{color:'var(--blue-700)',cursor:'pointer',padding:'2px 4px'}} href="Navanso Screens.html"><Icon name="grid" size={16}/>{appUi('allScreens')}</a>
       </div>}
 
       <div className="row gap-8">
@@ -160,7 +249,7 @@ function App(){
           <button className="btn btn-ghost btn-icon btn-sm" style={{borderRadius:99}} onClick={()=>fi<FLOW.length-1&&go(FLOW[fi+1])} disabled={fi>=FLOW.length-1}><Icon name="arrow" size={16}/></button>
         </div>}
         <button className="btn btn-primary" style={{borderRadius:99,boxShadow:'var(--sh-4)',padding:'12px 18px'}} onClick={()=>setMenu(m=>!m)}>
-          <Icon name={menu?'x':'menu'} size={18}/>{menu?'Fermer':'Écrans'}
+          <Icon name={menu?'x':'menu'} size={18}/>{menu?appUi('close'):appUi('screens')}
         </button>
       </div>
     </div>}
@@ -168,29 +257,30 @@ function App(){
 }
 
 function LoginOverlay({go, intended, intendedParam}){
+  if(typeof useLang === 'function') useLang();
   return <div className="screen-anim" style={{minHeight:'100%',display:'flex',alignItems:'center',justifyContent:'center',
     background:'radial-gradient(800px 500px at 50% -10%, var(--blue-50), var(--bg) 60%)',padding:'40px 16px'}}>
     <div className="card pad-24 col gap-16" style={{maxWidth:440,width:'100%',boxShadow:'var(--sh-3)'}}>
       <div className="row gap-12">
         <LogoMark size={42}/>
-        <div className="col"><h2 style={{fontSize:22}}>Espace enseignant</h2>
-          <span className="muted t-13">Cette zone est privée. Connectez-vous pour continuer.</span></div>
+        <div className="col"><h2 style={{fontSize:22}}>{appUi('tutorSpace')}</h2>
+          <span className="muted t-13">{appUi('privateZone')}</span></div>
       </div>
       <div className="card-flat" style={{padding:14,borderRadius:12,background:'var(--blue-50)',border:'1px solid var(--blue-100)'}}>
-        <span className="row gap-8 w-700 t-13" style={{color:'var(--blue-800)'}}><Icon name="user" size={15}/>Mode démo</span>
-        <p className="t-13 lh-14" style={{color:'var(--blue-900)',marginTop:6}}>Le prototype simule un seul enseignant. Cliquez ci-dessous pour entrer en tant que Mme Amina Belkacem.</p>
+        <span className="row gap-8 w-700 t-13" style={{color:'var(--blue-800)'}}><Icon name="user" size={15}/>{appUi('demoMode')}</span>
+        <p className="t-13 lh-14" style={{color:'var(--blue-900)',marginTop:6}}>{appUi('demoText')}</p>
       </div>
       <Field label="Email"><input className="input" defaultValue="amina.belkacem@navanso.dz" disabled style={{opacity:.7}}/></Field>
-      <Field label="Mot de passe"><input className="input" type="password" defaultValue="••••••••" disabled style={{opacity:.7}}/></Field>
+      <Field label={appUi('password')}><input className="input" type="password" defaultValue="••••••••" disabled style={{opacity:.7}}/></Field>
       <Btn variant="primary" icon="check" block onClick={()=>{
         NavAuth.login();
         // navigate to intended screen after a tick so the useAuth subscriber fires
         setTimeout(()=>{ if(intended) go(intended, intendedParam); }, 30);
-        navToast('Bienvenue Mme Amina','green');
-      }}>Continuer en tant que Mme Amina</Btn>
+        navToast(appUi('welcome'),'green');
+      }}>{appUi('continueAmina')}</Btn>
       <div className="row between" style={{marginTop:4}}>
-        <a className="t-13 w-600" style={{color:'var(--blue-700)',cursor:'pointer'}} onClick={()=>go('landing')}>← Retour à l'accueil</a>
-        <span className="faint t-13">Pas encore de profil ? <a style={{color:'var(--blue-700)',cursor:'pointer',fontWeight:600}} onClick={()=>{NavAuth.login(); setTimeout(()=>go('tutor-onboarding'),30);}}>Créer un profil</a></span>
+        <a className="t-13 w-600" style={{color:'var(--blue-700)',cursor:'pointer'}} onClick={()=>go('landing')}>{appUi('backHome')}</a>
+        <span className="faint t-13">{appUi('noProfile')} <a style={{color:'var(--blue-700)',cursor:'pointer',fontWeight:600}} onClick={()=>{NavAuth.login(); setTimeout(()=>go('tutor-onboarding'),30);}}>{appUi('createProfile')}</a></span>
       </div>
     </div>
   </div>;

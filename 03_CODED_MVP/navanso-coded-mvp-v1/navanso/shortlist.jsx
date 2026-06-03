@@ -3,42 +3,41 @@
    before deciding. This screen surfaces that real behavior. */
 
 function Shortlist({go}){
-  useStore();
+  useStore(); useLang();
   const isMobile = useIsNarrow();
   const ids = Nav.shortlistAll();
   const tutors = ids.map(id=>Nav.tutorById(id)).filter(Boolean);
   const empty = tutors.length===0;
+  const isAr = NavI18n.lang==='ar';
 
   const rows = [
-    {key:'price',    label:'Tarif',         fn:t=>t.price?`${t.price.toLocaleString('fr-FR')} DZD / ${t.priceUnit||'mois'}`:'—'},
-    {key:'places',   label:'Places',        fn:t=>t.places>0?`${t.places} disponible${t.places>1?'s':''}`:'Complet'},
-    {key:'capacity', label:'Taille max',    fn:t=>`${t.cap} élèves`},
-    {key:'mode',     label:'Format',        fn:t=>t.mode||'—'},
-    {key:'commune',  label:'Localisation',  fn:t=>t.commune||t.loc||'—'},
-    {key:'rating',   label:'Note',          fn:t=>`${t.rating} (${t.reviews} avis)`},
-    {key:'trial',    label:'Séance d\'essai',fn:t=>t.trial?'✓ Oui':'—'},
+    {key:'price',    label:t('sl.row.price'),    fn:tu=>tu.price?`${tu.price.toLocaleString('fr-FR')} DZD / ${tu.priceUnit||(isAr?'شهر':'mois')}`:'—'},
+    {key:'places',   label:t('sl.row.places'),   fn:tu=>tu.places>0?(isAr?`${tu.places} متوفّر${tu.places>1?'ة':''}`:`${tu.places} disponible${tu.places>1?'s':''}`):t('sl.row.full')},
+    {key:'capacity', label:t('sl.row.capacity'), fn:tu=>isAr?`${tu.cap} تلاميذ`:`${tu.cap} élèves`},
+    {key:'mode',     label:t('sl.row.format'),   fn:tu=>txData?txData(tu.mode||'—'):(tu.mode||'—')},
+    {key:'commune',  label:t('sl.row.location'), fn:tu=>txData?txData(tu.commune||tu.loc||'—'):(tu.commune||tu.loc||'—')},
+    {key:'rating',   label:t('sl.row.rating'),   fn:tu=>isAr?`${tu.rating} (${tu.reviews} تقييم)`:`${tu.rating} (${tu.reviews} avis)`},
+    {key:'trial',    label:t('sl.row.trial'),    fn:tu=>tu.trial?(isAr?'✓ نعم':'✓ Oui'):'—'},
   ];
 
   return <div className="screen-anim" style={{minHeight:'100%',background:'var(--bg)'}}>
     <MarketingNav go={go} active="parent-search"/>
     <div style={{maxWidth:1100,margin:'0 auto',padding:isMobile?'20px 16px 60px':'32px 40px 80px'}}>
       <button className="btn btn-ghost btn-sm" onClick={()=>go('parent-search')} style={{marginBottom:14}}>
-        <Icon name="arrowl" size={16}/>Retour à la recherche
+        <Icon name="arrowl" size={16}/>{t('sl.back')}
       </button>
       <div className="col gap-6" style={{marginBottom:isMobile?20:28}}>
-        <span className="eyebrow" style={{color:'var(--green-700)'}}>Présélection</span>
-        <h1 style={{fontSize:isMobile?26:34,lineHeight:1.1}}>Mes enseignants sauvegardés</h1>
-        <p className="muted t-15 lh-15" style={{maxWidth:640}}>
-          Comparez vos candidats avant de décider. Vous pouvez d'abord en appeler plusieurs via WhatsApp, puis demander une séance d'essai chez celui qui vous convient.
-        </p>
+        <span className="eyebrow" style={{color:'var(--green-700)'}}>{t('sl.eyebrow')}</span>
+        <h1 style={{fontSize:isMobile?26:34,lineHeight:1.1}}>{t('sl.title')}</h1>
+        <p className="muted t-15 lh-15" style={{maxWidth:640}}>{t('sl.desc')}</p>
       </div>
 
       {empty ? (
         <div className="card pad-24 col center" style={{gap:14,textAlign:'center',padding:'56px 24px'}}>
           <Icon name="heart" size={32} style={{color:'var(--faint)'}}/>
-          <span className="w-700 t-16">Aucun enseignant sauvegardé</span>
-          <span className="muted t-14" style={{maxWidth:340}}>Touchez le cœur sur la carte d'un enseignant pour l'ajouter à votre présélection.</span>
-          <Btn variant="green" icon="search" onClick={()=>go('parent-search')}>Trouver un enseignant</Btn>
+          <span className="w-700 t-16">{isAr?'لا يوجد أساتذة محفوظون':'Aucun enseignant sauvegardé'}</span>
+          <span className="muted t-14" style={{maxWidth:340}}>{isAr?'المس القلب على بطاقة الأستاذ لإضافته إلى قائمتك المختصرة.':'Touchez le cœur sur la carte d\'un enseignant pour l\'ajouter à votre présélection.'}</span>
+          <Btn variant="green" icon="search" onClick={()=>go('parent-search')}>{isAr?'البحث عن أستاذ':'Trouver un enseignant'}</Btn>
         </div>
       ) : (
         <div className="col gap-18">
@@ -50,8 +49,8 @@ function Shortlist({go}){
                   <div className="row gap-10" style={{marginBottom:12}}>
                     <Avatar initials={t.initials} cls={t.av} size={42}/>
                     <div className="col" style={{gap:1,minWidth:0,flex:1}}>
-                      <span className="w-700 t-15">{t.name}</span>
-                      <span className="faint t-12">{t.subject} · {t.level}</span>
+                      <span className="w-700 t-15">{isAr?txData(t.name):t.name}</span>
+                      <span className="faint t-12">{txData?txData(t.subject):t.subject} · {txData?txData(t.level):t.level}</span>
                     </div>
                   </div>
                   <div className="col">
@@ -63,11 +62,11 @@ function Shortlist({go}){
                     ))}
                   </div>
                   <div className="col gap-8" style={{marginTop:12}}>
-                    <Btn variant="green" size="sm" icon="wa" block onClick={()=>go('inquiry', t.id)}>Contacter</Btn>
-                    <Btn variant="ghost" size="sm" iconR="arrow" block onClick={()=>go('tutor-profile', t.id)}>Voir profil</Btn>
+                    <Btn variant="green" size="sm" icon="wa" block onClick={()=>go('inquiry', t.id)}>{t('sl.contact')}</Btn>
+                    <Btn variant="ghost" size="sm" iconR="arrow" block onClick={()=>go('tutor-profile', t.id)}>{t('sl.profile')}</Btn>
                     <button className="t-12 w-700" style={{background:'none',border:'none',color:'var(--alert)',cursor:'pointer',padding:'4px 0'}}
-                      onClick={()=>{Nav.shortlistToggle(t.id); navToast('Retiré de votre présélection','blue');}}>
-                      Retirer de la présélection
+                      onClick={()=>{Nav.shortlistToggle(t.id); navToast(t('tc.toast.removed'),'blue');}}>
+                      {isAr?'إزالة من القائمة المختصرة':'Retirer de la présélection'}
                     </button>
                   </div>
                 </div>
@@ -85,8 +84,8 @@ function Shortlist({go}){
                         <div className="row gap-10">
                           <Avatar initials={t.initials} cls={t.av} size={36}/>
                           <div className="col" style={{gap:1,minWidth:0}}>
-                            <span className="w-700 t-14">{t.name}</span>
-                            <span className="faint t-12">{t.subject} · {t.level}</span>
+                            <span className="w-700 t-14">{isAr?txData(t.name):t.name}</span>
+                            <span className="faint t-12">{txData?txData(t.subject):t.subject} · {txData?txData(t.level):t.level}</span>
                           </div>
                         </div>
                       </div>
@@ -102,11 +101,11 @@ function Shortlist({go}){
                     <td></td>
                     {tutors.map(t=> <td key={t.id}>
                       <div className="col gap-7" style={{padding:'10px 0'}}>
-                        <Btn variant="green" size="sm" icon="wa" onClick={()=>go('inquiry', t.id)}>Contacter</Btn>
-                        <Btn variant="ghost" size="sm" iconR="arrow" onClick={()=>go('tutor-profile', t.id)}>Voir profil</Btn>
+                        <Btn variant="green" size="sm" icon="wa" onClick={()=>go('inquiry', t.id)}>{t('sl.contact')}</Btn>
+                        <Btn variant="ghost" size="sm" iconR="arrow" onClick={()=>go('tutor-profile', t.id)}>{t('sl.profile')}</Btn>
                         <button className="t-12 w-700" style={{background:'none',border:'none',color:'var(--alert)',cursor:'pointer',padding:'4px 0'}}
-                          onClick={()=>{Nav.shortlistToggle(t.id); navToast('Retiré de votre présélection','blue');}}>
-                          Retirer
+                          onClick={()=>{Nav.shortlistToggle(t.id); navToast(t('tc.toast.removed'),'blue');}}>
+                          {isAr?'إزالة':'Retirer'}
                         </button>
                       </div>
                     </td>)}
@@ -120,16 +119,14 @@ function Shortlist({go}){
           <div className="card pad-18 row gap-12" style={{background:'var(--blue-50)',border:'1px solid var(--blue-100)',alignItems:'flex-start'}}>
             <div className="icn" style={{width:36,height:36,borderRadius:10,background:'#fff',color:'var(--blue-700)',display:'grid',placeItems:'center',flex:'none'}}><Icon name="wa" size={17}/></div>
             <div className="col" style={{gap:4}}>
-              <span className="w-700 t-14" style={{color:'var(--blue-800)'}}>Conseil — appelez d'abord</span>
-              <p className="t-13 lh-14" style={{color:'var(--blue-900)'}}>
-                Beaucoup de parents préfèrent appeler 2 ou 3 enseignants par WhatsApp avant de choisir. Le bouton « Contacter » envoie une demande structurée à l'enseignant — la conversation peut continuer sur WhatsApp.
-              </p>
+              <span className="w-700 t-14" style={{color:'var(--blue-800)'}}>{t('sl.tip.title')}</span>
+              <p className="t-13 lh-14" style={{color:'var(--blue-900)'}}>{t('sl.tip.desc')}</p>
             </div>
           </div>
 
           <div className="row gap-10 wrap" style={{justifyContent:'flex-end'}}>
-            <Btn variant="ghost" onClick={()=>{Nav.shortlistClear(); navToast('Présélection vidée','blue'); go('parent-search');}}>Tout effacer</Btn>
-            <Btn variant="primary" icon="search" onClick={()=>go('parent-search')}>Continuer à explorer</Btn>
+            <Btn variant="ghost" onClick={()=>{Nav.shortlistClear(); navToast(isAr?'تمّ تفريغ القائمة المختصرة':'Présélection vidée','blue'); go('parent-search');}}>{isAr?'مسح الكلّ':'Tout effacer'}</Btn>
+            <Btn variant="primary" icon="search" onClick={()=>go('parent-search')}>{isAr?'متابعة الاستكشاف':'Continuer à explorer'}</Btn>
           </div>
         </div>
       )}

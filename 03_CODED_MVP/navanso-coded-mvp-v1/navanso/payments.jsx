@@ -5,21 +5,27 @@
 function fmtMonthFr(month){
   if(!month) return '';
   const [y,m] = month.split('-');
-  const names = ['','janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  const isAr = typeof NavI18n !== 'undefined' && NavI18n.lang === 'ar';
+  const names = isAr
+    ? ['','جانفي','فيفري','مارس','أفريل','ماي','جوان','جويلية','أوت','سبتمبر','أكتوبر','نوفمبر','ديسمبر']
+    : ['','janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
   return `${names[+m]||m} ${y}`;
 }
-function fmtMoney(n){ if(n==null||isNaN(n)) return '—'; return n.toLocaleString('fr-FR').replace(/ /g,' ')+' DZD'; }
+function fmtMoney(n){ if(n==null||isNaN(n)) return '—'; const isAr = typeof NavI18n !== 'undefined' && NavI18n.lang === 'ar'; return n.toLocaleString('fr-FR').replace(/ /g,' ')+(isAr?' دج':' DZD'); }
 function digits(s){ return (s||'').replace(/[^0-9]/g,''); }
 
 function PaymentChip({status}){
-  if(status==='paid')    return <span className="chip chip-green w-700" style={{fontSize:11}}><Icon name="checkc" size={11}/>Payé</span>;
-  if(status==='overdue') return <span className="chip chip-weak w-700" style={{fontSize:11,background:'rgba(216,99,46,.15)',color:'var(--alert)'}}>⚠ En retard</span>;
+  const isAr = typeof NavI18n !== 'undefined' && NavI18n.lang === 'ar';
+  if(status==='paid')    return <span className="chip chip-green w-700" style={{fontSize:11}}><Icon name="checkc" size={11}/>{isAr?'مدفوع':'Payé'}</span>;
+  if(status==='overdue') return <span className="chip chip-weak w-700" style={{fontSize:11,background:'rgba(216,99,46,.15)',color:'var(--alert)'}}>⚠ {isAr?'متأخّر':'En retard'}</span>;
   if(status==='missing') return <span className="chip chip-gray" style={{fontSize:11}}>—</span>;
-  return <span className="chip chip-orange w-700" style={{fontSize:11}}>En attente</span>;
+  return <span className="chip chip-orange w-700" style={{fontSize:11}}>{isAr?'في الانتظار':'En attente'}</span>;
 }
 
 function Payments({go}){
   useStore();
+  useLang();
+  const isAr = NavI18n.lang === 'ar';
   const isMobile = useIsMobile();
   const allMonths = [...new Set(Nav.paymentsAll().map(p=>p.month))].sort().reverse();
   const groups = Nav.groupsAll();
@@ -67,29 +73,31 @@ function Payments({go}){
     if(!r.parent?.phone) return;
     const due = fmtMoney(r.payment.amount);
     const fn = r.student.name.split(' ')[0];
-    const msg = `Bonjour ${r.parent.name}, petit rappel pour le paiement du mois de ${fmtMonthFr(month)} pour ${fn} (${due}). Merci !\n— ${NAV.tutor.short}`;
+    const msg = isAr
+      ? `السّلام عليكم ${txData(r.parent.name)}، تذكير صغير لدفع شهر ${fmtMonthFr(month)} ل${fn} (${due}). شكراً!\n— ${txData(NAV.tutor.short)}`
+      : `Bonjour ${r.parent.name}, petit rappel pour le paiement du mois de ${fmtMonthFr(month)} pour ${fn} (${due}). Merci !\n— ${NAV.tutor.short}`;
     window.open(`https://wa.me/${digits(r.parent.phone)}?text=${encodeURIComponent(msg)}`, '_blank');
-    navToast('Rappel WhatsApp ouvert','green');
+    navToast(isAr?'فُتح التّذكير على واتساب':'Rappel WhatsApp ouvert','green');
   };
 
   const markAllPaid = ()=>{
     const targets = rows.filter(r=>r.payment.status!=='paid');
     if(targets.length===0) return;
-    if(!confirm(`Marquer ${targets.length} élève${targets.length>1?'s':''} comme payé${targets.length>1?'s':''} pour ${fmtMonthFr(month)} ?`)) return;
+    if(!confirm(isAr?`تسجيل ${targets.length} تلميذ كمدفوع لشهر ${fmtMonthFr(month)}؟`:`Marquer ${targets.length} élève${targets.length>1?'s':''} comme payé${targets.length>1?'s':''} pour ${fmtMonthFr(month)} ?`)) return;
     targets.forEach(r=>{
       if(r.payment.id) Nav.markPaymentPaid(r.payment.id);
       else Nav.recordPayment({studentId:r.student.id, month, amount:r.payment.amount, method:'cash'});
     });
-    navToast(`${targets.length} paiement${targets.length>1?'s':''} enregistré${targets.length>1?'s':''}`,'green');
+    navToast(isAr?`تمّ تسجيل ${targets.length} دفعة`:`${targets.length} paiement${targets.length>1?'s':''} enregistré${targets.length>1?'s':''}`,'green');
   };
 
-  return <AppShell go={go} active="payments" title="Paiements"
-    crumbs={[{t:'Espace',go:()=>go('dashboard')},{t:'Paiements'}]}
-    actions={<Btn variant="primary" icon="check" onClick={markAllPaid} style={counts.paid===rows.length?{opacity:.5,pointerEvents:'none'}:{}}>Tout marquer payé</Btn>}>
+  return <AppShell go={go} active="payments" title={isAr?'المدفوعات':'Paiements'}
+    crumbs={[{t:isAr?'الفضاء':'Espace',go:()=>go('dashboard')},{t:isAr?'المدفوعات':'Paiements'}]}
+    actions={<Btn variant="primary" icon="check" onClick={markAllPaid} style={counts.paid===rows.length?{opacity:.5,pointerEvents:'none'}:{}}>{isAr?'تسجيل الكلّ كمدفوع':'Tout marquer payé'}</Btn>}>
     <div className="card pad-16 row gap-10 wrap" style={{marginBottom:18,background:'var(--blue-50)',border:'1px solid var(--blue-100)'}}>
       <Icon name="file" size={18} style={{color:'var(--blue-700)'}}/>
       <span className="t-14 w-600" style={{color:'var(--blue-800)',flex:'1 1 320px'}}>
-        Suivi simple des paiements mensuels. Les rappels s'ouvrent via WhatsApp avec un message prérempli. Les paiements en espèces (cash) restent l'option par défaut.
+        {isAr?'متابعة بسيطة للدّفع الشّهريّ. تُفتح التّذكيرات على واتساب بنصّ جاهز. الدّفع نقداً يبقى الخيار الافتراضيّ.':'Suivi simple des paiements mensuels. Les rappels s\'ouvrent via WhatsApp avec un message prérempli. Les paiements en espèces (cash) restent l\'option par défaut.'}
       </span>
     </div>
     <div style={{display:'grid',gridTemplateColumns:isMobile?'1fr':'1fr 300px',gap:20,alignItems:'start'}}>
@@ -97,31 +105,37 @@ function Payments({go}){
         {/* filters */}
         <div className="card pad-14 col gap-10">
           <div className="row gap-10 wrap" style={{alignItems:'center'}}>
-            <Field label="Mois">
+            <Field label={isAr?'الشّهر':'Mois'}>
               <select className="select" value={month} onChange={e=>setMonth(e.target.value)} style={{minWidth:170}}>
                 {allMonths.map(m=><option key={m} value={m}>{fmtMonthFr(m)}</option>)}
               </select>
             </Field>
-            <Field label="Groupe">
+            <Field label={isAr?'الفوج':'Groupe'}>
               <select className="select" value={groupId} onChange={e=>setGroupId(e.target.value)} style={{minWidth:200}}>
-                <option value="all">Tous les groupes</option>
+                <option value="all">{isAr?'كلّ الأفواج':'Tous les groupes'}</option>
                 {groups.map(g=><option key={g.id} value={g.id}>{g.name}</option>)}
               </select>
             </Field>
           </div>
           <div className="row gap-7 wrap">
-            {[['all','Tous',rows.length],['paid','Payés',counts.paid],['pending','En attente',counts.pending],['overdue','En retard',counts.overdue],['missing','Aucun',counts.missing]].map(([k,lab,n])=>
+            {[
+              ['all',isAr?'الكلّ':'Tous',rows.length],
+              ['paid',isAr?'مدفوع':'Payés',counts.paid],
+              ['pending',isAr?'في الانتظار':'En attente',counts.pending],
+              ['overdue',isAr?'متأخّر':'En retard',counts.overdue],
+              ['missing',isAr?'لا شيء':'Aucun',counts.missing]
+            ].map(([k,lab,n])=>
               <button key={k} className={`pick ${statusFilter===k?'on':''}`} onClick={()=>setStatusFilter(k)}>{lab} ({n})</button>)}
           </div>
         </div>
 
         {/* table */}
         {rows.length===0 ? (
-          <div className="card pad-24 col center" style={{gap:8,textAlign:'center'}}><span className="muted">Aucun paiement pour ce filtre.</span></div>
+          <div className="card pad-24 col center" style={{gap:8,textAlign:'center'}}><span className="muted">{isAr?'لا توجد دفعات لهذا الفلتر.':'Aucun paiement pour ce filtre.'}</span></div>
         ) : <div className="card" style={{overflow:'hidden'}}>
           <table className="tbl">
             <thead><tr>
-              <th>Élève</th><th>Groupe</th><th>Montant</th><th>Statut</th><th>Date paiement</th><th>Mode</th><th></th>
+              <th>{isAr?'التّلميذ':'Élève'}</th><th>{isAr?'الفوج':'Groupe'}</th><th>{isAr?'المبلغ':'Montant'}</th><th>{isAr?'الحالة':'Statut'}</th><th>{isAr?'تاريخ الدّفع':'Date paiement'}</th><th>{isAr?'الطّريقة':'Mode'}</th><th></th>
             </tr></thead>
             <tbody>
               {rows.map(r=>{
@@ -130,21 +144,21 @@ function Payments({go}){
                   <td>
                     <div className="row gap-10" style={{cursor:'pointer'}} onClick={()=>go('student-profile', r.student.id)}>
                       <Avatar initials={r.student.initials} cls={r.student.av} size={30}/>
-                      <div className="col" style={{gap:0}}><span className="w-600 t-13">{r.student.name}</span><span className="faint t-11">{r.parent?.name||'—'}</span></div>
+                      <div className="col" style={{gap:0}}><span className="w-600 t-13">{r.student.name}</span><span className="faint t-11">{isAr?txData(r.parent?.name):r.parent?.name||'—'}</span></div>
                     </div>
                   </td>
                   <td className="muted t-13">{r.group?.name.split('—')[0]?.trim()||'—'}</td>
                   <td className="w-700 t-13 tnum">{fmtMoney(r.payment.amount)}</td>
                   <td><PaymentChip status={r.payment.status}/></td>
                   <td className="muted t-13">{r.payment.paidAt ? fmtFr(r.payment.paidAt) : '—'}</td>
-                  <td className="muted t-13">{r.payment.method==='cash'?'Espèces':r.payment.method==='transfer'?'Virement':r.payment.method||'—'}</td>
+                  <td className="muted t-13">{r.payment.method==='cash'?(isAr?'نقداً':'Espèces'):r.payment.method==='transfer'?(isAr?'تحويل':'Virement'):r.payment.method||'—'}</td>
                   <td>
                     <div className="row gap-6" style={{justifyContent:'flex-end'}}>
                       {r.payment.status!=='paid'
-                        ? <Btn variant="green" size="sm" icon="check" onClick={()=>togglePaid(r)}>Marquer payé</Btn>
-                        : <Btn variant="ghost" size="sm" icon="arrowl" onClick={()=>togglePaid(r)}>Annuler</Btn>}
+                        ? <Btn variant="green" size="sm" icon="check" onClick={()=>togglePaid(r)}>{isAr?'تسجيل كمدفوع':'Marquer payé'}</Btn>
+                        : <Btn variant="ghost" size="sm" icon="arrowl" onClick={()=>togglePaid(r)}>{isAr?'إلغاء':'Annuler'}</Btn>}
                       {(r.payment.status==='overdue'||r.payment.status==='pending') && r.parent?.phone &&
-                        <Btn variant="ghost" size="sm" icon="wa" onClick={()=>sendReminder(r)}>Rappel</Btn>}
+                        <Btn variant="ghost" size="sm" icon="wa" onClick={()=>sendReminder(r)}>{isAr?'تذكير':'Rappel'}</Btn>}
                     </div>
                   </td>
                 </tr>;
@@ -157,24 +171,24 @@ function Payments({go}){
       {/* side: summary cards */}
       <div className="col gap-14" style={{position:'sticky',top:90}}>
         <div className="card pad-20 col gap-14">
-          <span className="eyebrow">Résumé · {fmtMonthFr(month)}</span>
+          <span className="eyebrow">{isAr?'ملخّص':'Résumé'} · {fmtMonthFr(month)}</span>
           <div className="col gap-10">
-            <div className="row between"><span className="muted t-13">Attendu</span><span className="w-700 t-15 tnum">{fmtMoney(expected)}</span></div>
-            <div className="row between"><span className="muted t-13">Encaissé</span><span className="w-700 t-15 tnum" style={{color:'var(--green-700)'}}>{fmtMoney(collected)}</span></div>
+            <div className="row between"><span className="muted t-13">{isAr?'المتوقَّع':'Attendu'}</span><span className="w-700 t-15 tnum">{fmtMoney(expected)}</span></div>
+            <div className="row between"><span className="muted t-13">{isAr?'المُحصَّل':'Encaissé'}</span><span className="w-700 t-15 tnum" style={{color:'var(--green-700)'}}>{fmtMoney(collected)}</span></div>
           </div>
           <div className="hr"></div>
           <div className="col gap-8">
-            <div className="row between"><span className="muted t-13">Payés</span><span className="w-700 t-15 tnum">{counts.paid}/{rows.length}</span></div>
+            <div className="row between"><span className="muted t-13">{isAr?'مدفوع':'Payés'}</span><span className="w-700 t-15 tnum">{counts.paid}/{rows.length}</span></div>
             <Bar pct={Math.round(counts.paid/(rows.length||1)*100)}/>
           </div>
           {(counts.overdue>0||counts.pending>0) && <div className="col gap-8" style={{paddingTop:4}}>
-            {counts.overdue>0 && <div className="row between"><span className="muted t-13">En retard</span><span className="w-700 t-15 tnum" style={{color:'var(--alert)'}}>{counts.overdue}</span></div>}
-            {counts.pending>0 && <div className="row between"><span className="muted t-13">En attente</span><span className="w-700 t-15 tnum" style={{color:'var(--orange-600)'}}>{counts.pending}</span></div>}
+            {counts.overdue>0 && <div className="row between"><span className="muted t-13">{isAr?'متأخّر':'En retard'}</span><span className="w-700 t-15 tnum" style={{color:'var(--alert)'}}>{counts.overdue}</span></div>}
+            {counts.pending>0 && <div className="row between"><span className="muted t-13">{isAr?'في الانتظار':'En attente'}</span><span className="w-700 t-15 tnum" style={{color:'var(--orange-600)'}}>{counts.pending}</span></div>}
           </div>}
         </div>
         <div className="card pad-16 col gap-8" style={{background:'var(--blue-50)',border:'1px solid var(--blue-100)'}}>
-          <span className="row gap-8 w-700 t-13" style={{color:'var(--blue-800)'}}><Icon name="shield" size={15}/>Confidentialité</span>
-          <span className="t-12 lh-14" style={{color:'var(--blue-900)'}}>Les montants ne sont visibles que par vous. Les parents ne voient pas la liste, seulement leurs propres paiements via leur lien privé (à venir).</span>
+          <span className="row gap-8 w-700 t-13" style={{color:'var(--blue-800)'}}><Icon name="shield" size={15}/>{isAr?'الخصوصيّة':'Confidentialité'}</span>
+          <span className="t-12 lh-14" style={{color:'var(--blue-900)'}}>{isAr?'المبالغ مرئيّة لك وحدك. لا يرى الوالدون القائمة، فقط دفعاتهم عبر رابط خاصّ (قريباً).':'Les montants ne sont visibles que par vous. Les parents ne voient pas la liste, seulement leurs propres paiements via leur lien privé (à venir).'}</span>
         </div>
       </div>
     </div>

@@ -228,6 +228,8 @@ function NavHero({go}){
    trinity composition later. Not rendered by Landing anymore.
    ============================================================ */
 function BrandBridge({isMobile}){
+  useLang();
+  const isAr = NavI18n.lang === 'ar';
   const avSize = isMobile ? 54 : 68;
   const markSize = isMobile ? 86 : 116;
   // The "card" widths are flexible — on mobile the three figures stack vertically.
@@ -239,14 +241,14 @@ function BrandBridge({isMobile}){
           <img src="assets/navanso-mark.png" alt="Navanso" style={{width:'86%',height:'86%',objectFit:'contain'}}/>
         </div>
         <span style={{fontFamily:'var(--font-d)',fontWeight:800,letterSpacing:'-.02em',fontSize:28,color:'var(--blue-700)'}}>Navanso</span>
-        <span style={{color:'var(--green-600)',fontWeight:600,fontSize:12}}>Nous progressons, ensemble.</span>
+        <span style={{color:'var(--green-600)',fontWeight:600,fontSize:12}}>{isAr?'نتقدّم معاً.':'Nous progressons, ensemble.'}</span>
       </div>
       {/* Vertical bridge: three rows with downward arrows */}
-      <BridgeFigure tone="green" label="Le parent" name="Mme Benali" avInitials="MB" avCls="av-g" caption="Reçoit le rapport" iconName="heart" size={avSize}/>
+      <BridgeFigure tone="green" label={isAr?'الوالد':'Le parent'} name={isAr?'السيدة بن علي':'Mme Benali'} avInitials="MB" avCls="av-g" caption={isAr?'يستلم التّقرير':'Reçoit le rapport'} iconName="heart" size={avSize}/>
       <Connector vertical/>
-      <BridgeFigure tone="orange" label="L'élève" name="Yacine, 4AM" avInitials="YB" avCls="av-o" caption="Au centre" iconName="users" size={avSize} central/>
+      <BridgeFigure tone="orange" label={isAr?'التّلميذ':"L'élève"} name={isAr?'ياسين، 4 متوسط':'Yacine, 4AM'} avInitials="YB" avCls="av-o" caption={isAr?'في المركز':'Au centre'} iconName="users" size={avSize} central/>
       <Connector vertical/>
-      <BridgeFigure tone="blue" label="L'enseignant" name="Mme Amina" avInitials="AB" avCls="av-b" caption="Envoie le rapport" iconName="user" size={avSize}/>
+      <BridgeFigure tone="blue" label={isAr?'الأستاذ':"L'enseignant"} name={isAr?'الأستاذة أمينة':'Mme Amina'} avInitials="AB" avCls="av-b" caption={isAr?'يرسل التّقرير':'Envoie le rapport'} iconName="user" size={avSize}/>
     </div>;
   }
   // Desktop: horizontal scene
@@ -257,15 +259,15 @@ function BrandBridge({isMobile}){
         <img src="assets/navanso-mark.png" alt="Navanso" style={{width:'86%',height:'86%',objectFit:'contain'}}/>
       </div>
       <span style={{fontFamily:'var(--font-d)',fontWeight:800,letterSpacing:'-.02em',fontSize:32,color:'var(--blue-700)',marginTop:6}}>Navanso</span>
-      <span style={{color:'var(--green-600)',fontWeight:600,fontSize:13}}>Nous progressons, ensemble.</span>
+      <span style={{color:'var(--green-600)',fontWeight:600,fontSize:13}}>{isAr?'نتقدّم معاً.':'Nous progressons, ensemble.'}</span>
     </div>
     {/* Horizontal trinity */}
     <div style={{display:'grid',gridTemplateColumns:'1fr auto 1fr auto 1fr',gap:0,alignItems:'center'}}>
-      <BridgeFigure tone="green"  label="Le parent"     name="Mme Benali" avInitials="MB" avCls="av-g" caption="Reçoit le rapport"  iconName="heart" size={avSize} align="right"/>
-      <Connector caption="Rapport · WhatsApp" direction="right" tone="green"/>
-      <BridgeFigure tone="orange" label="L'élève"      name="Yacine, 4AM" avInitials="YB" avCls="av-o" iconName="users" size={avSize} central/>
-      <Connector caption="Suivi · présence" direction="left" tone="blue"/>
-      <BridgeFigure tone="blue"   label="L'enseignant"  name="Mme Amina" avInitials="AB" avCls="av-b" caption="Envoie le rapport"  iconName="user" size={avSize} align="left"/>
+      <BridgeFigure tone="green"  label={isAr?'الوالد':'Le parent'}     name={isAr?'السيدة بن علي':'Mme Benali'} avInitials="MB" avCls="av-g" caption={isAr?'يستلم التّقرير':'Reçoit le rapport'}  iconName="heart" size={avSize} align="right"/>
+      <Connector caption={isAr?'تقرير · WhatsApp':'Rapport · WhatsApp'} direction="right" tone="green"/>
+      <BridgeFigure tone="orange" label={isAr?'التّلميذ':"L'élève"}      name={isAr?'ياسين، 4 متوسط':'Yacine, 4AM'} avInitials="YB" avCls="av-o" iconName="users" size={avSize} central/>
+      <Connector caption={isAr?'متابعة · حضور':'Suivi · présence'} direction="left" tone="blue"/>
+      <BridgeFigure tone="blue"   label={isAr?'الأستاذ':"L'enseignant"}  name={isAr?'الأستاذة أمينة':'Mme Amina'} avInitials="AB" avCls="av-b" caption={isAr?'يرسل التّقرير':'Envoie le rapport'}  iconName="user" size={avSize} align="left"/>
     </div>
   </div>;
 }

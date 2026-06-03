@@ -4,10 +4,12 @@
 
 function ReportsBatch({go, id}){
   useStore();
+  useLang();
+  const isAr = NavI18n.lang === 'ar';
   const isMobile = useIsMobile();
   const gid = id || (Nav.groupsAll()[0]||{}).id;
   const group = Nav.groupById(gid);
-  if(!group) return <AppShell go={go} active="report-gen" title="Rapports"><div className="card pad-24"><span className="muted">Groupe introuvable.</span></div></AppShell>;
+  if(!group) return <AppShell go={go} active="report-gen" title={isAr?'التّقارير':'Rapports'}><div className="card pad-24"><span className="muted">{isAr?'فوج غير موجود.':'Groupe introuvable.'}</span></div></AppShell>;
   const students = Nav.studentsByGroup(gid);
 
   // Selection state: default-select students whose status is "pending"
@@ -24,10 +26,16 @@ function ReportsBatch({go, id}){
 
   const buildDraft = (s)=>{
     const pts = pointsOf(s.id);
-    const improv = pts.resolved.map(p=>p.label.toLowerCase());
-    const actives = pts.active.map(p=>p.label.toLowerCase());
+    const improv = pts.resolved.map(p=>isAr?txData(p.label):p.label.toLowerCase());
+    const actives = pts.active.map(p=>isAr?txData(p.label):p.label.toLowerCase());
     const fn = s.name.split(' ')[0];
     const fl = (arr)=>{ if(!arr.length)return ''; if(arr.length===1)return arr[0]; return arr.slice(0,-1).join(', ')+' et '+arr[arr.length-1]; };
+    const fla = (arr)=>{ if(!arr.length)return ''; if(arr.length===1)return arr[0]; return arr.slice(0,-1).join('، ')+' و'+arr[arr.length-1]; };
+    if(isAr){
+      return `هذا الشّهر، ${fn} حضوره ${s.att}% وآخر علامة له ${s.result}.`
+        + (improv.length?` خبر سارّ: تطوّر في ${fla(improv)}.`:``)
+        + ` يبقى العمل على ${actives.length?fla(actives):'بعض النّقاط'}. تمارين قصيرة في البيت تساعد قبل الحصّة القادمة.`;
+    }
     return `Ce mois-ci, ${fn} a une présence de ${s.att}% et une dernière note de ${s.result}.`
       + (improv.length?` Bonne nouvelle : il/elle a progressé sur ${fl(improv)}.`:``)
       + ` Il reste à travailler ${actives.length?fl(actives):'quelques points'}. Quelques exercices courts à la maison aideront avant la prochaine séance.`;
@@ -40,7 +48,7 @@ function ReportsBatch({go, id}){
       next[sid] = buildDraft(s);
     });
     setGenerated(next);
-    navToast(`${selected.size} brouillon${selected.size>1?'s':''} généré${selected.size>1?'s':''}`,'blue');
+    navToast(isAr?`تمّ إعداد ${selected.size} مسوّدة`:`${selected.size} brouillon${selected.size>1?'s':''} généré${selected.size>1?'s':''}`,'blue');
   };
 
   const validateOne = (sid)=>{
@@ -82,15 +90,17 @@ function ReportsBatch({go, id}){
       }
     });
     setValidated(next);
-    navToast(`${Object.keys(next).length} rapport${Object.keys(next).length>1?'s':''} validé${Object.keys(next).length>1?'s':''}`,'green');
+    navToast(isAr?`تمّت المصادقة على ${Object.keys(next).length} تقرير`:`${Object.keys(next).length} rapport${Object.keys(next).length>1?'s':''} validé${Object.keys(next).length>1?'s':''}`,'green');
   };
 
   const shareOne = (sid)=>{
     const s = Nav.studentById(sid); if(!s) return;
     const parent = Nav.parentById(s.parentId); if(!parent) return;
     const token = validated[sid];
-    if(!token){ navToast('Validez d\'abord ce rapport','orange'); return; }
-    const msg = `Bonjour ${parent.name}, voici le rapport de suivi de ${s.name.split(' ')[0]} en ${s.subject||'mathématiques'}. Présence ${s.att}%, dernière note ${s.result}. Rapport complet : https://navanso.dz/r/${token}`;
+    if(!token){ navToast(isAr?'صادِق على التّقرير أوّلاً':'Validez d\'abord ce rapport','orange'); return; }
+    const msg = isAr
+      ? `السّلام عليكم ${txData(parent.name)}، إليكم تقرير متابعة ${s.name.split(' ')[0]} في ${txData(s.subject)||'الرّياضيّات'}. الحضور ${s.att}%، آخر علامة ${s.result}. التّقرير الكامل: https://navanso.dz/r/${token}`
+      : `Bonjour ${parent.name}, voici le rapport de suivi de ${s.name.split(' ')[0]} en ${s.subject||'mathématiques'}. Présence ${s.att}%, dernière note ${s.result}. Rapport complet : https://navanso.dz/r/${token}`;
     // log in thread
     let thread = Nav.threadsAll().find(t=>t.parentId===parent.id && t.studentId===sid);
     if(!thread){
@@ -114,20 +124,20 @@ function ReportsBatch({go, id}){
   const validatedCount = Object.keys(validated).length;
   const sentCount = Object.keys(sent).length;
 
-  return <AppShell go={go} active="report-gen" title={`Rapports en lot · ${group.name}`}
-    crumbs={[{t:'Groupes',go:()=>go('groups')},{t:group.name,go:()=>go('group-detail', gid)},{t:'Rapports en lot'}]}
+  return <AppShell go={go} active="report-gen" title={isAr?`تقارير دفعة · ${group.name}`:`Rapports en lot · ${group.name}`}
+    crumbs={[{t:isAr?'الأفواج':'Groupes',go:()=>go('groups')},{t:group.name,go:()=>go('group-detail', gid)},{t:isAr?'تقارير دفعة':'Rapports en lot'}]}
     actions={<>
-      <Btn variant="ghost" onClick={()=>go('group-detail', gid)}>Retour au groupe</Btn>
+      <Btn variant="ghost" onClick={()=>go('group-detail', gid)}>{isAr?'العودة إلى الفوج':'Retour au groupe'}</Btn>
     </>}>
     <div className="card pad-16 row gap-10 wrap" style={{marginBottom:18,background:'var(--blue-50)',border:'1px solid var(--blue-100)'}}>
       <Icon name="file" size={18} style={{color:'var(--blue-700)'}}/>
       <span className="t-14 w-600" style={{color:'var(--blue-800)',flex:'1 1 320px'}}>
-        Générez plusieurs rapports d'un coup à partir de vos remarques et notes. Chaque brouillon reste modifiable avant validation, et chaque envoi WhatsApp s'ouvre prérempli.
+        {isAr?'أعِدّ عدّة تقارير دفعةً واحدة انطلاقاً من ملاحظاتك وعلاماتك. تبقى كلّ مسوّدة قابلة للتّعديل قبل المصادقة، وكلّ إرسال على واتساب يُفتَح جاهزاً.':'Générez plusieurs rapports d\'un coup à partir de vos remarques et notes. Chaque brouillon reste modifiable avant validation, et chaque envoi WhatsApp s\'ouvre prérempli.'}
       </span>
     </div>
     {/* Step indicator */}
     <div className="card pad-12 row" style={{marginBottom:18,justifyContent:'center'}}>
-      <Stepper steps={['Sélection','Brouillons','Validation','Envoi']}
+      <Stepper steps={isAr?['الاختيار','المسوّدات','المصادقة','الإرسال']:['Sélection','Brouillons','Validation','Envoi']}
         current={ sentCount>0?3 : validatedCount>0?2 : draftCount>0?1 : 0 }/>
     </div>
 
@@ -136,14 +146,14 @@ function ReportsBatch({go, id}){
         {/* selection bar */}
         <div className="card pad-14 row between wrap" style={{gap:10}}>
           <div className="row gap-10">
-            <span className="w-700 t-14">{selected.size}/{students.length} élève{selected.size>1?'s':''} sélectionné{selected.size>1?'s':''}</span>
+            <span className="w-700 t-14">{isAr?`${selected.size}/${students.length} تلميذ مُختار`:`${selected.size}/${students.length} élève${selected.size>1?'s':''} sélectionné${selected.size>1?'s':''}`}</span>
             <div className="row gap-5">
-              <Btn variant="ghost" size="sm" onClick={selectAll}>Tous</Btn>
-              <Btn variant="ghost" size="sm" onClick={selectPending}>Rapports en attente</Btn>
-              <Btn variant="ghost" size="sm" onClick={selectNone}>Aucun</Btn>
+              <Btn variant="ghost" size="sm" onClick={selectAll}>{isAr?'الكلّ':'Tous'}</Btn>
+              <Btn variant="ghost" size="sm" onClick={selectPending}>{isAr?'تقارير في الانتظار':'Rapports en attente'}</Btn>
+              <Btn variant="ghost" size="sm" onClick={selectNone}>{isAr?'لا أحد':'Aucun'}</Btn>
             </div>
           </div>
-          <Btn variant="primary" icon="sparkle" size="sm" onClick={genAll} style={selected.size===0?{opacity:.5,pointerEvents:'none'}:{}}>Générer les brouillons</Btn>
+          <Btn variant="primary" icon="sparkle" size="sm" onClick={genAll} style={selected.size===0?{opacity:.5,pointerEvents:'none'}:{}}>{isAr?'إعداد المسوّدات':'Générer les brouillons'}</Btn>
         </div>
 
         {/* student rows */}
@@ -162,23 +172,23 @@ function ReportsBatch({go, id}){
                   <Avatar initials={s.initials} cls={s.av} size={36}/>
                   <div className="col" style={{gap:1}}>
                     <span className="w-700 t-14">{s.name}</span>
-                    <span className="faint t-12">{parent.name} · Présence {s.att}% · Dernière note {s.result}</span>
+                    <span className="faint t-12">{isAr?txData(parent.name):parent.name} · {isAr?`الحضور ${s.att}% · آخر علامة ${s.result}`:`Présence ${s.att}% · Dernière note ${s.result}`}</span>
                   </div>
                 </label>
                 <div className="row gap-7">
-                  {isSent ? <span className="chip chip-green w-700"><Icon name="checkc" size={12}/>Envoyé</span>
-                    : tok ? <Btn variant="green" size="sm" icon="wa" onClick={()=>shareOne(s.id)}>Partager</Btn>
-                    : draft ? <Btn variant="primary" size="sm" icon="check" onClick={()=>validateOne(s.id)}>Valider</Btn>
-                    : s.status==='pending' ? <span className="chip chip-orange w-700"><Icon name="clock" size={12}/>À envoyer</span>
-                    : <span className="chip chip-gray" style={{fontSize:11}}>Récent</span>}
-                  <Btn variant="ghost" size="sm" icon="edit" onClick={()=>go('report-gen', s.id)}>Détail</Btn>
+                  {isSent ? <span className="chip chip-green w-700"><Icon name="checkc" size={12}/>{isAr?'تمّ الإرسال':'Envoyé'}</span>
+                    : tok ? <Btn variant="green" size="sm" icon="wa" onClick={()=>shareOne(s.id)}>{isAr?'مشاركة':'Partager'}</Btn>
+                    : draft ? <Btn variant="primary" size="sm" icon="check" onClick={()=>validateOne(s.id)}>{isAr?'مصادقة':'Valider'}</Btn>
+                    : s.status==='pending' ? <span className="chip chip-orange w-700"><Icon name="clock" size={12}/>{isAr?'للإرسال':'À envoyer'}</span>
+                    : <span className="chip chip-gray" style={{fontSize:11}}>{isAr?'حديث':'Récent'}</span>}
+                  <Btn variant="ghost" size="sm" icon="edit" onClick={()=>go('report-gen', s.id)}>{isAr?'التّفاصيل':'Détail'}</Btn>
                 </div>
               </div>
               {/* draft preview, only when generated */}
               {draft && <div style={{padding:'12px 16px'}}>
-                <span className="t-11 faint w-700" style={{textTransform:'uppercase',letterSpacing:'.04em'}}>Brouillon</span>
+                <span className="t-11 faint w-700" style={{textTransform:'uppercase',letterSpacing:'.04em'}}>{isAr?'مسوّدة':'Brouillon'}</span>
                 <textarea className="textarea" style={{marginTop:6,minHeight:90,fontSize:13.5,lineHeight:1.5}} value={draft} onChange={e=>setGenerated(g=>({...g,[s.id]:e.target.value}))} disabled={!!tok}/>
-                {tok && <span className="faint t-11 lh-14" style={{display:'block',marginTop:6}}>Rapport validé · token <code style={{fontSize:10.5}}>{tok}</code></span>}
+                {tok && <span className="faint t-11 lh-14" style={{display:'block',marginTop:6}}>{isAr?'تقرير مُصادَق عليه · رمز':'Rapport validé · token'} <code style={{fontSize:10.5}}>{tok}</code></span>}
               </div>}
             </div>;
           })}
@@ -187,23 +197,23 @@ function ReportsBatch({go, id}){
       {/* sidebar — bulk actions */}
       <div className="col gap-14" style={{position:'sticky',top:90}}>
         <div className="card pad-18 col gap-10">
-          <h3 style={{fontSize:15}}>Actions en lot</h3>
+          <h3 style={{fontSize:15}}>{isAr?'أعمال دفعة':'Actions en lot'}</h3>
           <Btn variant="primary" icon="sparkle" block onClick={genAll} style={selected.size===0?{opacity:.5,pointerEvents:'none'}:{}}>
-            Générer les brouillons ({selected.size})
+            {isAr?'إعداد المسوّدات':'Générer les brouillons'} ({selected.size})
           </Btn>
           <Btn variant="green" icon="check" block onClick={validateAll} style={draftCount===0?{opacity:.5,pointerEvents:'none'}:{}}>
-            Tout valider ({draftCount - validatedCount})
+            {isAr?'مصادقة الكلّ':'Tout valider'} ({draftCount - validatedCount})
           </Btn>
           <Btn variant="wa" icon="wa" block onClick={shareAll} style={validatedCount===0?{opacity:.5,pointerEvents:'none'}:{}}>
-            Tout partager via WhatsApp ({validatedCount - sentCount})
+            {isAr?'مشاركة الكلّ عبر واتساب':'Tout partager via WhatsApp'} ({validatedCount - sentCount})
           </Btn>
         </div>
         <div className="card pad-18 col gap-10">
-          <span className="eyebrow">Récap</span>
-          <div className="row between"><span className="muted t-13">Sélectionnés</span><span className="w-700 t-14">{selected.size}</span></div>
-          <div className="row between"><span className="muted t-13">Brouillons</span><span className="w-700 t-14" style={{color:'var(--blue-700)'}}>{draftCount}</span></div>
-          <div className="row between"><span className="muted t-13">Validés</span><span className="w-700 t-14" style={{color:'var(--green-700)'}}>{validatedCount}</span></div>
-          <div className="row between"><span className="muted t-13">Envoyés</span><span className="w-700 t-14" style={{color:'var(--green-700)'}}>{sentCount}</span></div>
+          <span className="eyebrow">{isAr?'ملخّص':'Récap'}</span>
+          <div className="row between"><span className="muted t-13">{isAr?'المُختارون':'Sélectionnés'}</span><span className="w-700 t-14">{selected.size}</span></div>
+          <div className="row between"><span className="muted t-13">{isAr?'مسوّدات':'Brouillons'}</span><span className="w-700 t-14" style={{color:'var(--blue-700)'}}>{draftCount}</span></div>
+          <div className="row between"><span className="muted t-13">{isAr?'مُصادَق عليها':'Validés'}</span><span className="w-700 t-14" style={{color:'var(--green-700)'}}>{validatedCount}</span></div>
+          <div className="row between"><span className="muted t-13">{isAr?'مُرسَلة':'Envoyés'}</span><span className="w-700 t-14" style={{color:'var(--green-700)'}}>{sentCount}</span></div>
         </div>
         <PrivacyNote/>
       </div>
@@ -221,6 +231,8 @@ window.ReportsBatch = ReportsBatch;
    ============================================================ */
 function ReportsHub({go}){
   useStore();
+  useLang();
+  const isAr = NavI18n.lang === 'ar';
   const isMobile = useIsMobile();
   const groups = Nav.groupsAll();
   const allStudents = Nav.studentsAll();
@@ -233,44 +245,44 @@ function ReportsHub({go}){
   // recent validated reports — last 10
   const recent = Nav.reportsAll().filter(r=>r.status!=='draft').sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,10);
   const viewed = recent.filter(r=>r.viewedAt).length;
-  return <AppShell go={go} active="report-gen" title="Rapports"
-    crumbs={[{t:'Espace',go:()=>go('dashboard')},{t:'Rapports'}]}
-    actions={pendingTotal>0 && pendingByGroup.length===1 ? <Btn variant="primary" icon="sparkle" onClick={()=>go('reports-batch', pendingByGroup[0].group.id)}>Faire les rapports en attente</Btn> : null}>
+  return <AppShell go={go} active="report-gen" title={isAr?'التّقارير':'Rapports'}
+    crumbs={[{t:isAr?'الفضاء':'Espace',go:()=>go('dashboard')},{t:isAr?'التّقارير':'Rapports'}]}
+    actions={pendingTotal>0 && pendingByGroup.length===1 ? <Btn variant="primary" icon="sparkle" onClick={()=>go('reports-batch', pendingByGroup[0].group.id)}>{isAr?'إنجاز التّقارير المنتظِرة':'Faire les rapports en attente'}</Btn> : null}>
     <div className="card pad-16 row gap-10 wrap" style={{marginBottom:18,background:'var(--blue-50)',border:'1px solid var(--blue-100)'}}>
       <Icon name="file" size={18} style={{color:'var(--blue-700)'}}/>
       <span className="t-14 w-600" style={{color:'var(--blue-800)',flex:'1 1 320px'}}>
-        Le hub regroupe tous vos rapports : en attente par groupe, et historique récent avec le statut de lecture parent.
+        {isAr?'يجمع المركز كلّ تقاريرك: المنتظِرة حسب الفوج، والأرشيف الحديث مع حالة قراءة الوالد.':'Le hub regroupe tous vos rapports : en attente par groupe, et historique récent avec le statut de lecture parent.'}
       </span>
     </div>
     <div style={{display:'grid',gridTemplateColumns:isMobile?'1fr':'1fr 1fr',gap:20,alignItems:'start'}}>
       {/* PENDING */}
       <div className="col gap-14">
         <div className="row between">
-          <h3 style={{fontSize:17}}>À envoyer · {pendingTotal}</h3>
-          {pendingTotal>0 && <span className="chip chip-orange w-700"><Icon name="clock" size={12}/>{pendingTotal} en attente</span>}
+          <h3 style={{fontSize:17}}>{isAr?'للإرسال':'À envoyer'} · {pendingTotal}</h3>
+          {pendingTotal>0 && <span className="chip chip-orange w-700"><Icon name="clock" size={12}/>{pendingTotal} {isAr?'في الانتظار':'en attente'}</span>}
         </div>
         {pendingTotal===0 && <div className="card pad-24 col center" style={{gap:8,textAlign:'center',padding:'48px 24px'}}>
           <Icon name="checkc" size={28} style={{color:'var(--green-600)'}}/>
-          <span className="muted">Tout est à jour 🎉</span>
-          <span className="faint t-13">Aucun rapport en attente d'envoi.</span>
+          <span className="muted">{isAr?'كلّ شيء محدّث 🎉':'Tout est à jour 🎉'}</span>
+          <span className="faint t-13">{isAr?'لا يوجد تقرير في انتظار الإرسال.':'Aucun rapport en attente d\'envoi.'}</span>
         </div>}
         {pendingByGroup.map(b=>
           <div key={b.group.id} className="card pad-20 col gap-14">
             <div className="row between wrap" style={{gap:10}}>
               <div className="col" style={{gap:3}}>
                 <span className="w-700 t-15">{b.group.name}</span>
-                <span className="faint t-12">{b.students.length} rapport{b.students.length>1?'s':''} en attente</span>
+                <span className="faint t-12">{isAr?`${b.students.length} تقرير في الانتظار`:`${b.students.length} rapport${b.students.length>1?'s':''} en attente`}</span>
               </div>
-              <Btn variant="primary" size="sm" icon="sparkle" onClick={()=>go('reports-batch', b.group.id)}>Faire en lot</Btn>
+              <Btn variant="primary" size="sm" icon="sparkle" onClick={()=>go('reports-batch', b.group.id)}>{isAr?'إنجاز دفعة':'Faire en lot'}</Btn>
             </div>
             <div className="col gap-8">
               {b.students.map(s=>
                 <div key={s.id} className="row between wrap" style={{padding:'10px 12px',background:'var(--bg)',borderRadius:10,gap:10,rowGap:8}}>
                   <div className="row gap-10">
                     <Avatar initials={s.initials} cls={s.av} size={30}/>
-                    <div className="col" style={{gap:1}}><span className="w-600 t-13">{s.name}</span><span className="faint t-11">Présence {s.att}% · {s.result}</span></div>
+                    <div className="col" style={{gap:1}}><span className="w-600 t-13">{s.name}</span><span className="faint t-11">{isAr?`الحضور ${s.att}% · ${s.result}`:`Présence ${s.att}% · ${s.result}`}</span></div>
                   </div>
-                  <Btn variant="ghost" size="sm" iconR="arrow" onClick={()=>go('report-gen', s.id)}>Un par un</Btn>
+                  <Btn variant="ghost" size="sm" iconR="arrow" onClick={()=>go('report-gen', s.id)}>{isAr?'واحداً واحداً':'Un par un'}</Btn>
                 </div>)}
             </div>
           </div>)}
@@ -278,10 +290,10 @@ function ReportsHub({go}){
       {/* RECENT */}
       <div className="col gap-14">
         <div className="row between">
-          <h3 style={{fontSize:17}}>Récemment envoyés</h3>
-          {recent.length>0 && <span className="chip chip-green w-700" style={{fontSize:11}}><Icon name="eye" size={12}/>{viewed}/{recent.length} vus</span>}
+          <h3 style={{fontSize:17}}>{isAr?'مُرسَلة حديثاً':'Récemment envoyés'}</h3>
+          {recent.length>0 && <span className="chip chip-green w-700" style={{fontSize:11}}><Icon name="eye" size={12}/>{viewed}/{recent.length} {isAr?'مقروء':'vus'}</span>}
         </div>
-        {recent.length===0 && <div className="card pad-24"><span className="faint t-14">Aucun rapport envoyé.</span></div>}
+        {recent.length===0 && <div className="card pad-24"><span className="faint t-14">{isAr?'لا يوجد تقرير مُرسَل.':'Aucun rapport envoyé.'}</span></div>}
         {recent.length>0 && <div className="card" style={{overflow:'hidden'}}>
           {recent.map((r,i)=>{
             const s = Nav.studentById(r.studentId)||{};
@@ -290,10 +302,10 @@ function ReportsHub({go}){
               <Avatar initials={s.initials||'?'} cls={s.av||'av-b'} size={32}/>
               <div className="col grow" style={{gap:1,minWidth:0}}>
                 <span className="w-700 t-13">{s.name||'—'}</span>
-                <span className="faint t-12">{g.name||'—'} · {fmtFr?fmtFr(r.date):r.date}</span>
+                <span className="faint t-12">{g.name||'—'} · {fmtDateLoc?fmtDateLoc(r.date):(fmtFr?fmtFr(r.date):r.date)}</span>
               </div>
-              {r.viewedAt ? <span className="chip chip-green w-700" style={{fontSize:10.5,padding:'2px 6px'}}><Icon name="eye" size={11}/>Vu</span>
-                          : <span className="chip chip-gray" style={{fontSize:10.5,padding:'2px 6px'}}>Envoyé</span>}
+              {r.viewedAt ? <span className="chip chip-green w-700" style={{fontSize:10.5,padding:'2px 6px'}}><Icon name="eye" size={11}/>{isAr?'مقروء':'Vu'}</span>
+                          : <span className="chip chip-gray" style={{fontSize:10.5,padding:'2px 6px'}}>{isAr?'مُرسَل':'Envoyé'}</span>}
             </div>;
           })}
         </div>}

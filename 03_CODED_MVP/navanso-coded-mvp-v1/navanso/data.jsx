@@ -954,6 +954,8 @@ function notificationsForTutor(){
   const seen = bellSeenAt();
   const events = [];
   const ongoing = [];
+  const isAr = window.NavI18n?.lang === 'ar';
+  const tx = (v)=> isAr && window.txData ? window.txData(v) : v;
 
   // 1) New unread inbound messages (parent → tutor) since last bell open
   messagesAll().forEach(m=>{
@@ -964,9 +966,9 @@ function notificationsForTutor(){
     const aboutChild = t.studentId ? (studentById(t.studentId)||{}).name : ((t.prospectiveStudent||{}).name||'');
     const isInquiry = t.kind==='inquiry';
     events.push({id:'n-msg-'+m.id, kind: isInquiry?'inquiry':'message',
-      label: isInquiry ? `Nouvelle demande de ${who}` : `${who} a écrit`,
-      sub: aboutChild ? `Au sujet de ${aboutChild}` : '',
-      excerpt: (m.text||'').slice(0,80),
+      label: isInquiry ? (isAr?`طلب جديد من ${who}`:`Nouvelle demande de ${who}`) : (isAr?`${who} كتب لك`:`${who} a écrit`),
+      sub: aboutChild ? (isAr?`بخصوص ${aboutChild}`:`Au sujet de ${aboutChild}`) : '',
+      excerpt: tx(m.text||'').slice(0,80),
       at: m.createdAt, screen:'thread', param:t.id, tone: isInquiry?'orange':'blue'});
   });
 
@@ -976,8 +978,8 @@ function notificationsForTutor(){
     if((r.viewedAt||'') <= seen) return;
     const s = studentById(r.studentId)||{};
     events.push({id:'n-vu-'+r.id, kind:'report-viewed',
-      label:`${s.name||'Le parent'} · rapport ouvert`,
-      sub:`Le parent a consulté le rapport du ${r.date||''}`,
+      label:`${s.name||(isAr?'الوالد':'Le parent')} · ${isAr?'تقرير مفتوح':'rapport ouvert'}`,
+      sub:isAr?`اطّلع الوالد على تقرير ${r.date||''}`:`Le parent a consulté le rapport du ${r.date||''}`,
       at:r.viewedAt, screen:'parent-report', param:r.token, tone:'green'});
   });
 
@@ -988,8 +990,8 @@ function notificationsForTutor(){
     const s = studentById(r.studentId)||{};
     const parent = parentOfStudent(s.id);
     events.push({id:'n-ack-'+r.id, kind:'report-ack',
-      label:`${(parent||{}).name || 'Le parent'} · accusé de réception`,
-      sub:`A confirmé la lecture du rapport de ${s.name||''}`,
+      label:`${(parent||{}).name || (isAr?'الوالد':'Le parent')} · ${isAr?'تأكيد الاستلام':'accusé de réception'}`,
+      sub:isAr?`أكّد قراءة تقرير ${s.name||''}`:`A confirmé la lecture du rapport de ${s.name||''}`,
       at:r.acknowledgedAt, screen:'parent-report', param:r.token, tone:'green'});
   });
 
@@ -1003,8 +1005,8 @@ function notificationsForTutor(){
     const diff = (sd.getTime()-today.getTime())/86400000;
     if(diff>=0 && diff<=1){
       events.push({id:'n-sess-'+next.id, kind:'next-session',
-        label:`Séance aujourd'hui · ${g.name}`,
-        sub:`${next.plannedTopic||'Programme à préparer'}`,
+        label:`${isAr?'حصّة اليوم':"Séance aujourd'hui"} · ${g.name}`,
+        sub:`${tx(next.plannedTopic||'Programme à préparer')}`,
         at:next.date, screen:'session-entry', param:next.id, tone:'green'});
     }
   });
@@ -1013,8 +1015,8 @@ function notificationsForTutor(){
   reportsPending().forEach(r=>{
     const s = studentById(r.studentId)||{};
     ongoing.push({id:'n-rep-'+r.id, kind:'report-pending',
-      label:`Rapport à envoyer · ${s.name||''}`,
-      sub:'Données collectées, prêt à valider.', at:null,
+      label:`${isAr?'تقرير للإرسال':'Rapport à envoyer'} · ${s.name||''}`,
+      sub:isAr?'البيانات مُجمّعة، جاهزة للمصادقة.':'Données collectées, prêt à valider.', at:null,
       screen:'report-gen', param:r.studentId, tone:'orange'});
   });
 

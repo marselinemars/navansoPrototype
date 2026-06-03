@@ -146,6 +146,125 @@ const NAV_STRINGS = {
     /* ───── Footer ───── */
     'footer.copyright':           '© 2026 Navanso. Tous droits réservés.',
 
+    /* ───── Parent search + TutorCard ───── */
+    'ps.title':                   'Trouvez un enseignant de confiance',
+    'ps.chip.smallGroups':        'Petits groupes : moins de 10 élèves',
+    'ps.chip.places':              'Places disponibles visibles',
+    'ps.desc':                    'Cherchez par matière, niveau et commune. Voyez la taille du groupe et les places disponibles avant de contacter.',
+    'ps.input.subject':           'Matière',
+    'ps.input.level':             'Niveau',
+    'ps.input.loc':               'Commune / Wilaya',
+    'ps.btn.search':              'Rechercher',
+    'ps.futureTag':               'Recherche complète à venir',
+    'ps.notice':                  'Cet écran montre la <b>visibilité des profils</b> et la taille des groupes. La recherche avancée, les avis et la réservation en ligne sont des fonctionnalités futures.',
+    'ps.filters':                 'Filtres',
+    'ps.reset':                   'Réinitialiser',
+    'ps.filter.subject':          'Matière',
+    'ps.filter.level':            'Niveau',
+    'ps.filter.format':           'Format',
+    'ps.filter.mode':             'Mode',
+    'ps.opt.all':                 'Tous',
+    'ps.opt.presential':          'Présentiel',
+    'ps.opt.online':              'En ligne',
+    'ps.opt.smallGroup':          'Petit groupe',
+    'ps.opt.individual':          'Individuel',
+    'ps.toggle.places':           'Places disponibles',
+    'ps.toggle.placesDesc':       'Masquer les groupes complets',
+    'ps.results.count':           '{n} enseignant{s} à {loc} · {sub} · {lvl}',
+    'ps.seg.smallGroups':         'Petits groupes',
+    'ps.seg.individual':          'Individuel',
+    'ps.banner.visibility':       'La taille du groupe et les places restantes sont toujours visibles — une préférence forte des parents.',
+    'ps.shortlistPill':           'Mes présélections',
+    'tc.tip.add':                 'Ajouter à ma présélection',
+    'tc.tip.remove':              'Retirer de la présélection',
+    'tc.toast.added':             'Ajouté à votre présélection',
+    'tc.toast.removed':           'Retiré de votre présélection',
+    'tc.recommended':             '★ Recommandé',
+    'tc.smallGroup':              'Petit groupe',
+    'tc.maxStudents':             'Maximum {n} élèves',
+    'tc.price.label':             'Tarif',
+    'tc.price.from':              'À partir de',
+    'tc.price.unit.month':        'mois',
+    'tc.trial':                   'Séance d\'essai',
+    'tc.profilComplete':          'Profil complété',
+    'tc.followReports':           'Rapports de suivi',
+    'tc.whatsappDirect':          'WhatsApp direct',
+    'tc.btn.profile':             'Voir profil',
+    'tc.btn.contact':             'Contacter',
+
+    /* ───── Parent report ───── */
+    'pr.validated':               'Validé',
+    'pr.thisMonth':               'Ce mois en une phrase',
+    'pr.attendance':              'Présence',
+    'pr.lastScore':               'Dernière note',
+    'pr.previous':                'précédent {x}',
+    'pr.progress':                'Progrès ce mois-ci',
+    'pr.toWork':                  'À travailler',
+    'pr.atHome.title':            'À faire à la maison',
+    'pr.atHome.sub':              'Avant la prochaine séance — sujet en cours : {topic}',
+    'pr.teacherNote':             'Note de l\'enseignante',
+    'pr.priv':                    'Rapport privé accessible uniquement via ce lien.',
+    'pr.ack.btn':                 '✓ Bien reçu, merci',
+    'pr.ack.toast':               'Merci ! L\'enseignante a été notifiée.',
+    'pr.ack.confirmed':           'Vous avez accusé réception · {date}',
+    'pr.contact':                 'Contacter l\'enseignant',
+    'pr.download':                'Télécharger',
+    'pr.print':                   'Imprimer',
+    'pr.stage.eyebrow':           'Écran parent · mobile',
+    'pr.stage.title':             'Ce que le parent reçoit',
+    'pr.stage.desc':              'Clair, rassurant et validé par l\'enseignant — présence, note, points faibles et recommandation pour la maison.',
+
+    /* ───── WhatsApp share ───── */
+    'wa.parentRole':              'Parent de Yacine · en ligne',
+    'wa.greeting':                'Bonjour, comment va Yacine ce mois-ci ?',
+    'wa.cardTitle':               'Rapport · Yacine',
+    'wa.cardSubject':             'Mathématiques · mai 2026',
+    'wa.viewFull':                'Voir le rapport complet',
+    'wa.langFr':                  'Français',
+    'wa.langMix':                 'Arabe / Français',
+    'wa.messageGen':              'Message généré',
+    'wa.send':                    'Envoyer via WhatsApp',
+    'wa.toast.opened':            'WhatsApp ouvert avec le message prérempli',
+
+    /* ───── Tutor profile ───── */
+    'tp.back':                    'Retour aux résultats',
+    'tp.contact':                 'Contacter via WhatsApp',
+    'tp.seeReport':               'Voir un exemple de rapport',
+    'tp.about':                   'À propos de l\'enseignante',
+    'tp.subjectsLevels':          'Matières et niveaux',
+    'tp.subjects':                'Matières',
+    'tp.levels':                  'Niveaux',
+    'tp.groupsAvail':             'Groupes disponibles',
+    'tp.futureBooking':           'Réservation en ligne à venir',
+    'tp.todayContact':            'Aujourd\'hui, le contact se fait via WhatsApp — la réservation et le paiement en ligne sont des fonctionnalités futures.',
+    'tp.contactBtn':              'Contacter l\'enseignant',
+    'tp.notifyPlace':             'M\'avertir d\'une place',
+    'tp.method':                  'Méthode d\'enseignement',
+    'tp.showcase':                'Vitrine — preuves fournies par l\'enseignante',
+    'tp.showcase.chip':           'Fourni par l\'enseignante',
+    'tp.showcase.desc':           'Photos, messages et diplômes que l\'enseignante a choisi de partager.',
+    'tp.reviews':                 'Avis dans l\'application',
+    'tp.noReviews':               'Pas encore d\'avis dans l\'application.',
+    'tp.rail.title':              'Prête à suivre votre enfant',
+
+    /* ───── Shortlist ───── */
+    'sl.back':                    'Retour à la recherche',
+    'sl.eyebrow':                 'Présélection',
+    'sl.title':                   'Mes enseignants sauvegardés',
+    'sl.desc':                    'Comparez vos candidats avant de décider. Vous pouvez d\'abord en appeler plusieurs via WhatsApp, puis demander une séance d\'essai chez celui qui vous convient.',
+    'sl.row.price':               'Tarif',
+    'sl.row.places':              'Places',
+    'sl.row.full':                'Complet',
+    'sl.row.capacity':            'Taille max',
+    'sl.row.format':              'Format',
+    'sl.row.location':            'Localisation',
+    'sl.row.rating':              'Note',
+    'sl.row.trial':               'Séance d\'essai',
+    'sl.contact':                 'Contacter',
+    'sl.profile':                 'Voir profil',
+    'sl.tip.title':               'Conseil — appelez d\'abord',
+    'sl.tip.desc':                'Beaucoup de parents préfèrent appeler 2 ou 3 enseignants par WhatsApp avant de choisir.',
+
     /* ───── Walkthrough shell ───── */
     'wt.topbar.title':            'Parcours commenté',
     'wt.topbar.help':             '⌨ Raccourcis',
@@ -311,6 +430,125 @@ const NAV_STRINGS = {
     /* ───── Footer ───── */
     'footer.copyright':           '© 2026 Navanso. جميع الحقوق محفوظة.',
 
+    /* ───── Parent search + TutorCard ───── */
+    'ps.title':                   'ابحث عن أستاذ موثوق',
+    'ps.chip.smallGroups':        'أفواج صغيرة : أقلّ من 10 تلاميذ',
+    'ps.chip.places':              'الأماكن المتوفّرة ظاهرة',
+    'ps.desc':                    'ابحث حسب المادة، المستوى والبلديّة. شاهد حجم الفوج والأماكن المتوفّرة قبل التواصل.',
+    'ps.input.subject':           'المادة',
+    'ps.input.level':             'المستوى',
+    'ps.input.loc':               'البلديّة / الولاية',
+    'ps.btn.search':              'بحث',
+    'ps.futureTag':               'بحث كامل قريباً',
+    'ps.notice':                  'هذه الشاشة تُظهر <b>وضوح الملفّات الشخصيّة</b> وحجم الأفواج. البحث المتقدّم، التقييمات، والحجز عبر الإنترنت ميزات مستقبليّة.',
+    'ps.filters':                 'المرشّحات',
+    'ps.reset':                   'إعادة تعيين',
+    'ps.filter.subject':          'المادة',
+    'ps.filter.level':            'المستوى',
+    'ps.filter.format':           'الصّيغة',
+    'ps.filter.mode':             'النّمط',
+    'ps.opt.all':                 'الكلّ',
+    'ps.opt.presential':          'حضوري',
+    'ps.opt.online':              'عن بُعد',
+    'ps.opt.smallGroup':          'فوج صغير',
+    'ps.opt.individual':          'فردي',
+    'ps.toggle.places':           'الأماكن المتوفّرة',
+    'ps.toggle.placesDesc':       'إخفاء الأفواج الكاملة',
+    'ps.results.count':           '{n} أستاذ في {loc} · {sub} · {lvl}',
+    'ps.seg.smallGroups':         'أفواج صغيرة',
+    'ps.seg.individual':          'فردي',
+    'ps.banner.visibility':       'حجم الفوج والأماكن المتبقّية ظاهرة دائماً — تفضيل قوي للأولياء.',
+    'ps.shortlistPill':           'قائمتي المختصرة',
+    'tc.tip.add':                 'إضافة إلى قائمتي المختصرة',
+    'tc.tip.remove':              'إزالة من القائمة المختصرة',
+    'tc.toast.added':             'أُضيف إلى قائمتك المختصرة',
+    'tc.toast.removed':           'أُزيل من قائمتك المختصرة',
+    'tc.recommended':             '★ موصى به',
+    'tc.smallGroup':              'فوج صغير',
+    'tc.maxStudents':             'بحدّ أقصى {n} تلاميذ',
+    'tc.price.label':             'السّعر',
+    'tc.price.from':              'ابتداءً من',
+    'tc.price.unit.month':        'شهر',
+    'tc.trial':                   'حصّة تجريبيّة',
+    'tc.profilComplete':          'ملف مكتمل',
+    'tc.followReports':           'تقارير المتابعة',
+    'tc.whatsappDirect':          'WhatsApp مباشر',
+    'tc.btn.profile':             'عرض الملف',
+    'tc.btn.contact':             'تواصل',
+
+    /* ───── Parent report ───── */
+    'pr.validated':               'موثّق',
+    'pr.thisMonth':               'هذا الشّهر في جملة',
+    'pr.attendance':              'الحضور',
+    'pr.lastScore':               'آخر علامة',
+    'pr.previous':                'سابقاً {x}',
+    'pr.progress':                'تقدّم هذا الشّهر',
+    'pr.toWork':                  'يحتاج إلى مراجعة',
+    'pr.atHome.title':            'ما يجب فعله في البيت',
+    'pr.atHome.sub':              'قبل الحصّة القادمة — الموضوع الحالي : {topic}',
+    'pr.teacherNote':             'ملاحظة الأستاذة',
+    'pr.priv':                    'تقرير خاص يمكن الوصول إليه فقط عبر هذا الرّابط.',
+    'pr.ack.btn':                 '✓ تمّ الاستلام، شكراً',
+    'pr.ack.toast':               'شكراً ! تمّ إخطار الأستاذة.',
+    'pr.ack.confirmed':           'لقد أكّدت الاستلام · {date}',
+    'pr.contact':                 'تواصل مع الأستاذ',
+    'pr.download':                'تنزيل',
+    'pr.print':                   'طباعة',
+    'pr.stage.eyebrow':           'شاشة الوالد · الهاتف',
+    'pr.stage.title':             'ما يستلمه الوالد',
+    'pr.stage.desc':              'واضح، مُطمئن وموثّق من طرف الأستاذ — حضور، علامة، نقاط تحتاج إلى مراجعة، وتوصية للبيت.',
+
+    /* ───── WhatsApp share ───── */
+    'wa.parentRole':              'وليّ ياسين · متّصل',
+    'wa.greeting':                'مرحباً، كيف حال ياسين هذا الشّهر؟',
+    'wa.cardTitle':               'تقرير · ياسين',
+    'wa.cardSubject':             'الرّياضيات · ماي 2026',
+    'wa.viewFull':                'عرض التّقرير الكامل',
+    'wa.langFr':                  'فرنسي',
+    'wa.langMix':                 'عربي / فرنسي',
+    'wa.messageGen':              'الرّسالة المُولَّدة',
+    'wa.send':                    'إرسال عبر WhatsApp',
+    'wa.toast.opened':            'فُتح WhatsApp برسالة جاهزة',
+
+    /* ───── Tutor profile ───── */
+    'tp.back':                    'العودة إلى النّتائج',
+    'tp.contact':                 'تواصل عبر WhatsApp',
+    'tp.seeReport':               'مشاهدة نموذج تقرير',
+    'tp.about':                   'عن الأستاذة',
+    'tp.subjectsLevels':          'المواد والمستويات',
+    'tp.subjects':                'المواد',
+    'tp.levels':                  'المستويات',
+    'tp.groupsAvail':             'الأفواج المتوفّرة',
+    'tp.futureBooking':           'الحجز عبر الإنترنت قريباً',
+    'tp.todayContact':            'حاليّاً، التّواصل يتمّ عبر WhatsApp — الحجز والدّفع عبر الإنترنت ميزات مستقبليّة.',
+    'tp.contactBtn':              'تواصل مع الأستاذ',
+    'tp.notifyPlace':             'أخبرني عند توفّر مكان',
+    'tp.method':                  'طريقة التّدريس',
+    'tp.showcase':                'واجهة العرض — أدلّة مُقدَّمة من طرف الأستاذة',
+    'tp.showcase.chip':           'مُقدَّم من الأستاذة',
+    'tp.showcase.desc':           'صور، رسائل وشهادات اختارت الأستاذة مشاركتها.',
+    'tp.reviews':                 'التّقييمات داخل التّطبيق',
+    'tp.noReviews':               'لا توجد تقييمات بعد داخل التّطبيق.',
+    'tp.rail.title':              'مستعدّة لمتابعة طفلك',
+
+    /* ───── Shortlist ───── */
+    'sl.back':                    'العودة إلى البحث',
+    'sl.eyebrow':                 'القائمة المختصرة',
+    'sl.title':                   'الأساتذة الذين حفظتهم',
+    'sl.desc':                    'قارن مرشّحيك قبل اتّخاذ القرار. يُمكنك أوّلاً الاتّصال بالعديد منهم عبر WhatsApp، ثمّ طلب حصّة تجريبيّة لدى من يُناسبك.',
+    'sl.row.price':               'السّعر',
+    'sl.row.places':              'الأماكن',
+    'sl.row.full':                'كامل',
+    'sl.row.capacity':            'السّعة القصوى',
+    'sl.row.format':              'الصّيغة',
+    'sl.row.location':            'الموقع',
+    'sl.row.rating':              'التّقييم',
+    'sl.row.trial':               'حصّة تجريبيّة',
+    'sl.contact':                 'تواصل',
+    'sl.profile':                 'عرض الملف',
+    'sl.tip.title':               'نصيحة — اتّصل أوّلاً',
+    'sl.tip.desc':                'الكثير من الأولياء يُفضّلون الاتّصال باثنين أو ثلاثة أساتذة عبر WhatsApp قبل الاختيار.',
+
     /* ───── Walkthrough shell ───── */
     'wt.topbar.title':            'عرض مع الشرح',
     'wt.topbar.help':             '⌨ اختصارات',
@@ -385,9 +623,181 @@ function useLang() {
   return [lang, setLang];
 }
 
+/* ───── Data-layer translation map ─────
+   Seed data (NAV.yacine, sessions, etc.) is stored in French. This map
+   translates known French strings to Arabic for display. Falls back to
+   the original string if no translation is found. Used via txData(s). */
+const NAV_DATA_AR = {
+  /* Lesson topics */
+  'Équations du 1er degré':                                                   'معادلات من الدّرجة الأولى',
+  'Inéquations du 1er degré':                                                 'متراجحات من الدّرجة الأولى',
+  'Équations et problèmes':                                                   'معادلات ومسائل',
+  'Calcul littéral':                                                          'الحساب الحرفيّ',
+  'Nombres relatifs':                                                         'الأعداد النّسبيّة',
+  'Théorème de Pythagore':                                                    'نظريّة فيثاغورس',
+  'Les circuits électriques':                                                 'الدّارات الكهربائيّة',
+  /* Plan items */
+  'Méthode de résolution étape par étape':                                    'طريقة الحلّ خطوة بخطوة',
+  'Vérification de la solution':                                              'التّحقّق من الحلّ',
+  '5 exercices types BEM':                                                    '5 تمارين نموذجيّة BEM',
+  'Problèmes de mise en équation':                                            'مسائل صياغة المعادلة',
+  'Développer et factoriser':                                                 'النّشر والتّحليل',
+  'Identités remarquables':                                                   'المتطابقات الشّهيرة',
+  'Exercices d\'application':                                                 'تمارين تطبيقيّة',
+  'Règles de signes':                                                         'قواعد الإشارات',
+  'Opérations sur les relatifs':                                              'العمليّات على الأعداد النّسبيّة',
+  'Énoncé et démonstration':                                                  'النّصّ والبرهنة',
+  'Applications':                                                             'تطبيقات',
+  /* Strengths */
+  'Comprend les étapes de résolution d\'une équation':                        'يفهم خطوات حلّ المعادلة',
+  'Comprend les etapes de resolution d\'une equation':                        'يفهم خطوات حلّ المعادلة',
+  'Bonne participation en groupe':                                            'مشاركة جيّدة في الفوج',
+  'Participation régulière':                                                  'مشاركة منتظمة',
+  'Méthode de travail':                                                       'منهج عمل سليم',
+  /* Point/weakness labels */
+  'Concentration':                                                            'التّركيز',
+  'Fractions':                                                                'الكسور',
+  'Traduction des énoncés':                                                   'ترجمة المسائل',
+  'Participation orale':                                                      'المشاركة الشّفويّة',
+  'Problèmes':                                                                'المسائل',
+  'Géométrie':                                                                'الهندسة',
+  /* Plan carry-over items */
+  'Reprendre la traduction des énoncés en début de prochaine séance':         'إعادة ترجمة المسائل في بداية الحصّة القادمة',
+  'Reprendre la traduction des énoncés (reporté)':                            'إعادة ترجمة المسائل (مُؤجَّل)',
+  'Évaluation rapide sur les signes (à préparer)':                            'تقييم سريع على الإشارات (للتّحضير)',
+  'Introduction aux inéquations':                                             'تقديم المتراجحات',
+  'Résolution graphique':                                                     'الحلّ البيانيّ',
+  'Préparer une évaluation rapide sur les règles de signes':                  'تحضير تقييم سريع على قواعد الإشارات',
+  /* Devoirs / homework */
+  '5 exercices p.42 + 3 problèmes guidés':                                    '5 تمارين ص. 42 + 3 مسائل موجَّهة',
+  'Exercices 12 à 18 p.38':                                                   'التّمارين 12 إلى 18 ص. 38',
+  'Fiche de révision signes':                                                 'ورقة مراجعة الإشارات',
+  'Exercices 4 à 10 p.55':                                                    'التّمارين 4 إلى 10 ص. 55',
+  /* Comments (session) */
+  'Les élèves ont compris la méthode mais bloquent sur la traduction des énoncés en équations.': 'فهم التّلاميذ الطّريقة لكنّهم يجدون صعوبة في ترجمة النّصوص إلى معادلات.',
+  'Bon rythme. Quelques élèves ont eu du mal avec les identités remarquables.': 'وتيرة جيّدة. واجه بعض التّلاميذ صعوبة مع المتطابقات الشّهيرة.',
+  'Séance dense. La moitié du groupe a encore besoin de pratique sur les signes.': 'حصّة مكثّفة. لا يزال نصف الفوج يحتاج إلى التّدرّب على الإشارات.',
+  'Bonne séance, les élèves ont accroché.':                                   'حصّة جيّدة، تفاعل التّلاميذ بشكل ملحوظ.',
+  /* Remark texts (Yacine history) */
+  'Confond numérateur et dénominateur. Participe bien mais manque de méthode.': 'يخلط بين البسط والمقام. يشارك جيّداً لكن ينقصه المنهج.',
+  'Grosse difficulté avec les signes dans les calculs. Distrait en fin de séance.': 'صعوبة كبيرة مع الإشارات في الحسابات. شُرود في نهاية الحصّة.',
+  'Comprend mieux les fractions maintenant. Encore des erreurs de signes.':    'يفهم الكسور أحسن الآن. ولكن لا تزال هناك أخطاء في الإشارات.',
+  'Bonne participation, plus concentré. Bloque pour traduire un énoncé en équation.': 'مشاركة جيّدة، أكثر تركيزاً. يجد صعوبة في ترجمة المسائل إلى معادلات.',
+  /* Notes */
+  'Yacine progresse bien mais a besoin de plus de pratique sur l\'interprétation des problèmes.': 'ياسين يتقدّم جيّداً لكن يحتاج إلى تدريب أكثر على فهم المسائل.',
+  'Élève suivi.':                                                             'تلميذ تحت المتابعة.',
+  /* Recommendations */
+  'Suivre le rythme du groupe, exercices de révision avant la prochaine séance.': 'مواكبة وتيرة الفوج، تمارين مراجعة قبل الحصّة القادمة.',
+  'Suivre le rythme du groupe.':                                              'مواكبة وتيرة الفوج.',
+  'Quelques exercices courts avant la prochaine séance.':                     'بعض التّمارين القصيرة قبل الحصّة القادمة.',
+  /* Subjects */
+  'Mathématiques':                                                            'الرّياضيّات',
+  'Physique':                                                                 'الفيزياء',
+  'Sciences':                                                                 'العلوم',
+  'Arabe':                                                                    'العربيّة',
+  'Français':                                                                 'الفرنسيّة',
+  'Anglais':                                                                  'الإنجليزيّة',
+  /* Demo people / honorifics */
+  'Mme Amina':                                                                'الأستاذة أمينة',
+  'Mme Amina Belkacem':                                                       'الأستاذة أمينة بلقاسم',
+  'Mme Benali':                                                               'السيدة بن علي',
+  'M. Benali':                                                                'السيد بن علي',
+  'M. Haddad':                                                                'السيد حدّاد',
+  'Mme Cherif':                                                               'السيدة شريف',
+  'Mme Mansouri':                                                             'السيدة منصوري',
+  'M. Kaddour':                                                               'السيد قدور',
+  'Mme Brahimi':                                                              'السيدة براهمي',
+  'M. Saadi':                                                                 'السيد سعدي',
+  'Mme Lounis':                                                               'السيدة لونيس',
+  'Mme Tahar':                                                                'السيدة طاهر',
+  'M. Karim':                                                                 'الأستاذ كريم',
+  'Mme Sofia':                                                                'الأستاذة صوفيا',
+  'M. Idir':                                                                  'الأستاذ إدير',
+  /* Levels */
+  '4e année moyenne':                                                         'السّنة الرّابعة متوسّط',
+  '3e AM':                                                                    '3 متوسّط',
+  '4e AM':                                                                    '4 متوسّط',
+  '1AS':                                                                      '1 ثانوي',
+  '1AM':                                                                      '1 متوسّط',
+  '2AM':                                                                      '2 متوسّط',
+  'Primaire':                                                                 'ابتدائي',
+  /* Group schedules */
+  'Samedi & Mardi · 16h–17h30':                                               'السّبت والثّلاثاء · 16:00–17:30',
+  'Lundi & Jeudi · 17h–18h30':                                                'الإثنين والخميس · 17:00–18:30',
+  'Vendredi · 10h–11h30':                                                     'الجمعة · 10:00–11:30',
+  /* Group locations */
+  'Ouargla centre':                                                           'وسط ورقلة',
+  /* Group modes */
+  'Présentiel':                                                               'حضوريّ',
+  'En ligne':                                                                 'عن بُعد',
+  'Hybride':                                                                  'هجين',
+  /* Tutor todos (seed) */
+  'Préparer le chapitre sur les inéquations':                                 'تحضير فصل المتراجحات',
+  'Chercher un meilleur exemple pour la traduction des énoncés':              'البحث عن مثال أحسن لترجمة المسائل',
+  'Appeler Mme Cherif au sujet des absences de Mohamed':                      'الاتّصال بالسّيّدة شريف بخصوص غيابات محمّد',
+  'Mettre à jour mon profil avec une photo':                                  'تحديث ملفّي الشّخصيّ بصورة',
+  'Acheter des feutres pour le tableau':                                      'شراء أقلام للسّبّورة',
+  'Préparer fiche de révisions BEM blanc':                                    'تحضير ورقة مراجعات BEM التّجريبيّ',
+  'Féliciter Lina pour sa note de 15/20':                                     'تهنئة لينا على علامتها 15/20',
+  /* Messages (parent inbox) */
+  'Bonjour Mme Amina, merci pour le rapport de Yacine. Pouvez-vous m\'expliquer comment l\'aider sur les règles de signes à la maison ?': 'السّلام عليكم سيّدة أمينة، شكراً على تقرير ياسين. هل يمكنكم شرح كيفيّة مساعدته في قواعد الإشارات في البيت؟',
+  'Bonjour, Mohamed n\'a pas pu venir mardi. Pouvez-vous me dire ce qu\'il a manqué ?': 'السّلام عليكم، لم يتمكّن محمّد من الحضور يوم الثّلاثاء. هل يمكنكم إخباري بما فاته؟',
+  'Et est-ce qu\'il faut rattraper quelque chose à la maison ?':               'وهل يجب تدارك شيء في البيت؟',
+  'Excellente note pour Lina, merci !':                                       'علامة ممتازة للينا، شكراً!',
+  'Merci à vous M. Haddad. Lina fait un travail régulier, c\'est ce qui paie.': 'الشّكر لكم سيّد حدّاد. لينا تعمل بانتظام، وهذا ما يُؤتي ثماره.',
+  'Bonjour, je cherche un soutien en maths pour ma fille Yasmine en 4AM. Reste-t-il une place dans votre groupe ?': 'السّلام عليكم، أبحث عن دعم في الرّياضيّات لابنتي ياسمين في السّنة الرّابعة متوسّط. هل لا يزال هناك مكان في فوجكم؟',
+  /* Status / generic labels often hit */
+  '—':                                                                        '—',
+};
+/* txData: translate a known FR string to AR if NavI18n.lang==='ar'; else return as-is.
+   Also normalizes curly apostrophes so seed strings match. */
+function txData(s) {
+  if (s == null) return s;
+  if (NavI18n.lang !== 'ar') return s;
+  if (NAV_DATA_AR[s] !== undefined) return NAV_DATA_AR[s];
+  // try with normalized apostrophes
+  const norm = String(s).replace(/[’‘]/g, "'");
+  if (NAV_DATA_AR[norm] !== undefined) return NAV_DATA_AR[norm];
+  return s;
+}
+
+/* fmt date with Algerian Arabic months when in AR mode */
+const NAV_AR_MONTHS_SHORT = ['','جانفي','فيفري','مارس','أفريل','ماي','جوان','جويلية','أوت','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+function fmtDateLoc(iso) {
+  if (!iso) return '';
+  // try YYYY-MM-DD
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso);
+  if (m && NavI18n.lang === 'ar') {
+    return `${parseInt(m[3],10)} ${NAV_AR_MONTHS_SHORT[parseInt(m[2],10)]} ${m[1]}`;
+  }
+  // Already a French short date like "18 mai" → translate month word
+  if (NavI18n.lang === 'ar' && typeof iso === 'string') {
+    const FR_MO = {janvier:1,'janv.':1,février:2,'févr.':2,fevrier:2,mars:3,avril:4,mai:5,juin:6,juillet:7,août:8,aout:8,septembre:9,'sept.':9,octobre:10,'oct.':10,novembre:11,'nov.':11,décembre:12,'déc.':12,decembre:12};
+    const parts = iso.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      const day = parseInt(parts[0],10);
+      const moKey = parts[1].toLowerCase();
+      const moIdx = FR_MO[moKey];
+      if (!isNaN(day) && moIdx) {
+        const year = parts[2] || '';
+        return `${day} ${NAV_AR_MONTHS_SHORT[moIdx]}${year?' '+year:''}`;
+      }
+    }
+  }
+  return iso;
+}
+
 /* Set initial document direction on first load (before React mounts).
    Hides the FOUC of LTR layout flashing for AR users on refresh. */
 document.documentElement.dir = NavI18n.lang === 'ar' ? 'rtl' : 'ltr';
 document.documentElement.lang = NavI18n.lang;
 
-Object.assign(window, { NavI18n, t, setLang, getLang, useLang });
+/* attFrac like "5 séances sur 6" → "5 حصص من 6" in AR */
+function attFracLoc(s) {
+  if (!s || NavI18n.lang !== 'ar') return s||'';
+  const m = /^(\d+)\s*séances?\s*sur\s*(\d+)/i.exec(s);
+  if (m) return `${m[1]} حصص من ${m[2]}`;
+  return s;
+}
+
+Object.assign(window, { NavI18n, t, txData, fmtDateLoc, attFracLoc, setLang, getLang, useLang });
