@@ -6,7 +6,11 @@
 <title>Navanso · Parcours commenté</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet"/>
+<script>/* Initial dir/lang from localStorage to avoid LTR→RTL flash for AR users. */
+  (function(){var l=localStorage.getItem('nv_lang')==='ar'?'ar':'fr';
+   document.documentElement.dir=l==='ar'?'rtl':'ltr';
+   document.documentElement.lang=l;})();</script>
 <style>
 :root{
   --blue-700:#2456B5; --blue-800:#1E3A8A; --blue-600:#3A76E8; --blue-100:#D9E4FB; --blue-50:#EEF3FD;
@@ -61,6 +65,25 @@ button{font-family:inherit}
 }
 .mode-seg button.on{background:linear-gradient(135deg,#3A76E8,#2456B5); color:#fff; box-shadow:0 1px 0 rgba(255,255,255,.06) inset}
 .mode-seg button:hover:not(.on){background:rgba(255,255,255,.05); color:#fff}
+
+/* Language toggle — same dark style as mode-seg */
+.lang-seg{display:inline-flex; background:#162033; border:1px solid #243049; border-radius:8px; padding:2px}
+.lang-seg button{background:transparent; color:#A8B2C6; border:0; padding:5px 9px; font-size:12px; font-weight:700; border-radius:6px; cursor:pointer; min-width:28px; transition:.15s ease}
+.lang-seg button.on{background:#2456B5; color:#fff}
+.lang-seg button:hover:not(.on){background:rgba(255,255,255,.05); color:#fff}
+.lang-seg button[data-lang="ar"]{font-family:'Tajawal','Inter',sans-serif; font-size:13.5px}
+
+/* RTL adjustments for the walkthrough chrome */
+[dir="rtl"] body, [dir="rtl"] .topbar, [dir="rtl"] .comm-pane,
+[dir="rtl"] .title, [dir="rtl"] .commentary p,
+[dir="rtl"] .why p, [dir="rtl"] .quote p, [dir="rtl"] .act-badge,
+[dir="rtl"] .step-num, [dir="rtl"] .mobile-hint, [dir="rtl"] .btn,
+[dir="rtl"] .progress .label, [dir="rtl"] .no-frame .card,
+[dir="rtl"] .topbar .title, [dir="rtl"] .topbar .pick{
+  font-family:'Tajawal','Inter',system-ui,sans-serif;
+}
+[dir="rtl"] .comm-pane{border-left:0; border-right:1px solid var(--line)}
+[dir="rtl"] .comm-pane::before{left:auto; right:0; border-radius:3px 0 0 3px}
 
 /* FRAME PANE */
 .frame-pane{grid-area:frame; position:relative; background:#0F1521; overflow:hidden}
@@ -364,10 +387,14 @@ button{font-family:inherit}
     <span class="title">Parcours commenté</span>
     <div class="spacer"></div>
     <div class="mode-seg" id="modeSeg">
-      <button data-mode="defense" title="Parcours défense — 11 slides, ≈ 4 min">Défense</button>
-      <button data-mode="parent"  title="Validation côté parent — 9 slides, ≈ 3-4 min">Parent</button>
-      <button data-mode="tutor"   title="Validation côté enseignant — 10 slides, ≈ 5-6 min">Enseignant</button>
-      <button data-mode="full"    title="Walkthrough complet — 26 slides">Complet</button>
+      <button data-mode="defense" data-i18n="mode.defense"  title="Parcours défense — 11 slides, ≈ 4 min">Défense</button>
+      <button data-mode="parent"  data-i18n="mode.parent"   title="Validation côté parent — 9 slides, ≈ 3-4 min">Parent</button>
+      <button data-mode="tutor"   data-i18n="mode.tutor"    title="Validation côté enseignant — 10 slides, ≈ 5-6 min">Enseignant</button>
+      <button data-mode="full"    data-i18n="mode.full"     title="Walkthrough complet — 26 slides">Complet</button>
+    </div>
+    <div class="lang-seg" id="langSeg" role="group" aria-label="Langue / اللغة">
+      <button data-lang="fr" title="Français">FR</button>
+      <button data-lang="ar" title="العربية">ع</button>
     </div>
     <select id="picker" class="pick" title="Aller à un écran"></select>
     <button class="help-btn" id="helpBtn">⌨ Raccourcis</button>
@@ -423,7 +450,57 @@ const PROTO = 'Navanso%20Prototype.html';
    - act       : intro | a1 | a2 | a3 | outils | close (classe CSS du badge)
    - actLabel  : libellé du badge en haut
    - title, body[], why, quote
+
+   B22 — Language switching:
+   • `wtLang` holds the active language (read from localStorage shared with the
+     prototype iframe), default 'fr'. Switching writes localStorage, flips
+     <html dir>, reloads the iframe so the prototype picks up the new language.
+   • `WT_S` holds shell strings (topbar, mode buttons, hint, footer, etc.).
+   • Slide fields stay French for now (translated in Phase 1.D). The shell is
+     enough to feel localised on the landing/walkthrough chrome.
 */
+let wtLang = (localStorage.getItem('nv_lang') === 'ar') ? 'ar' : 'fr';
+const WT_S = {
+  fr: {
+    'topbar.title':   'Parcours commenté',
+    'topbar.help':    '⌨ Raccourcis',
+    'topbar.picker':  'Aller à un écran',
+    'mode.defense':   'Défense',
+    'mode.parent':    'Parent',
+    'mode.tutor':     'Enseignant',
+    'mode.full':      'Complet',
+    'prev':           '← Précédent',
+    'next':           'Suivant →',
+    'progress':       'Slide {n} sur {total} — {act}',
+    'mobileHint':     'Faites défiler ou touchez l\'écran pour interagir comme dans l\'application.',
+    'loading':        'Chargement…',
+    'why':            'Pourquoi ça compte',
+    'quote':          'En une phrase',
+  },
+  ar: {
+    'topbar.title':   'عرض مع الشرح',
+    'topbar.help':    '⌨ اختصارات',
+    'topbar.picker':  'الانتقال إلى شاشة',
+    'mode.defense':   'الدّفاع',
+    'mode.parent':    'وليّ',
+    'mode.tutor':     'أستاذ',
+    'mode.full':      'كامل',
+    'prev':           '→ السّابق',
+    'next':           'التّالي ←',
+    'progress':       'الشّريحة {n} من {total} — {act}',
+    'mobileHint':     'مرّر الشّاشة أو المسها للتفاعل مع التطبيق.',
+    'loading':        'جاري التحميل…',
+    'why':            'لماذا هذا مهم',
+    'quote':          'في جملة واحدة',
+  },
+};
+function wt(key, vars){
+  const dict = WT_S[wtLang] || WT_S.fr;
+  let s = dict[key] !== undefined ? dict[key] : (WT_S.fr[key] || key);
+  if(!vars) return s;
+  return Object.keys(vars).reduce((a,k)=>a.replace(new RegExp('\\{'+k+'\\}','g'), vars[k]), s);
+}
+
 const SLIDES = [
 
   // ─── INTRO ───────────────────────────────────────────────────────────
@@ -815,6 +892,63 @@ function setMode(m){
 
 modeBtns.forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
 
+/* ───── Language toggle ─────
+   Wires the FR/ع buttons in the topbar. Switching:
+   - writes 'nv_lang' to localStorage (shared with the prototype iframe)
+   - updates <html dir> + <html lang>
+   - re-applies translated strings to topbar/footer/hint/etc.
+   - reloads the iframe with a fresh cache-bust so the prototype picks up
+     the new language too. */
+const langBtns = [...document.querySelectorAll('.lang-seg [data-lang]')];
+function syncLangButtons(){
+  langBtns.forEach(b => b.classList.toggle('on', b.dataset.lang === wtLang));
+}
+function applyLang(){
+  // Topbar
+  const titleEl = document.querySelector('.topbar .title');
+  if(titleEl) titleEl.textContent = wt('topbar.title');
+  const helpBtnEl = document.getElementById('helpBtn');
+  if(helpBtnEl) helpBtnEl.textContent = wt('topbar.help');
+  picker.title = wt('topbar.picker');
+  // Mode buttons
+  modeBtns.forEach(b => {
+    const key = b.dataset.i18n;
+    if(key) b.textContent = wt(key);
+  });
+  // Mobile hint
+  const hint = document.getElementById('mobileHint');
+  if(hint){
+    const spans = hint.querySelectorAll('span');
+    if(spans.length>=2) spans[1].textContent = wt('mobileHint');
+  }
+  // Frame loading
+  const fl = document.getElementById('frameLoading');
+  if(fl) fl.textContent = wt('loading');
+  // Footer
+  prevBtn.textContent = wt('prev');
+  nextBtn.textContent = wt('next');
+  syncLangButtons();
+}
+function setWtLang(lang){
+  if(lang!=='fr' && lang!=='ar') return;
+  if(wtLang === lang) return;
+  wtLang = lang;
+  localStorage.setItem('nv_lang', lang);
+  document.documentElement.dir = lang==='ar' ? 'rtl' : 'ltr';
+  document.documentElement.lang = lang;
+  applyLang();
+  rebuildPicker();   // option labels use wt() indirectly via slide titles (still FR for slides)
+  render();          // re-render commentary to update "Pourquoi ça compte" / "En une phrase" headings
+  // Reload the iframe so the prototype inside re-reads localStorage and renders
+  // in the new language. Skip if there's no iframe (no-frame slide).
+  if(currentFrame && viewSlides[i] && viewSlides[i].hash){
+    setSrc(viewSlides[i]);
+  }
+}
+langBtns.forEach(b => b.addEventListener('click', () => setWtLang(b.dataset.lang)));
+syncLangButtons();
+applyLang();
+
 function buildFrame(slide){
   // (re)create the frame element only if mobile/desktop changed or hash differs.
   const wantMobile = !!slide.mobile;
@@ -921,10 +1055,10 @@ function renderCommentary(slide){
   (slide.body||[]).forEach(p=>{ html += `<p>${p}</p>`; });
   html += `</div>`;
   if(slide.why){
-    html += `<div class="why"><span class="eyebrow">Pourquoi ça compte</span><p>${slide.why}</p></div>`;
+    html += `<div class="why"><span class="eyebrow">${wt('why')}</span><p>${slide.why}</p></div>`;
   }
   if(slide.quote){
-    html += `<div class="quote"><span>En une phrase</span><p>« ${slide.quote} »</p></div>`;
+    html += `<div class="quote"><span>${wt('quote')}</span><p>« ${slide.quote} »</p></div>`;
   }
   commPane.innerHTML = html;
   commPane.scrollTop = 0;
@@ -959,7 +1093,7 @@ function render(){
   const denom = Math.max(1, viewSlides.length - 1);
   const pct = (i/denom) * 100;
   progBar.style.width = pct + '%';
-  progLbl.textContent = `Slide ${i+1} sur ${viewSlides.length} — ${slide.actLabel}`;
+  progLbl.textContent = wt('progress', {n:i+1, total:viewSlides.length, act:slide.actLabel});
   picker.value = i;
   prevBtn.disabled = i===0;
   nextBtn.disabled = i===viewSlides.length-1;

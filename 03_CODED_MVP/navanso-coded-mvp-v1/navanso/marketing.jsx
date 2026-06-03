@@ -1,15 +1,31 @@
 /* NAVANSO — Marketing screens: Landing, Pricing, Roadmap */
 
+/* Compact language toggle — used in MarketingNav and the walkthrough topbar. */
+function LangToggle({dark}){
+  const [lang, setL] = useLang();
+  return <div className={`lang-seg ${dark?'topbar-dark':''}`} role="group" aria-label="Langue / اللغة">
+    <button data-lang="fr" className={lang==='fr'?'on':''} onClick={()=>setL('fr')} title="Français">FR</button>
+    <button data-lang="ar" className={lang==='ar'?'on':''} onClick={()=>setL('ar')} title="العربية">ع</button>
+  </div>;
+}
+
 function MarketingNav({go, active}){
+  useLang(); // re-render on language change
   const isMobile = useIsNarrow();
   const [open, setOpen] = React.useState(false);
-  const items=[['landing','Accueil'],['parent-search','Trouver un enseignant'],['pricing','Tarifs'],['roadmap','Vision']];
+  const items=[
+    ['landing',        t('nav.home')],
+    ['parent-search',  t('nav.findTutor')],
+    ['pricing',        t('nav.pricing')],
+    ['roadmap',        t('nav.roadmap')],
+  ];
   if(isMobile){
     return <>
       <div className="mnav" style={{padding:'0 16px',gap:10,height:60}}>
         <div onClick={()=>go('landing')} style={{cursor:'pointer'}}><Logo size={28}/></div>
         <div style={{flex:1}}/>
-        <Btn variant="primary" size="sm" icon="user" onClick={()=>go('tutor-onboarding')}>Devenir enseignant</Btn>
+        <LangToggle/>
+        <Btn variant="primary" size="sm" icon="user" onClick={()=>go('tutor-onboarding')}>{t('nav.becomeTutor')}</Btn>
         <button className="btn btn-ghost btn-icon" onClick={()=>setOpen(true)} title="Menu"><Icon name="menu" size={18}/></button>
       </div>
       {open && <>
@@ -21,9 +37,9 @@ function MarketingNav({go, active}){
           </div>
           {items.map(([id,l])=><button key={id} className="nav-i" style={{background: active===id?'var(--blue-50)':'transparent',color: active===id?'var(--blue-700)':'var(--ink)',fontWeight:600,textAlign:'left'}} onClick={()=>{setOpen(false);go(id);}}>{l}</button>)}
           <div className="hr" style={{margin:'10px 0'}}/>
-          <Btn variant="green" size="sm" icon="search" block onClick={()=>{setOpen(false);go('parent-search');}}>Trouver un enseignant</Btn>
-          <Btn variant="primary" size="sm" icon="user" block onClick={()=>{setOpen(false);go('tutor-onboarding');}}>Devenir enseignant</Btn>
-          <Btn variant="ghost" size="sm" block onClick={()=>{setOpen(false);go('dashboard');}}>Espace enseignant</Btn>
+          <Btn variant="green" size="sm" icon="search" block onClick={()=>{setOpen(false);go('parent-search');}}>{t('hero.cta.find')}</Btn>
+          <Btn variant="primary" size="sm" icon="user" block onClick={()=>{setOpen(false);go('tutor-onboarding');}}>{t('hero.cta.become')}</Btn>
+          <Btn variant="ghost" size="sm" block onClick={()=>{setOpen(false);go('dashboard');}}>{t('nav.tutorSpace')}</Btn>
         </div>
       </>}
     </>;
@@ -34,58 +50,60 @@ function MarketingNav({go, active}){
       {items.map(([id,l])=><a key={id} className="link" onClick={()=>go(id)}
         style={active===id?{color:'var(--blue-700)'}:{}}>{l}</a>)}
     </div>
-    <div className="row gap-10" style={{marginLeft:'auto'}}>
-      <Btn variant="ghost" size="sm" onClick={()=>go('dashboard')}>Espace enseignant</Btn>
-      <Btn variant="green" size="sm" icon="search" onClick={()=>go('parent-search')}>Trouver un enseignant</Btn>
-      <Btn variant="primary" size="sm" icon="user" onClick={()=>go('tutor-onboarding')}>Devenir enseignant</Btn>
+    <div className="row gap-10" style={{marginLeft:'auto',alignItems:'center'}}>
+      <LangToggle/>
+      <Btn variant="ghost" size="sm" onClick={()=>go('dashboard')}>{t('nav.tutorSpace')}</Btn>
+      <Btn variant="green" size="sm" icon="search" onClick={()=>go('parent-search')}>{t('hero.cta.find')}</Btn>
+      <Btn variant="primary" size="sm" icon="user" onClick={()=>go('tutor-onboarding')}>{t('nav.becomeTutor')}</Btn>
     </div>
   </div>;
 }
 
 /* ---- mini dashboard preview used in hero ---- */
 function HeroPreview(){
+  useLang();
   return <div className="card" style={{padding:18, borderRadius:20, boxShadow:'var(--sh-3)', position:'relative', overflow:'hidden'}}>
     <div className="row between" style={{marginBottom:14,gap:10}}>
       <div className="row gap-10" style={{minWidth:0}}>
         <Avatar initials="AB" cls="av-b" size={36}/>
         <div className="col" style={{gap:1,minWidth:0}}>
-          <span className="w-700 t-14" style={{whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>Math 4AM — Préparation BEM</span>
-          <span className="faint t-12">Samedi & Mardi · Ouargla</span>
+          <span className="w-700 t-14" style={{whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{t('aperçu.preview.group')}</span>
+          <span className="faint t-12">{t('aperçu.preview.schedule')}</span>
         </div>
       </div>
       <div style={{flex:'none'}}><Places places={2} cap={8}/></div>
     </div>
     <div className="row gap-8" style={{marginBottom:14}}>
       <SeatRow cap={8} students={6}/>
-      <span className="faint t-12 w-600" style={{marginLeft:2}}>6 / 8 élèves</span>
+      <span className="faint t-12 w-600" style={{marginLeft:2}}>{t('aperçu.preview.places')}</span>
     </div>
     <div className="card-flat" style={{padding:14, background:'var(--bg)', border:'none'}}>
       <div className="row between" style={{marginBottom:10}}>
-        <div className="row gap-8"><Avatar initials="YB" cls="av-o" size={28}/><span className="w-700 t-13">Yacine — Rapport de suivi</span></div>
-        <span className="badge badge-verified" style={{fontSize:11,padding:'3px 7px'}}><Icon name="checkc" size={12}/>Validé</span>
+        <div className="row gap-8"><Avatar initials="YB" cls="av-o" size={28}/><span className="w-700 t-13">{t('aperçu.preview.reportTitle')}</span></div>
+        <span className="badge badge-verified" style={{fontSize:11,padding:'3px 7px'}}><Icon name="checkc" size={12}/>{t('aperçu.preview.validated')}</span>
       </div>
       <div className="row gap-10" style={{marginBottom:10}}>
         <div className="grow">
-          <div className="row between t-12 muted w-600" style={{marginBottom:5}}><span>Présence</span><span className="w-700" style={{color:'var(--green-700)'}}>87%</span></div>
+          <div className="row between t-12 muted w-600" style={{marginBottom:5}}><span>{t('aperçu.preview.attendance')}</span><span className="w-700" style={{color:'var(--green-700)'}}>87%</span></div>
           <Bar pct={87}/>
         </div>
         <div className="grow">
-          <div className="row between t-12 muted w-600" style={{marginBottom:5}}><span>Dernière note</span><span className="w-700" style={{color:'var(--blue-700)'}}>12/20</span></div>
+          <div className="row between t-12 muted w-600" style={{marginBottom:5}}><span>{t('aperçu.preview.lastScore')}</span><span className="w-700" style={{color:'var(--blue-700)'}}>12/20</span></div>
           <Bar pct={60} tone="blue"/>
         </div>
       </div>
       <div className="col gap-6">
-        <span className="t-11 w-700 faint" style={{letterSpacing:'.05em',textTransform:'uppercase',fontSize:10.5}}>Points faibles</span>
+        <span className="t-11 w-700 faint" style={{letterSpacing:'.05em',textTransform:'uppercase',fontSize:10.5}}>{t('aperçu.preview.weakPoints')}</span>
         <div className="row gap-6 wrap">
-          <span className="chip chip-weak" style={{fontSize:11.5,padding:'4px 9px'}}>Signes</span>
-          <span className="chip chip-weak" style={{fontSize:11.5,padding:'4px 9px'}}>Problèmes</span>
-          <span className="chip chip-weak" style={{fontSize:11.5,padding:'4px 9px'}}>Fractions</span>
+          <span className="chip chip-weak" style={{fontSize:11.5,padding:'4px 9px'}}>{t('aperçu.preview.weak.signs')}</span>
+          <span className="chip chip-weak" style={{fontSize:11.5,padding:'4px 9px'}}>{t('aperçu.preview.weak.problems')}</span>
+          <span className="chip chip-weak" style={{fontSize:11.5,padding:'4px 9px'}}>{t('aperçu.preview.weak.fractions')}</span>
         </div>
       </div>
     </div>
     <div className="row gap-8" style={{marginTop:12}}>
-      <div className="chip chip-green" style={{fontWeight:700}}><Icon name="trend" size={13}/>+3 pts ce mois</div>
-      <div className="chip chip-blue"><Icon name="wa" size={13}/>Partagé aux parents</div>
+      <div className="chip chip-green" style={{fontWeight:700}}><Icon name="trend" size={13}/>{t('aperçu.preview.trend')}</div>
+      <div className="chip chip-blue"><Icon name="wa" size={13}/>{t('aperçu.preview.shared')}</div>
     </div>
   </div>;
 }
@@ -116,6 +134,7 @@ function FeatureCard({icon, tone, title, items, kicker}){
    the component remains self-contained.
    ============================================================ */
 function NavHero({go}){
+  useLang(); // re-render on language change
   return <section className="nv-hero">
     <div className="nvh-bg base"></div>
     <div className="nvh-bg color"></div>
@@ -125,33 +144,33 @@ function NavHero({go}){
       <div className="nvh-copy">
         <span className="nvh-eyebrow nvh-up">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z"/><path d="M12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/></svg>
-          Soutien scolaire en Algérie
+          {t('hero.eyebrow')}
         </span>
         <h1 className="nvh-h1 nvh-up d1">
-          Une seule boucle entre le <span className="g">parent</span> et l'<span className="b">enseignant</span>.
+          {t('hero.h1.lead')} <span className="g">{t('hero.h1.parent')}</span>{t('hero.h1.and')}<span className="b">{t('hero.h1.tutor')}</span>.
         </h1>
-        <p className="nvh-tagline nvh-up d1b">Nous progressons ensemble.</p>
+        <p className="nvh-tagline nvh-up d1b">{t('hero.tagline')}</p>
         <p className="nvh-lede nvh-up d2">
-          Chaque séance nourrit un suivi clair pour <span className="nvh-eleve">l'élève</span> : présence, progrès et rapports validés — partagés là où les parents sont déjà, sur WhatsApp.
+          {t('hero.lede.before')} <span className="nvh-eleve">{t('hero.lede.student')}</span>{t('hero.lede.after')}
         </p>
         <div className="nvh-points nvh-up d3">
           <span className="nvh-point">
             <svg viewBox="0 0 24 24" fill="none" stroke="#2456B5" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M16 18v-1.5a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4V18"/><path d="M9 9.5A3.25 3.25 0 1 0 9 3a3.25 3.25 0 0 0 0 6.5Z"/><path d="M22 18v-1.5a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            Groupes &lt; 10 élèves
+            {t('hero.point.smallGroups')}
           </span>
           <span className="nvh-point">
             <svg viewBox="0 0 24 24" fill="none" stroke="#1F8A6D" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3Z"/><path d="M9.5 12l1.8 1.8L15 10"/></svg>
-            Rapports validés
+            {t('hero.point.validatedReports')}
           </span>
         </div>
         <div className="nvh-cta nvh-up d4">
           <button className="nvh-btn green" onClick={()=>go('parent-search')}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/><path d="M21 21l-4.3-4.3"/></svg>
-            Trouver un enseignant
+            {t('hero.cta.find')}
           </button>
           <button className="nvh-btn primary" onClick={()=>go('tutor-onboarding')}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M20 20v-2a5 5 0 0 0-5-5H9a5 5 0 0 0-5 5v2"/><path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/></svg>
-            Devenir enseignant
+            {t('hero.cta.become')}
           </button>
         </div>
       </div>
@@ -175,7 +194,7 @@ function NavHero({go}){
           <div className="nbg"></div>
           <div className="card">
             <div className="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20s-7-4.5-9-9a4.5 4.5 0 0 1 8-3 4.5 4.5 0 0 1 8 3c-1.5 4.5-7 9-7 9Z"/></svg></div>
-            <div className="tx"><b>Le parent</b><span>voit les progrès</span></div>
+            <div className="tx"><b>{t('hero.node.parent.title')}</b><span>{t('hero.node.parent.sub')}</span></div>
           </div>
         </div>
         {/* TEACHER node */}
@@ -183,7 +202,7 @@ function NavHero({go}){
           <div className="nbg"></div>
           <div className="card">
             <div className="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M16 18v-1.5a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4V18"/><path d="M9 9.5A3.25 3.25 0 1 0 9 3a3.25 3.25 0 0 0 0 6.5Z"/><path d="M22 18v-1.5a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-            <div className="tx"><b>L'enseignant</b><span>gère ses groupes</span></div>
+            <div className="tx"><b>{t('hero.node.tutor.title')}</b><span>{t('hero.node.tutor.sub')}</span></div>
           </div>
         </div>
         {/* WhatsApp report node */}
@@ -191,13 +210,13 @@ function NavHero({go}){
           <div className="nbg"></div>
           <div className="card">
             <div className="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3a9 9 0 0 0-7.7 13.6L3 21l4.5-1.2A9 9 0 1 0 12 3Z"/><path d="M9 8.5c.2-.5.4-.5.6-.5h.5c.2 0 .4 0 .6.5l.7 1.6c.1.2.1.4 0 .6l-.5.7c-.1.2-.2.3 0 .6a6 6 0 0 0 2.7 2.4c.3.2.5.1.6 0l.7-.8c.2-.2.3-.2.6-.1l1.6.8c.2.1.3.2.3.4 0 .6-.4 1.4-1.2 1.6-.8.2-1.8.2-3.6-.7a9 9 0 0 1-3.7-3.6c-.6-1.1-.8-2-.7-2.6Z"/></svg></div>
-            <div className="tx"><b>Rapport partagé</b><span>validé · WhatsApp</span></div>
+            <div className="tx"><b>{t('hero.node.report.title')}</b><span>{t('hero.node.report.sub')}</span></div>
           </div>
         </div>
         {/* progress chip */}
         <span className="nvh-chip">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 17l6-6 4 4 7-7"/><path d="M14 8h6v6"/></svg>
-          +3 pts
+          {t('hero.chip.points')}
         </span>
       </div>
     </div>
@@ -287,6 +306,7 @@ function Connector({caption, direction, tone, vertical}){
 }
 
 function Landing({go}){
+  useLang();
   const isMobile = useIsNarrow();
   return <div className="screen-anim" style={{background:'var(--bg)',minHeight:'100%'}}>
     <MarketingNav go={go} active="landing"/>
@@ -304,9 +324,9 @@ function Landing({go}){
       <div style={{position:'absolute',inset:0,pointerEvents:'none',
         background:'radial-gradient(700px 380px at 10% 0%, rgba(46,168,108,.10), transparent 60%), radial-gradient(700px 380px at 92% 100%, rgba(58,118,232,.10), transparent 60%)'}}></div>
       <div style={{position:'relative',maxWidth:1200,margin:'0 auto',padding:isMobile?'24px 18px 36px':'56px 40px 56px'}}>
-        <SecHead center eyebrow="Aperçu de la plateforme"
-          title="Le suivi côté enseignant, le rapport côté parent"
-          desc="L'enseignant gère ses groupes et ses séances ; le parent reçoit un rapport clair et validé. Tout est lié."/>
+        <SecHead center eyebrow={t('aperçu.eyebrow')}
+          title={t('aperçu.title')}
+          desc={t('aperçu.desc')}/>
         <div style={{marginTop:isMobile?22:36,maxWidth:560,marginLeft:'auto',marginRight:'auto'}}>
           <HeroPreview/>
         </div>
@@ -316,37 +336,37 @@ function Landing({go}){
     {/* TRUST STRIP */}
     <div style={{borderTop:'1px solid var(--line)',borderBottom:'1px solid var(--line)',background:'#fff'}}>
       <div style={{maxWidth:1200,margin:'0 auto',padding:'22px 40px',display:'flex',gap:40,flexWrap:'wrap',justifyContent:'space-between'}}>
-        {[['Trouvez un petit groupe de confiance','users'],['Suivez les progrès réels','trend'],['Recevez des rapports clairs','file'],['Partagez via WhatsApp','wa']].map(([t,ic],i)=>
-          <div key={i} className="row gap-10"><Icon name={ic} size={20} style={{color:'var(--blue-600)'}}/><span className="w-600 t-15">{t}</span></div>)}
+        {[[t('trust.smallGroup'),'users'],[t('trust.realProgress'),'trend'],[t('trust.clearReports'),'file'],[t('trust.whatsapp'),'wa']].map(([lbl,ic],i)=>
+          <div key={i} className="row gap-10"><Icon name={ic} size={20} style={{color:'var(--blue-600)'}}/><span className="w-600 t-15">{lbl}</span></div>)}
       </div>
     </div>
 
     {/* AVANT / AVEC NAVANSO */}
     <div style={{maxWidth:1200,margin:'0 auto',padding:'56px 40px 8px'}}>
-      <SecHead center eyebrow="Le changement"
-        title="Avant Navanso, et avec Navanso"
-        desc="Navanso ne remplace pas la façon de travailler de l’enseignant — il structure ce qui existe déjà et le rend lisible pour le parent."/>
+      <SecHead center eyebrow={t('avant.eyebrow')}
+        title={t('avant.title')}
+        desc={t('avant.desc')}/>
       <div className="cmp" style={{marginTop:36,display:'grid',gridTemplateColumns:isMobile?'1fr':'1fr 1fr'}}>
         <div className="cmp-col cmp-before">
           <div className="row between" style={{marginBottom:10}}>
-            <span className="w-800 t-16" style={{color:'var(--ink-2)'}}>Avant Navanso</span>
-            <span className="chip chip-gray">Aujourd’hui</span>
+            <span className="w-800 t-16" style={{color:'var(--ink-2)'}}>{t('avant.before.label')}</span>
+            <span className="chip chip-gray">{t('avant.before.now')}</span>
           </div>
-          {['Cahier papier difficile à retrouver','Messages WhatsApp dispersés','Remarques surtout verbales','Suivi des progrès difficile à reconstituer'].map((t,i)=>
+          {[t('avant.before.1'),t('avant.before.2'),t('avant.before.3'),t('avant.before.4')].map((lbl,i)=>
             <div key={i} className="cmp-row">
               <span className="ci" style={{background:'#fff',color:'var(--faint)'}}><Icon name="x" size={13}/></span>
-              <span className="t-14 lh-14" style={{color:'var(--muted)'}}>{t}</span>
+              <span className="t-14 lh-14" style={{color:'var(--muted)'}}>{lbl}</span>
             </div>)}
         </div>
         <div className="cmp-col cmp-after">
           <div className="row between" style={{marginBottom:10}}>
-            <span className="w-800 t-16" style={{color:'var(--blue-800,var(--blue-700))'}}>Avec Navanso</span>
-            <span className="chip chip-blue">Le prototype</span>
+            <span className="w-800 t-16" style={{color:'var(--blue-800,var(--blue-700))'}}>{t('avant.after.label')}</span>
+            <span className="chip chip-blue">{t('avant.after.prototype')}</span>
           </div>
-          {['Historique élève structuré, séance après séance','Rapport parent clair et validé','WhatsApp enrichi par un rapport validé','Progrès visibles dans le temps'].map((t,i)=>
+          {[t('avant.after.1'),t('avant.after.2'),t('avant.after.3'),t('avant.after.4')].map((lbl,i)=>
             <div key={i} className="cmp-row">
               <span className="ci" style={{background:'var(--green-600)',color:'#fff'}}><Icon name="check" size={13}/></span>
-              <span className="t-14 lh-14" style={{color:'var(--ink)'}}>{t}</span>
+              <span className="t-14 lh-14" style={{color:'var(--ink)'}}>{lbl}</span>
             </div>)}
         </div>
       </div>
@@ -354,25 +374,25 @@ function Landing({go}){
 
     {/* FOR TUTORS / FOR PARENTS */}
     <div style={{maxWidth:1200,margin:'0 auto',padding:'64px 40px 20px'}}>
-      <SecHead center eyebrow="Une plateforme, deux côtés"
-        title="Le suivi qui relie l’enseignant et le parent"
-        desc="Navanso n’est pas une application scolaire générique. C’est une plateforme de confiance et de suivi pour le soutien en petits groupes."/>
+      <SecHead center eyebrow={t('twoSides.eyebrow')}
+        title={t('twoSides.title')}
+        desc={t('twoSides.desc')}/>
       <div style={{display:'grid',gridTemplateColumns:isMobile?'1fr':'1fr 1fr',gap:isMobile?16:22,marginTop:isMobile?28:38}}>
-        <FeatureCard tone="blue" icon="users" kicker="Pour les enseignants" title="Organisez vos petits groupes"
-          items={['Profil professionnel : matières, niveaux, lieu, horaires, capacité.','Gérez les groupes, la présence et les évaluations.','Identifiez les points faibles de chaque élève.','Réduisez les messages répétitifs aux parents.']}/>
-        <FeatureCard tone="green" icon="heart" kicker="Pour les parents" title="Comprenez les progrès réels"
-          items={['Découvrez des enseignants de confiance près de chez vous.','Voyez la taille du groupe et les places disponibles.','Suivez si votre enfant progresse vraiment.','Recevez des recommandations claires pour la maison.']}/>
+        <FeatureCard tone="blue" icon="users" kicker={t('twoSides.tutor.kicker')} title={t('twoSides.tutor.title')}
+          items={[t('twoSides.tutor.1'),t('twoSides.tutor.2'),t('twoSides.tutor.3'),t('twoSides.tutor.4')]}/>
+        <FeatureCard tone="green" icon="heart" kicker={t('twoSides.parent.kicker')} title={t('twoSides.parent.title')}
+          items={[t('twoSides.parent.1'),t('twoSides.parent.2'),t('twoSides.parent.3'),t('twoSides.parent.4')]}/>
       </div>
     </div>
 
     {/* SMALL GROUP + REPORTS + ASSISTANT */}
     <div style={{maxWidth:1200,margin:'0 auto',padding:isMobile?'24px 18px 8px':'40px 40px 8px',display:'grid',gridTemplateColumns:isMobile?'1fr':'1fr 1fr 1fr',gap:isMobile?16:22}}>
-      <FeatureCard tone="blue" icon="grid" title="Petits groupes lisibles"
-        items={['Capacité maximale claire pour chaque groupe.','Places disponibles visibles avant le contact.','Moins de 10 élèves pour un meilleur suivi.']}/>
-      <FeatureCard tone="green" icon="file" title="Rapports & suivi"
-        items={['Présence, dernière note, points faibles.','Recommandations concrètes pour la maison.','Historique des rapports conservé.']}/>
-      <FeatureCard tone="orange" icon="sparkle" title="Assistant de rédaction"
-        items={['Aide à reformuler les observations de l’enseignant.','Toujours relu et validé par l’enseignant.','L’enseignant reste au contrôle, jamais remplacé.']}/>
+      <FeatureCard tone="blue" icon="grid" title={t('features.smallGroup.title')}
+        items={[t('features.smallGroup.1'),t('features.smallGroup.2'),t('features.smallGroup.3')]}/>
+      <FeatureCard tone="green" icon="file" title={t('features.reports.title')}
+        items={[t('features.reports.1'),t('features.reports.2'),t('features.reports.3')]}/>
+      <FeatureCard tone="orange" icon="sparkle" title={t('features.assistant.title')}
+        items={[t('features.assistant.1'),t('features.assistant.2'),t('features.assistant.3')]}/>
     </div>
 
     {/* ASSISTANT CLARIFICATION BANNER */}
@@ -380,8 +400,8 @@ function Landing({go}){
       <div className="card" style={{padding:'24px 28px',borderRadius:18,background:'linear-gradient(100deg, var(--blue-50), #fff 70%)',border:'1px solid var(--blue-100)',display:'flex',gap:18,alignItems:'center',flexWrap:'wrap'}}>
         <div className="icn" style={{width:48,height:48,borderRadius:14,background:'#fff',color:'var(--blue-700)',display:'grid',placeItems:'center',boxShadow:'var(--sh-1)',flex:'none'}}><Icon name="shield" size={24}/></div>
         <div className="grow" style={{minWidth:280}}>
-          <h3 style={{fontSize:18,marginBottom:4}}>L’assistant aide, l’enseignant décide</h3>
-          <p className="muted t-15 lh-14">Navanso peut aider à reformuler les observations en un rapport clair. Chaque rapport est relu et validé par l’enseignant avant l’envoi — aucune évaluation automatique.</p>
+          <h3 style={{fontSize:18,marginBottom:4}}>{t('banner.assistant.title')}</h3>
+          <p className="muted t-15 lh-14">{t('banner.assistant.desc')}</p>
         </div>
         <ValidSeal/>
       </div>
@@ -392,20 +412,20 @@ function Landing({go}){
         remplace l'ancien doublon "consulte le profil" pour ancrer la
         confiance avant l'engagement. */}
     <div style={{maxWidth:1200,margin:'0 auto',padding:'64px 40px 20px'}}>
-      <SecHead center eyebrow="Le parcours, vu par le parent"
-        title="De la recherche d’un enseignant à la preuve du progrès"
-        desc="Quatre étapes simples — chacune renforce la confiance avant la suivante."/>
+      <SecHead center eyebrow={t('loop.eyebrow')}
+        title={t('loop.title')}
+        desc={t('loop.desc')}/>
       <div style={{display:'grid',gridTemplateColumns:isMobile?'1fr 1fr':'repeat(4,1fr)',gap:16,marginTop:isMobile?24:36}}>
-        {[['search','Je trouve un enseignant','Près de chez moi, avec la taille du groupe et les places restantes visibles avant le contact.','green'],
-          ['checkc','Je demande une séance d’essai','Avant de m’engager, je rencontre l’enseignant — souvent gratuitement.','orange'],
-          ['clipboard','L’enseignant suit mon enfant','Présence, évaluations et points faibles enregistrés après chaque séance.','blue'],
-          ['file','Je reçois un rapport clair','Validé par l’enseignant et partagé via WhatsApp — je sais ce qui progresse.','green']].map(([ic,t,d,tn],i)=>
+        {[['search',t('loop.step1.title'),t('loop.step1.desc'),'green'],
+          ['checkc',t('loop.step2.title'),t('loop.step2.desc'),'orange'],
+          ['clipboard',t('loop.step3.title'),t('loop.step3.desc'),'blue'],
+          ['file',t('loop.step4.title'),t('loop.step4.desc'),'green']].map(([ic,ti,d,tn],i)=>
           <div key={i} className="card pad-20 col gap-12" style={{position:'relative'}}>
             <div className="row between">
               <div className="icn" style={{width:40,height:40,borderRadius:11,background:`var(--${tn==='orange'?'orange':tn==='green'?'green':'blue'}-50)`,color:`var(--${tn==='orange'?'orange-600':tn==='green'?'green-700':'blue-700'})`,display:'grid',placeItems:'center'}}><Icon name={ic} size={20}/></div>
               <span className="stat-num faint" style={{fontSize:26,opacity:.4}}>{i+1}</span>
             </div>
-            <h3 style={{fontSize:16}}>{t}</h3>
+            <h3 style={{fontSize:16}}>{ti}</h3>
             <p className="muted t-14 lh-14">{d}</p>
           </div>)}
       </div>
@@ -414,8 +434,8 @@ function Landing({go}){
     {/* TESTIMONIALS */}
     <div style={{maxWidth:1200,margin:'0 auto',padding:'56px 40px 20px'}}>
       <div className="row between wrap" style={{marginBottom:18,gap:12}}>
-        <h2 style={{fontSize:24}}>Ce que disent les parents</h2>
-        <DemoTag>Données démo · témoignages illustratifs</DemoTag>
+        <h2 style={{fontSize:24}}>{t('testimonials.title')}</h2>
+        <DemoTag>{t('testimonials.demoTag')}</DemoTag>
       </div>
       <div style={{display:'grid',gridTemplateColumns:isMobile?'1fr':'1fr 1fr',gap:isMobile?16:22}}>
         {NAV.testimonials.map((t,i)=>
@@ -434,11 +454,11 @@ function Landing({go}){
       <div style={{borderRadius:24,padding:isMobile?'32px 22px':'52px 48px',background:'linear-gradient(120deg, var(--blue-800), var(--green-700))',color:'#fff',position:'relative',overflow:'hidden'}}>
         <div style={{position:'absolute',right:-40,top:-40,width:280,height:280,borderRadius:'50%',background:'rgba(255,255,255,.06)'}}></div>
         <div style={{position:'relative',maxWidth:820,textAlign:'center',margin:'0 auto'}}>
-          <h2 style={{color:'#fff',fontSize:isMobile?26:34,lineHeight:1.15,marginBottom:14}}>Le suivi qui relie l'enseignant et le parent.</h2>
-          <p style={{color:'rgba(255,255,255,.85)',fontSize:isMobile?15:17,marginBottom:isMobile?22:30,maxWidth:600,marginLeft:'auto',marginRight:'auto'}}>Que vous soyez parent à la recherche d'un enseignant de confiance ou enseignant qui veut mieux organiser son suivi, Navanso vous accompagne.</p>
+          <h2 style={{color:'#fff',fontSize:isMobile?26:34,lineHeight:1.15,marginBottom:14}}>{t('cta.title')}</h2>
+          <p style={{color:'rgba(255,255,255,.85)',fontSize:isMobile?15:17,marginBottom:isMobile?22:30,maxWidth:600,marginLeft:'auto',marginRight:'auto'}}>{t('cta.desc')}</p>
           <div className="row gap-12 wrap" style={{justifyContent:'center'}}>
-            <Btn variant="green" size="lg" icon="search" onClick={()=>go('parent-search')}>Trouver un enseignant</Btn>
-            <Btn variant="primary" size="lg" icon="user" onClick={()=>go('tutor-onboarding')} style={{background:'#fff',color:'var(--blue-700)',borderColor:'#fff'}}>Devenir enseignant</Btn>
+            <Btn variant="green" size="lg" icon="search" onClick={()=>go('parent-search')}>{t('hero.cta.find')}</Btn>
+            <Btn variant="primary" size="lg" icon="user" onClick={()=>go('tutor-onboarding')} style={{background:'#fff',color:'var(--blue-700)',borderColor:'#fff'}}>{t('hero.cta.become')}</Btn>
           </div>
         </div>
       </div>
@@ -449,14 +469,15 @@ function Landing({go}){
 }
 
 function Footer({go}){
+  useLang();
   /* Minimal footer — the header already carries the navigation, so the
      footer just anchors the brand and shows a copyright line. */
   return <div style={{borderTop:'1px solid var(--line)',background:'#fff'}}>
     <div style={{maxWidth:1200,margin:'0 auto',padding:'28px 40px',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:16}}>
       <Logo size={32} sub/>
-      <span className="faint t-13">© 2026 Navanso. Tous droits réservés.</span>
+      <span className="faint t-13">{t('footer.copyright')}</span>
     </div>
   </div>;
 }
 
-Object.assign(window,{Landing,MarketingNav,Footer,HeroPreview,FeatureCard});
+Object.assign(window,{Landing,MarketingNav,Footer,HeroPreview,FeatureCard,LangToggle});

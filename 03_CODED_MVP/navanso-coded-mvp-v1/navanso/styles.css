@@ -552,3 +552,69 @@ a{color:inherit;text-decoration:none}
   .tbl td:first-child{padding-top:8px}
   .phone{margin:0 auto}
 }
+
+/* =========================================================
+   B22 — Arabic (RTL) layer.
+   Activated automatically when <html dir="rtl">. Uses Tajawal
+   for readable Arabic typography (Latin glyphs fall through to
+   Inter via fallback). Flips arrow icons and selected layouts.
+   ========================================================= */
+[dir="rtl"] body,
+[dir="rtl"] .mnav,
+[dir="rtl"] .topbar,
+[dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3,
+[dir="rtl"] .nvh-h1, [dir="rtl"] .nvh-lede, [dir="rtl"] .nvh-tagline,
+[dir="rtl"] .nvh-eyebrow, [dir="rtl"] .nvh-node .card,
+[dir="rtl"] .input, [dir="rtl"] .textarea, [dir="rtl"] .select,
+[dir="rtl"] .btn, [dir="rtl"] .chip, [dir="rtl"] .badge,
+[dir="rtl"] .card, [dir="rtl"] .label, [dir="rtl"] .eyebrow,
+[dir="rtl"] .nav-i, [dir="rtl"] .nav-l,
+[dir="rtl"] p, [dir="rtl"] span, [dir="rtl"] a, [dir="rtl"] button{
+  font-family:'Tajawal','Inter',system-ui,sans-serif;
+}
+[dir="rtl"]{
+  /* Arabic reads slightly larger at the same point size; nudge defaults */
+  font-feature-settings:"liga","kern";
+}
+
+/* Mirror common chevron / arrow icons. We keep the SVG markup the same and
+   just rotate the rendered icon when in RTL. */
+[dir="rtl"] .icon-flip,
+[dir="rtl"] svg[data-arrow],
+[dir="rtl"] .btn .ic-arrow,
+[dir="rtl"] [class*="-arrowl"] svg,
+[dir="rtl"] [class*="-arrow"]:not([class*="-arrowl"]) svg{
+  transform:scaleX(-1);
+}
+
+/* Language toggle pill (used in MarketingNav + walkthrough topbar) */
+.lang-seg{
+  display:inline-flex; background:var(--line-2); border:1px solid var(--line);
+  border-radius:99px; padding:3px;
+}
+.lang-seg button{
+  background:transparent; color:var(--muted); border:0; cursor:pointer;
+  padding:5px 11px; font-size:12.5px; font-weight:700; border-radius:99px;
+  font-family:inherit; transition:.15s ease;
+  min-width:28px; text-align:center;
+}
+.lang-seg button.on{background:var(--blue-700); color:#fff}
+.lang-seg button:hover:not(.on){background:rgba(0,0,0,.04); color:var(--ink)}
+.lang-seg button[data-lang="ar"]{font-family:'Tajawal','Inter',sans-serif; font-size:14px}
+
+/* Dark variant for the walkthrough topbar */
+.topbar-dark .lang-seg{background:#162033; border-color:#243049}
+.topbar-dark .lang-seg button{color:#A8B2C6}
+.topbar-dark .lang-seg button.on{background:linear-gradient(135deg,#3A76E8,#2456B5); color:#fff}
+.topbar-dark .lang-seg button:hover:not(.on){background:rgba(255,255,255,.05); color:#fff}
+
+/* Partial-translation badge for screens not yet localised */
+.nv-lang-partial{
+  position:sticky; top:0; z-index:50;
+  background:linear-gradient(90deg,var(--orange-50),#fff);
+  border-bottom:1px solid var(--orange-100);
+  padding:8px 16px; text-align:center;
+  font-size:12.5px; color:var(--orange-600); font-weight:600;
+  font-family:'Tajawal','Inter',sans-serif;
+}
+

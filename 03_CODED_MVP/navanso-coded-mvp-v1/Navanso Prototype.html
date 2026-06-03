@@ -4,7 +4,14 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Navanso — Prototype</title>
-<link rel="stylesheet" href="navanso/styles.css?v=39"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="navanso/styles.css?v=40"/>
+<script>/* Set <html dir/lang> ASAP from localStorage to avoid a LTR→RTL flash for AR users on reload. */
+  (function(){var l=localStorage.getItem('nv_lang')==='ar'?'ar':'fr';
+   document.documentElement.dir=l==='ar'?'rtl':'ltr';
+   document.documentElement.lang=l;})();</script>
 <style>html,body,#root{height:100%}body{overflow:hidden}</style>
 </head>
 <body>
@@ -13,6 +20,7 @@
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 <script type="text/babel" src="navanso/data.jsx?v=33"></script>
+<script type="text/babel" src="navanso/i18n.jsx?v=1"></script>
 <script type="text/babel" src="navanso/icons.jsx?v=33"></script>
 <script type="text/babel" src="navanso/ui.jsx?v=33"></script>
 <script type="text/babel" src="navanso/marketing.jsx?v=40"></script>
