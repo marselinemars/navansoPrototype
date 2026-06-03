@@ -501,6 +501,115 @@ function wt(key, vars){
   return Object.keys(vars).reduce((a,k)=>a.replace(new RegExp('\\{'+k+'\\}','g'), vars[k]), s);
 }
 
+/* Central map for act badge text (repeated across many slides). */
+const ACT_LABELS_AR = {
+  'Avant-propos':                                  'تمهيد',
+  'Acte 1 · Le parent cherche un enseignant':      'الفصل 1 · الوالد يبحث عن أستاذ',
+  'Acte 2 · L\'enseignant organise son suivi':     'الفصل 2 · الأستاذ يُنظّم متابعته',
+  'Acte 3 · Le progrès devient visible':           'الفصل 3 · التقدّم يصبح واضحاً',
+  'Outils complémentaires':                        'أدوات تكميليّة',
+  'Synthèse · trois couches, une boucle':          'الخلاصة · ثلاث طبقات، حلقة واحدة',
+  'Validation · côté parent':                      'التحقّق · من جانب الوالد',
+  'Validation · côté enseignant':                  'التحقّق · من جانب الأستاذ',
+};
+
+/* Arabic translations of the slides used in Mode Parent + the 3-layer closing.
+   Keyed by `step` to keep the FR SLIDES array untouched. Tutor-side slides
+   stay in French until Phase 2 — they are not in Mode Parent anyway. */
+const SLIDE_TR = {
+  '00': {
+    title:'حلقة ثقة بين الأولياء والأساتذة',
+    body:[
+      'Navanso منصّة للدّعم المدرسي في أفواج صغيرة، مصمّمة لواقع الجزائر. وعدها: <b>مساعدة الأولياء على إيجاد أستاذ موثوق، وإظهار تقدّم التلميذ بعد التّسجيل.</b>',
+      'هذا العرض يستعرض النموذج التجريبي في ثلاثة فصول: الاكتساب من جانب الوالد، التّنظيم من جانب الأستاذ، ودليل التقدّم المُتبادَل بينهما.',
+    ],
+    quote:'Navanso تنطلق من حلقة الثّقة بين الوالد والأستاذ. حول هذه الحلقة تأتي أدوات عمليّة تناسب الواقع اليومي للأساتذة.',
+  },
+  '01': {
+    title:'الصّفحة الرّئيسيّة — التّلميذ في المركز',
+    body:[
+      'ثلاث صور تدور حول علامة Navanso: الوالد، الأستاذ، والتّقرير المُرسَل. التّلميذ، الذي يرمز إليه الشّعار المركزي، هو ما يربط بينهم.',
+      'دعوتان واضحتان للفعل: <b>البحث عن أستاذ</b> للأولياء، و<b>أنا أستاذ</b> للأساتذة.',
+    ],
+    why:'Navanso موجَّهة إلى جمهورين يعيشان في نفس المنصّة: الأولياء الذين يبحثون عن متابعة جيّدة، والأساتذة الذين يريدون تنظيم عملهم بشكل أفضل.',
+  },
+  '03': {
+    title:'البحث عن أستاذ',
+    body:[
+      'مرشّحات حسب المادة، المستوى، الولاية، والصّيغة (حضوري أو عن بُعد). كلّ بطاقة تعرض سعة الفوج — مثلاً <b>4 أماكن متبقّية من 8</b> — وسعراً إرشاديّاً.',
+      'أيقونة القلب تُتيح حفظ الأستاذ لمقارنته لاحقاً.',
+    ],
+    why:'رؤية سعة الفوج والأماكن المتوفّرة قبل أيّ اتّصال تُساعد الأولياء على تصفية اختياراتهم دون مكالمات لا داعي لها.',
+  },
+  '04': {
+    title:'الملف الشّخصي للأستاذ',
+    body:[
+      'تعريف، المواد المُدرَّسة، المستويات المُغطّاة، الطّريقة البيداغوجيّة، الأفواج المتوفّرة، وواجهة عرض الأدلّة المُقدَّمة من طرف الأستاذ (شهادات، صور، شهادات أولياء).',
+      'لوحة تواصل ترافق الوالد طوال القراءة، مع زرّ WhatsApp ونموذج تقرير للطّمأنينة قبل التّواصل.',
+    ],
+    why:'الملف الشّخصي للأستاذ هو الشّاشة التي تُؤسّس الثّقة قبل أوّل اتّصال. يحلّ محلّ التّوصيات غير الرّسميّة بعرض منظّم وقابل للتحقّق.',
+  },
+  '05': {
+    title:'القائمة المختصرة والمقارنة',
+    body:[
+      'جدول مقارنة جنباً إلى جنب: السّعر، الأماكن المتوفّرة، السّعة القصوى، الصّيغة، الموقع، التّقييم، توفّر حصّة تجريبيّة.',
+      'ملاحظة تُذكّر بأنّ الكثير من الأولياء يُفضّلون الاتّصال باثنين أو ثلاثة أساتذة عبر WhatsApp قبل الاختيار.',
+    ],
+    why:'مرحلة المقارنة هذه موجودة بالفعل في عادات الأولياء — Navanso تُنظّمها دون استبدال الاتّصال المباشر.',
+  },
+  '06': {
+    title:'طلب تسجيل أو حصّة تجريبيّة',
+    body:[
+      'استمارة منظّمة: اسم الطّفل، المستوى، الأوقات المُفضَّلة، الهدف. خانة للتّأشير تُتيح طلب <b>حصّة تجريبيّة مجانيّة</b>.',
+      'عند الإرسال، يستلم الأستاذ إشعاراً وتُفتح محادثة تلقائيّاً برسالة ترحيب.',
+    ],
+    why:'الحصّة التجريبيّة تُتيح للوالد والأستاذ فرصة اللّقاء قبل أيّ التزام، وتخلق انتقالاً أسلس بين البحث والتّسجيل.',
+  },
+  '19': {
+    title:'التّقرير المُستلَم من طرف الوالد (الهاتف)',
+    body:[
+      'التّقرير يتكوّن من سبع كتل قصيرة: ترويسة موثّقة · هذا الشّهر في جملة · الحضور والعلامة · تقدّم الشّهر · النّقاط التي تحتاج إلى مراجعة · ما يجب فعله في البيت · ملاحظة شخصيّة من الأستاذ.',
+      'في أسفل الصّفحة، يُمكن للوالد تأكيد الاستلام، المشاركة عبر WhatsApp، التّحميل أو طباعة التّقرير.',
+    ],
+    why:'التّقرير مُصمَّم ليُقرأ بسرعة على الهاتف ويُشارَك بسهولة مع العائلة. الكتل قصيرة للحفاظ على الجوهر دون إثقال.',
+  },
+  '20': {
+    title:'المشاركة عبر WhatsApp',
+    body:[
+      'معاينة الرّسالة كما ستصل في محادثة WhatsApp الخاصّة بالوالد: بطاقة مُلخّصة للتّقرير ونصّ مرافق.',
+      'يُمكن إرسال الرّسالة باللّغة <b>الفرنسيّة</b> أو <b>بمزيج عربي-فرنسي</b>، حسب تفضيلات الوالد.',
+    ],
+    why:'يُشارَك التّقرير عبر WhatsApp، القناة التي يستعملها الأولياء يوميّاً — Navanso تندمج في هذا الاستعمال بدلاً من السّعي إلى استبداله.',
+  },
+  '25': {
+    title:'ثلاث طبقات، حلقة ثقة واحدة',
+    body:[
+      'الطّبقة 1 — <b>الوعد الجوهري</b>: مساعدة الأولياء على إيجاد أستاذ موثوق، وإظهار تقدّم التّلميذ.',
+      'الطّبقة 2 — <b>المتابعة العمليّة</b>: أفواج، حصص، ملاحظات وتقارير — ما يجعل الوعد ممكناً يوميّاً.',
+      'الطّبقة 3 — <b>أدوات تكميليّة</b>: مدفوعات، جدول ومهام — ما يجعل يوم الأستاذ أبسط، دون تشتيت الانتباه عن المتابعة.',
+    ],
+    quote:'Navanso تُركّز على حلقة المتابعة والثّقة، مع أدوات إدارة تكميليّة تُسهّل التّبنّي.',
+  },
+  '26': {
+    title:'شكراً على تصفّحك Navanso',
+    body:[
+      'لقد اطّلعت على المسار من جانب الوالد: البحث عن أستاذ، تصفّح الملفات الشخصيّة، طلب حصّة تجريبيّة، واستلام تقرير متابعة واضح.',
+      'رأيك ثمين. بعض الأسئلة القصيرة (≈ 3 دقائق) لفهم ما بدا لك مفيداً ومُطمئناً، أو ما قد ينقص لراحتك.',
+    ],
+    quote:'رابط الاستبيان للوليّ: [يُضاف]',
+  },
+};
+
+/* Resolve a slide field in the active language. Falls back to the FR string. */
+function tr(slide, field){
+  if(wtLang === 'ar'){
+    if(field === 'actLabel' && slide.actLabel && ACT_LABELS_AR[slide.actLabel]) return ACT_LABELS_AR[slide.actLabel];
+    const ar = SLIDE_TR[slide.step];
+    if(ar && ar[field] !== undefined) return ar[field];
+  }
+  return slide[field];
+}
+
 const SLIDES = [
 
   // ─── INTRO ───────────────────────────────────────────────────────────
@@ -871,7 +980,7 @@ function rebuildPicker(){
   viewSlides.forEach((s, idx) => {
     const o = document.createElement('option');
     o.value = idx;
-    o.textContent = `${String(idx+1).padStart(2,'0')} · ${s.title}`;
+    o.textContent = `${String(idx+1).padStart(2,'0')} · ${tr(s,'title')}`;
     picker.appendChild(o);
   });
 }
@@ -1029,13 +1138,13 @@ function setSrc(slide){
 function renderNoFrame(slide){
   const wrap = document.createElement('div');
   wrap.className = 'no-frame';
-  let html = `<div class="card"><span class="kicker">${slide.actLabel}</span><h2>${slide.title}</h2>`;
-  (slide.body||[]).forEach(p=>{ html += `<p>${p}</p>`; });
+  let html = `<div class="card"><span class="kicker">${tr(slide,'actLabel')}</span><h2>${tr(slide,'title')}</h2>`;
+  (tr(slide,'body')||[]).forEach(p=>{ html += `<p>${p}</p>`; });
   if(slide.layers){
     html += `<div class="layers">
-      <div class="layer l1"><div class="num">1</div><div><h4>Promesse cœur — trust & progress</h4><p>Trouver un enseignant de confiance et prouver le progrès de l'élève.</p></div></div>
-      <div class="layer l2"><div class="num">2</div><div><h4>Workflow opérationnel</h4><p>Groupes · séances · attendance · remarques · rapports.</p></div></div>
-      <div class="layer l3"><div class="num">3</div><div><h4>Outils complémentaires</h4><p>Paiements · planning · tâches · broadcasts.</p></div></div>
+      <div class="layer l1"><div class="num">1</div><div><h4>${wtLang==='ar'?'الوعد الجوهري — الثّقة والتقدّم':'Promesse cœur — trust & progress'}</h4><p>${wtLang==='ar'?'إيجاد أستاذ موثوق وإثبات تقدّم التّلميذ.':'Trouver un enseignant de confiance et prouver le progrès de l\'élève.'}</p></div></div>
+      <div class="layer l2"><div class="num">2</div><div><h4>${wtLang==='ar'?'المتابعة العمليّة':'Workflow opérationnel'}</h4><p>${wtLang==='ar'?'أفواج · حصص · حضور · ملاحظات · تقارير.':'Groupes · séances · attendance · remarques · rapports.'}</p></div></div>
+      <div class="layer l3"><div class="num">3</div><div><h4>${wtLang==='ar'?'أدوات تكميليّة':'Outils complémentaires'}</h4><p>${wtLang==='ar'?'مدفوعات · جدول · مهام · رسائل جماعيّة.':'Paiements · planning · tâches · broadcasts.'}</p></div></div>
     </div>`;
   }
   html += `</div>`;
@@ -1047,18 +1156,20 @@ function renderCommentary(slide){
   const cls = slide.act || 'intro';
   let html = `
     <div class="act-row">
-      <span class="act-badge ${cls}">${slide.actLabel}</span>
+      <span class="act-badge ${cls}">${tr(slide,'actLabel')}</span>
       <span class="step-num">${String(i+1).padStart(2,'0')} / ${viewSlides.length}</span>
     </div>
-    <h2 class="title">${slide.title}</h2>
+    <h2 class="title">${tr(slide,'title')}</h2>
     <div class="commentary">`;
-  (slide.body||[]).forEach(p=>{ html += `<p>${p}</p>`; });
+  (tr(slide,'body')||[]).forEach(p=>{ html += `<p>${p}</p>`; });
   html += `</div>`;
-  if(slide.why){
-    html += `<div class="why"><span class="eyebrow">${wt('why')}</span><p>${slide.why}</p></div>`;
+  const why = tr(slide,'why');
+  if(why){
+    html += `<div class="why"><span class="eyebrow">${wt('why')}</span><p>${why}</p></div>`;
   }
-  if(slide.quote){
-    html += `<div class="quote"><span>${wt('quote')}</span><p>« ${slide.quote} »</p></div>`;
+  const quote = tr(slide,'quote');
+  if(quote){
+    html += `<div class="quote"><span>${wt('quote')}</span><p>« ${quote} »</p></div>`;
   }
   commPane.innerHTML = html;
   commPane.scrollTop = 0;
