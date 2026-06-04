@@ -254,10 +254,10 @@ function StudentProfile({go, id}){
           <Avatar initials={y.initials} cls="av-o" size={68} ring/>
           <div className="col gap-7 grow">
             <h2 style={{fontSize:22}}>{y.name}</h2>
-            <div className="row gap-7 wrap">
+            <div className="row gap-7 wrap" style={{maxWidth:'100%'}}>
               <span className="chip chip-blue">{txData?txData(y.subject):y.subject}</span>
               <span className="chip chip-gray">{txData?txData(y.level):y.level}</span>
-              <span className="chip chip-gray"><Icon name="users" size={13}/>{y.group}</span>
+              <span className="chip chip-gray" style={{maxWidth:'100%',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}><Icon name="users" size={13}/>{y.group?(isMobile?y.group.split('—')[0].trim():y.group):''}</span>
             </div>
           </div>
           <div className="col" style={{alignItems:'flex-end',gap:6}}>

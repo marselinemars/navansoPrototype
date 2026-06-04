@@ -117,7 +117,7 @@ function Payments({go}){
               </select>
             </Field>
           </div>
-          <div className="row gap-7 wrap">
+          <div className="row gap-7 wrap" style={{rowGap:8,maxWidth:'100%'}}>
             {[
               ['all',isAr?'الكلّ':'Tous',rows.length],
               ['paid',isAr?'مدفوع':'Payés',counts.paid],
@@ -125,7 +125,7 @@ function Payments({go}){
               ['overdue',isAr?'متأخّر':'En retard',counts.overdue],
               ['missing',isAr?'لا شيء':'Aucun',counts.missing]
             ].map(([k,lab,n])=>
-              <button key={k} className={`pick ${statusFilter===k?'on':''}`} onClick={()=>setStatusFilter(k)}>{lab} ({n})</button>)}
+              <button key={k} className={`pick ${statusFilter===k?'on':''}`} style={{whiteSpace:'nowrap',flex:'0 0 auto'}} onClick={()=>setStatusFilter(k)}>{lab} ({n})</button>)}
           </div>
         </div>
 
