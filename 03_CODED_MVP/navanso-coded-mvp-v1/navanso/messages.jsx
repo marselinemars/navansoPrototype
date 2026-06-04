@@ -288,13 +288,15 @@ function CollapsibleRemark({r}){
   useLang();
   const isAr = NavI18n.lang === 'ar';
   const [open, setOpen] = React.useState(false);
-  const txt = r.text||'';
+  const txt = (typeof txData==='function')?txData(r.text||''):(r.text||'');
   const max = 70;
   const isLong = txt.length > max;
   const preview = isLong && !open ? (txt.slice(0,max).trim()+'…') : txt;
+  const topicLoc = (typeof txData==='function')?txData(r.topic||''):(r.topic||'');
+  const dateLoc = (typeof fmtDateLoc==='function')?fmtDateLoc(r.date||''):(r.date||'');
   return <div className="card-flat" style={{padding:'8px 10px',borderRadius:9,background:'var(--bg)',border:'none'}}>
     <div className="row between" style={{gap:8}}>
-      <span className="t-12 w-700 muted">{r.date} · {r.topic}</span>
+      <span className="t-12 w-700 muted">{dateLoc} · {topicLoc}</span>
       {isLong && <button className="t-11 w-700" style={{background:'none',border:'none',color:'var(--blue-700)',cursor:'pointer',padding:0}} onClick={()=>setOpen(o=>!o)}>{open?(isAr?'عرض أقلّ':'Voir moins'):(isAr?'عرض الكلّ':'Voir tout')}</button>}
     </div>
     <p className="t-13 lh-14" style={{color:'var(--ink-2)',marginTop:3}}>{preview||'—'}</p>

@@ -138,18 +138,91 @@ function TutorProfile({go}){
             <span className="faint t-13">{t('tp.showcase.desc')}</span>
           </div>
           <div style={{display:'grid',gridTemplateColumns:isMobile?'1fr':'1fr 1fr',gap:12}}>
-            {(t.vitrineExterne||[]).map(item=>{
+            {(tu.vitrineExterne||[]).map(item=>{
               const locItem = isAr ? (showcaseAr[item.id]||{}) : {};
-              const iconName = item.type==='whatsapp'?'wa':item.type==='diploma'?'file':item.type==='notebook'?'book':'clipboard';
-              const tone = item.type==='whatsapp'?'green':item.type==='diploma'?'blue':'orange';
-              const bg = {green:'var(--green-50)',blue:'var(--blue-50)',orange:'var(--orange-50)'}[tone];
-              const fg = {green:'var(--green-700)',blue:'var(--blue-700)',orange:'var(--orange-600)'}[tone];
+              const caption = locItem.caption || item.caption;
+              const meta    = locItem.meta    || item.meta;
+              const preview = locItem.preview || item.preview;
+              const typeLabel = (item.type==='whatsapp')?(isAr?'محادثة واتساب':'Conversation WhatsApp')
+                              : (item.type==='diploma')?(isAr?'وثيقة رسميّة':'Document officiel')
+                              : (item.type==='notebook')?(isAr?'لقطة من الكرّاس':'Extrait du cahier')
+                              : (isAr?'مرفق':'Pièce jointe');
+              if(item.type==='whatsapp'){
+                // Render as a mini WhatsApp chat bubble
+                return <div key={item.id} className="card-flat" style={{padding:0,borderRadius:12,border:'1px solid var(--line)',overflow:'hidden',background:'#fff'}}>
+                  <div className="row between" style={{padding:'9px 12px',background:'#075E54',color:'#fff'}}>
+                    <div className="row gap-8" style={{alignItems:'center'}}>
+                      <div className="icn" style={{width:24,height:24,borderRadius:99,background:'#128C7E',color:'#fff',display:'grid',placeItems:'center'}}><Icon name="wa" size={13}/></div>
+                      <span className="w-700 t-12">{typeLabel}</span>
+                    </div>
+                    <span className="t-11" style={{opacity:.85}}>{isAr?'مُؤرشَف':'Archivé'}</span>
+                  </div>
+                  <div style={{padding:'14px 12px',background:'#ECE5DD',minHeight:120}}>
+                    <div style={{maxWidth:'88%',background:'#DCF8C6',borderRadius:12,borderTopLeftRadius:4,padding:'8px 10px',boxShadow:'0 1px 1px rgba(0,0,0,.06)'}}>
+                      <p className="t-13 lh-15" style={{color:'#1A1A1A',margin:0,fontStyle:'normal'}}>{preview.replace(/^«\s?|\s?»$/g,'')}</p>
+                      <div className="row" style={{justifyContent:'flex-end',marginTop:4,gap:4,alignItems:'center'}}>
+                        <span className="t-11" style={{color:'#7AAB7A'}}>{meta.split('·').pop().trim()}</span>
+                        <Icon name="check" size={11} style={{color:'#4FC3F7'}}/>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row gap-8" style={{padding:'8px 12px',background:'#fff',borderTop:'1px solid var(--line-2)'}}>
+                    <Icon name="user" size={12} style={{color:'var(--faint)'}}/>
+                    <span className="t-11 faint w-600">{caption} · {meta}</span>
+                  </div>
+                </div>;
+              }
+              if(item.type==='diploma'){
+                // Render as a mini diploma card with seal + dotted border
+                return <div key={item.id} className="card-flat" style={{padding:0,borderRadius:12,border:'1px solid var(--line)',overflow:'hidden',background:'#fff'}}>
+                  <div className="row gap-10 between" style={{padding:'10px 14px',background:'var(--blue-50)',color:'var(--blue-800)',borderBottom:'1px solid var(--blue-100)'}}>
+                    <div className="row gap-8" style={{alignItems:'center'}}>
+                      <Icon name="file" size={15}/>
+                      <span className="w-700 t-12">{typeLabel}</span>
+                    </div>
+                    <Icon name="checkc" size={15}/>
+                  </div>
+                  <div style={{padding:'16px 16px 18px',position:'relative'}}>
+                    <div style={{border:'1.5px dashed var(--blue-100)',borderRadius:8,padding:'14px 14px',position:'relative',background:'#FAFBFE'}}>
+                      <div style={{position:'absolute',top:8,right:8,width:42,height:42,border:'1.5px solid var(--blue-700)',borderRadius:99,display:'grid',placeItems:'center',color:'var(--blue-700)',transform:'rotate(-10deg)',opacity:.85}}>
+                        <Icon name="checkc" size={20}/>
+                      </div>
+                      <span className="t-10 faint w-700" style={{textTransform:'uppercase',letterSpacing:'.08em'}}>{isAr?'شهادة':'Diplôme'}</span>
+                      <h4 className="w-700" style={{fontSize:16,margin:'4px 0 8px',lineHeight:1.25,color:'var(--ink)'}}>{caption}</h4>
+                      <p className="t-12 lh-14" style={{color:'var(--ink-2)',margin:0}}>{preview}</p>
+                    </div>
+                    <div className="row gap-6" style={{marginTop:10,alignItems:'center'}}>
+                      <Icon name="shield" size={12} style={{color:'var(--blue-700)'}}/>
+                      <span className="t-11 faint w-600">{meta}</span>
+                    </div>
+                  </div>
+                </div>;
+              }
+              if(item.type==='notebook'){
+                // Render as a notebook page with ruled lines
+                return <div key={item.id} className="card-flat" style={{padding:0,borderRadius:12,border:'1px solid var(--line)',overflow:'hidden',background:'#fff'}}>
+                  <div className="row gap-10 between" style={{padding:'10px 14px',background:'var(--orange-50)',color:'var(--orange-600)',borderBottom:'1px solid var(--orange-100)'}}>
+                    <div className="row gap-8" style={{alignItems:'center'}}>
+                      <Icon name="book" size={15}/>
+                      <span className="w-700 t-12">{typeLabel}</span>
+                    </div>
+                    <span className="t-11" style={{opacity:.85}}>{meta.split('·').pop().trim()}</span>
+                  </div>
+                  <div style={{padding:'12px 14px',background:'repeating-linear-gradient(to bottom, #FFFEFB 0, #FFFEFB 22px, var(--orange-50) 22px, var(--orange-50) 23px)',minHeight:130,position:'relative'}}>
+                    {/* Red margin line like a school notebook */}
+                    <div style={{position:'absolute',top:0,bottom:0,left:14,width:1,background:'rgba(225,80,80,.35)'}}></div>
+                    <h4 className="w-700" style={{fontSize:14,margin:'2px 0 8px 10px',lineHeight:1.4,color:'var(--ink)'}}>{caption}</h4>
+                    <p className="t-13 lh-15" style={{color:'var(--ink-2)',margin:'0 0 0 10px',fontStyle:'italic'}}>{preview}</p>
+                  </div>
+                </div>;
+              }
+              // Fallback — generic clipboard look (kept for any future type).
               return <div key={item.id} className="card-flat" style={{padding:14,borderRadius:12,border:'1px solid var(--line)'}}>
                 <div className="row gap-10" style={{marginBottom:10}}>
-                  <div className="icn" style={{width:34,height:34,borderRadius:10,background:bg,color:fg,display:'grid',placeItems:'center',flex:'none'}}><Icon name={iconName} size={17}/></div>
-                  <div className="col" style={{gap:1,minWidth:0}}><span className="w-700 t-14">{locItem.caption||item.caption}</span><span className="faint t-11">{locItem.meta||item.meta}</span></div>
+                  <div className="icn" style={{width:34,height:34,borderRadius:10,background:'var(--bg)',color:'var(--muted)',display:'grid',placeItems:'center',flex:'none'}}><Icon name="clipboard" size={17}/></div>
+                  <div className="col" style={{gap:1,minWidth:0}}><span className="w-700 t-14">{caption}</span><span className="faint t-11">{meta}</span></div>
                 </div>
-                <p className="t-13 lh-15" style={{color:'var(--ink-2)',background:'var(--bg)',padding:'10px 12px',borderRadius:9,fontStyle:'italic'}}>« {locItem.preview||item.preview} »</p>
+                <p className="t-13 lh-15" style={{color:'var(--ink-2)',background:'var(--bg)',padding:'10px 12px',borderRadius:9,fontStyle:'italic'}}>« {preview} »</p>
               </div>;
             })}
           </div>

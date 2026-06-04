@@ -100,7 +100,7 @@ function Payments({go}){
         {isAr?'متابعة بسيطة للدّفع الشّهريّ. تُفتح التّذكيرات على واتساب بنصّ جاهز. الدّفع نقداً يبقى الخيار الافتراضيّ.':'Suivi simple des paiements mensuels. Les rappels s\'ouvrent via WhatsApp avec un message prérempli. Les paiements en espèces (cash) restent l\'option par défaut.'}
       </span>
     </div>
-    <div style={{display:'grid',gridTemplateColumns:isMobile?'1fr':'1fr 300px',gap:20,alignItems:'start'}}>
+    <div style={{display:'grid',gridTemplateColumns:isMobile?'1fr':'minmax(0,1fr) 300px',gap:20,alignItems:'start'}}>
       <div className="col gap-14">
         {/* filters */}
         <div className="card pad-14 col gap-10">
@@ -132,8 +132,8 @@ function Payments({go}){
         {/* table */}
         {rows.length===0 ? (
           <div className="card pad-24 col center" style={{gap:8,textAlign:'center'}}><span className="muted">{isAr?'لا توجد دفعات لهذا الفلتر.':'Aucun paiement pour ce filtre.'}</span></div>
-        ) : <div className="card" style={{overflow:'hidden'}}>
-          <table className="tbl">
+        ) : <div className="card" style={{overflow:'auto'}}>
+          <table className="tbl" style={{minWidth:680}}>
             <thead><tr>
               <th>{isAr?'التّلميذ':'Élève'}</th><th>{isAr?'الفوج':'Groupe'}</th><th>{isAr?'المبلغ':'Montant'}</th><th>{isAr?'الحالة':'Statut'}</th><th>{isAr?'تاريخ الدّفع':'Date paiement'}</th><th>{isAr?'الطّريقة':'Mode'}</th><th></th>
             </tr></thead>

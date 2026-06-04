@@ -241,6 +241,21 @@ button{font-family:inherit}
 }
 .help-overlay .kr{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:13.5px;color:var(--ink-2)}
 
+/* Guidelines modal — mobile-friendly */
+.guide-tip{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-top:1px solid #EEF1F5}
+.guide-tip .k{flex:none;min-width:72px;padding:4px 10px;background:#E9F0FF;color:#3A5CDB;border-radius:8px;font-weight:700;font-size:12.5px;text-align:center;font-family:var(--font-d)}
+.guide-tip .v{font-size:14px;line-height:1.5;color:#3C4A5C}
+[dir="rtl"] #guideContent, [dir="rtl"] #guideCloseLabel{font-family:var(--font-ar,'Tajawal',sans-serif)}
+@media (max-width: 540px){
+  .help-overlay{padding:14px}
+  .help-overlay .box{padding:22px 18px;max-height:calc(100vh - 28px);overflow:auto;border-radius:14px}
+  .help-overlay h3{font-size:18px}
+  .guide-tip{flex-direction:column;gap:6px;padding:10px 0}
+  .guide-tip .k{min-width:0;align-self:flex-start;padding:3px 8px;font-size:11.5px}
+  .guide-tip .v{font-size:13.5px;line-height:1.5}
+  #guideClose{padding:14px 16px !important;font-size:14.5px !important}
+}
+
 /* Mid-size screens — keep the side-by-side layout but shrink the iframe */
 @media (max-width: 1280px){
   .stage{grid-template-columns:1fr 360px}
@@ -439,6 +454,16 @@ button{font-family:inherit}
   </div>
 </div>
 
+<!-- GUIDELINES — shown on first entry to Mode Parent / Mode Enseignant -->
+<div class="help-overlay" id="guideOv">
+  <div class="box" id="guideBox" style="max-width:560px">
+    <div id="guideContent"></div>
+    <button id="guideClose" style="margin-top:18px;width:100%;padding:12px 16px;border:none;border-radius:10px;background:var(--blue-700);color:#fff;font-family:var(--font-d);font-weight:700;font-size:15px;cursor:pointer">
+      <span id="guideCloseLabel">J'ai compris — Commencer</span>
+    </button>
+  </div>
+</div>
+
 <script>
 const PROTO = 'Navanso%20Prototype.html';
 
@@ -508,7 +533,7 @@ const ACT_LABELS_AR = {
   'Acte 2 · L\'enseignant organise son suivi':     'الفصل 2 · الأستاذ يُنظّم متابعته',
   'Acte 3 · Le progrès devient visible':           'الفصل 3 · التقدّم يصبح واضحاً',
   'Outils complémentaires':                        'أدوات تكميليّة',
-  'Synthèse · trois couches, une boucle':          'الخلاصة · ثلاث طبقات، حلقة واحدة',
+  'Synthèse · trois couches, une boucle':          'الخلاصة · ثلاث طبقات وحلقة ثقة واحدة',
   'Validation · côté parent':                      'التحقّق · من جانب الوالد',
   'Validation · côté enseignant':                  'التحقّق · من جانب الأستاذ',
 };
@@ -520,10 +545,10 @@ const SLIDE_TR = {
   '00': {
     title:'حلقة ثقة بين الأولياء والأساتذة',
     body:[
-      'Navanso منصّة للدّعم المدرسي في أفواج صغيرة، مصمّمة لواقع الجزائر. وعدها: <b>مساعدة الأولياء على إيجاد أستاذ موثوق، وإظهار تقدّم التلميذ بعد التّسجيل.</b>',
-      'هذا العرض يستعرض النموذج التجريبي في ثلاثة فصول: الاكتساب من جانب الوالد، التّنظيم من جانب الأستاذ، ودليل التقدّم المُتبادَل بينهما.',
+      'Navanso منصّة للدّعم المدرسيّ في أفواج صغيرة، مصمَّمة لواقع الجزائر. هدفها: <b>تسهيل بحث الأولياء عن أستاذ موثوق، وتجعل تقدّم التّلميذ واضحاً لهم بعد التّسجيل.</b>',
+      'هذا العرض يأخذك في النّموذج التّجريبيّ عبر ثلاثة فصول: كيف يبحث الوالد عن أستاذ، كيف يُنظّم الأستاذ متابعته، وكيف يصير التّقدّم مرئيّاً للطّرفين.',
     ],
-    quote:'Navanso تنطلق من حلقة الثّقة بين الوالد والأستاذ. حول هذه الحلقة تأتي أدوات عمليّة تناسب الواقع اليومي للأساتذة.',
+    quote:'Navanso تنطلق من حلقة الثّقة بين الوالد والأستاذ. وحول هذه الحلقة تُضاف أدوات عمليّة تناسب اليوم العاديّ للأستاذ.',
   },
   '01': {
     title:'الصّفحة الرّئيسيّة — التّلميذ في المركز',
@@ -532,6 +557,14 @@ const SLIDE_TR = {
       'دعوتان واضحتان للفعل: <b>البحث عن أستاذ</b> للأولياء، و<b>أنا أستاذ</b> للأساتذة.',
     ],
     why:'Navanso موجَّهة إلى جمهورين يعيشان في نفس المنصّة: الأولياء الذين يبحثون عن متابعة جيّدة، والأساتذة الذين يريدون تنظيم عملهم بشكل أفضل.',
+  },
+  '02': {
+    title:'المسار في أربع خطوات',
+    body:[
+      'أربع بطاقات تُلخّص تجربة الوالد: <b>أجد أستاذاً · أطلب حصّة تجريبيّة · يتابع الأستاذ طفلي · أتلقّى تقريراً واضحاً</b>.',
+      'المسار يُروى بضمير المتكلّم لجعل المشروع ملموساً مباشرةً.',
+    ],
+    why:'الحصّة التّجريبيّة وُضعت قصداً في وسط المسار: تُطابق الممارسة الفعليّة حيث يلتقي الأولياء والأساتذة قبل أيّ التزام.',
   },
   '03': {
     title:'البحث عن أستاذ',
@@ -565,13 +598,150 @@ const SLIDE_TR = {
     ],
     why:'الحصّة التجريبيّة تُتيح للوالد والأستاذ فرصة اللّقاء قبل أيّ التزام، وتخلق انتقالاً أسلس بين البحث والتّسجيل.',
   },
+  '07': {
+    title:'لوحة تحكّم الأستاذ',
+    body:[
+      'بعد التّواصل الأوّل، لا تتوقّف Navanso عند الرّبط بين الطّرفين: المنصّة تُساعد الأستاذ على هيكلة المتابعة الفعليّة للتّلميذ.',
+      'في الأعلى، بطاقة تُبرز <b>الحصّة القادمة</b> مع موضوعها والنّقاط للاستئناف والمكان. ثلاث إجراءات سريعة تحتها: إضافة تلميذ، إعداد تقرير، عرض التّلاميذ للمتابعة.',
+      'قسم يسرد التّلاميذ الذين يستحقّون اهتماماً خاصّاً — تراجع في الحضور أو تقرير في انتظار الإرسال.',
+    ],
+    why:'يرى الأستاذ فوراً ما يستدعي انتباهه دون البحث في عدّة قوائم.',
+  },
+  '08': {
+    title:'التّنقّل: الفضاء والأدوات',
+    body:[
+      'تنظَّم الشّريط الجانبيّ في مجموعتين: <b>الفضاء</b> للمتابعة اليوميّة (لوحة التّحكّم، الأفواج، التّلاميذ، الرّسائل، التّقييمات، التّقارير)، و<b>الأدوات</b> للوظائف التّكميليّة (الجدول، المهامّ، المدفوعات).',
+      'هذا الفصل يعكس الأولويّة المُعطاة للمتابعة البيداغوجيّة على حساب التّسيير الإداريّ.',
+    ],
+    why:'التّنظيم البصريّ يعكس فلسفة Navanso: متابعة التّلميذ والتّواصل مع الوالد قبل الإيقاع الإداريّ.',
+  },
+  '09': {
+    title:'أفواجي',
+    body:[
+      'نظرة عامّة قابلة للتّصفية: أفواج نشطة، كاملة، مؤرشفة. كلّ بطاقة تُبيّن سعة الفوج، الأماكن المتبقّية، الحصّة القادمة وعدد التّلاميذ الذين يستلزمون متابعة.',
+      'زرّ يُبرز إنشاء فوج جديد.',
+    ],
+    why:'أساتذة الدّعم في الجزائر يعملون غالباً في أفواج صغيرة. التّنظيم بالفوج يطابق واقعهم اليوميّ.',
+  },
+  '10': {
+    title:'تفاصيل الفوج',
+    body:[
+      'ثلاث علامات تبويب تنظّم حياة الفوج: <b>التّلاميذ · الحصص · المدفوعات</b>. لوحة جانبيّة تُلخّص الحصّة القادمة وتقترح إجراءات مثل إرسال رسالة جماعيّة على واتساب.',
+      'كلّ ما يتعلّق بالفوج يتمّ من هذه الصّفحة الواحدة.',
+    ],
+    why:'كلّ ما يخصّ الفوج — تلاميذ، حصص، مدفوعات، تواصل — في مكان واحد، تجنّباً للتّشتيت بين شاشات متعدّدة.',
+  },
+  '11': {
+    title:'ملفّ التّلميذ',
+    body:[
+      'ثلاث علامات تبويب: <b>المتابعة · السّجلّ · التّقارير</b>. تعرض المتابعة النّقاط الضّعيفة الجارية والمُصحَّحة، مع تقدّم بصريّ.',
+      'السّجلّ يسرد كلّ الحصص السّابقة مع الحضور والملاحظات؛ علامة التّبويب التّقارير تؤرشف الإرسالات السّابقة.',
+    ],
+    why:'يحفظ ملفّ التّلميذ ذاكرة كلّ الحصص السّابقة والتّقدّم المُحقَّق، حصّة بعد حصّة.',
+  },
+  '12': {
+    title:'تحضير حصّة',
+    body:[
+      'قبل الحصّة، يُحدِّد الأستاذ الموضوع، النّقاط للتّغطية، والنّقاط المُؤجَّلة من الحصّة السّابقة. خيار يُتيح استنساخ الحصّة السّابقة بسرعة.',
+      'التّحضير منفصل عن التّسجيل الذي يتمّ بعد الدّرس.',
+    ],
+    why:'تحضير الحصّة، ولو باختصار، يُحسّن جودة المتابعة ويُتيح استئناف العمل تماماً حيث توقّفت الحصّة السّابقة.',
+  },
+  '13': {
+    title:'تسجيل حصّة',
+    body:[
+      'لكلّ تلميذ: حالة <b>حاضر · متأخّر · غائب · بعذر</b>، ملاحظة حرّة، وعلامة تُمنح بنقرة واحدة (8/10/12/14/16/18) أو تُكتب بحرّيّة.',
+      'يؤشّر الأستاذ أيضاً على ما تمّت تغطيته في البرنامج، يُضيف عناصر جديدة أُنجزت خلال الحصّة، يُسجّل الواجبات وما يريد تذكّره للحصّة القادمة.',
+    ],
+    why:'صُمِّم التّسجيل ليأخذ نحو ثلاثين ثانية لكلّ تلميذ بعد الحصّة، حتّى لا يتحوّل الأستاذ إلى موظَّف إداريّ.',
+  },
+  '14': {
+    title:'تقييمات مُجمَّعة',
+    body:[
+      'نظرة شاملة على النّقاط الضّعيفة لكامل الفوج، مع عدد التّلاميذ المعنيّين بكلّ موضوع.',
+      'تُتيح تحديد ما يستحقّ المراجعة جماعيّاً في الحصص القادمة.',
+    ],
+    why:'الملاحظات المُدخَلة خلال الحصص تُغذّي عدّة عروض: متابعة فرديّة، عرض حسب الفوج، وإعداد تقارير الأولياء.',
+  },
+  '15': {
+    title:'صندوق الرّسائل',
+    body:[
+      'عرض موحَّد لمحادثات الأولياء، مُنظَّم حسب الحالة: <b>جديد · جارٍ · مقروء</b>. معاينة لآخر ملاحظة من الحصّة تُعطي السّياق قبل الفتح.',
+      'أوّل الاتّصالات (طلبات تسجيل دون تتمّة) متميّزة عن المحادثات النّشطة.',
+    ],
+    why:'التّواصل وليّ-أستاذ موحَّد مع سياق التّلميذ في متناول اليد، دون استبدال القنوات الشّخصيّة كواتساب.',
+  },
+  '16': {
+    title:'محادثة مع وليّ',
+    body:[
+      'العنوان يُذكّر بالتّلميذ المعنيّ، فوجه وآخر حصّة. حالات <b>مرئيّ</b> و<b>مقروء</b> تظهر على الرّسائل الصّادرة.',
+      'تُولَّد رسالة ترحيب تلقائيّاً عند تسجيل وليّ جديد.',
+    ],
+    why:'كلّ محادثة مرتبطة بسياقها — التّلميذ المعنيّ، الفوج، آخر حصّة — لتبادلات أدقّ.',
+  },
+  '17': {
+    title:'إعداد تقرير',
+    body:[
+      'انطلاقاً من الملاحظات المُدخَلة خلال الحصص، يقترح مساعد صياغة منظّمة: الحضور، آخر علامة، النّقاط القويّة، النّقاط الضّعيفة، توصية للبيت.',
+      'يُراجع الأستاذ ويعدّل كلّ قسم و<b>يُصادق</b> قبل الإرسال. لا يخرج أيّ تقرير دون مصادقة بشريّة.',
+    ],
+    why:'يُساعد المساعد على هيكلة الملاحظات في تقرير واضح، لكنّ الأستاذ يحتفظ بالتّحكّم الكامل: يُعدّل ويُصادق على كلّ قسم قبل المشاركة.',
+  },
+  '18': {
+    title:'مركز إدارة التّقارير',
+    body:[
+      'قائمة مُنظَّمة حسب الحالة: للإرسال، مُرسَلة، إشعارات استلام من الوليّ. خيار يُتيح إعداد تقارير فوج كامل دفعةً واحدة.',
+      'حين يفتح الوليّ التّقرير ويُؤكّد الاستلام، يصل الإشعار إلى الأستاذ.',
+    ],
+    why:'يتتبّع الأستاذ حالة كلّ تقرير: للإرسال، مُرسَل، مقروء، مؤكَّد من طرف الوليّ.',
+  },
+  '21': {
+    title:'فضاء الوالد — عرض العائلة',
+    body:[
+      'عرض موجَز للأولياء: الحصّة القادمة لكلّ طفل، أرشيف التّقارير المُستلَمة، حالة المدفوعات (محدَّث، في الانتظار، متأخّر).',
+      'الواجهة مُبسَّطة قصداً، دون تدفّق نشاطات ولا إشعارات متكرّرة.',
+    ],
+    why:'فضاء الوالد يهدف إلى الاطمئنان لا المراقبة — عرض هادئ يُعطي المعلومات الأساسيّة دون إثقال.',
+  },
+  '22': {
+    title:'الجدول الأسبوعيّ',
+    body:[
+      'تقويم الأسبوع، من الأحد إلى السّبت — مُكيَّف للتّقويم الجزائريّ حيث تقع العطلة في منتصف الأسبوع.',
+      'تنقّل بين الأسابيع السّابقة واللّاحقة؛ نقرة تفتح الحصّة لتحضيرها أو تسجيلها.',
+    ],
+    why:'تقويم أسبوعيّ لتصوّر الحصص القادمة والانتقال السّريع بين حصّة وأخرى.',
+  },
+  '23': {
+    title:'مهامّي',
+    body:[
+      'قائمة المهامّ التي يريد الأستاذ تذكّرها، مرتبطة بتلميذ أو فوج أو حصّة. مهمّة غير منتهية تُنقَل تلقائيّاً إلى الحصّة التّالية.',
+      'مُحرِّر سريع يُتيح إضافة مهمّة في لحظة.',
+    ],
+    why:'يمكن ربط المهامّ بتلميذ أو فوج أو حصّة، وتُنقَل تلقائيّاً إذا لم تُنجَز.',
+  },
+  '24': {
+    title:'متابعة المدفوعات',
+    body:[
+      'متابعة المدفوعات الشّهريّة حسب الفوج والتّلميذ. الحالات: <b>مدفوع · في الانتظار · متأخّر</b>، مع ملخّص في أعلى الصّفحة.',
+      'لا معالجة دفع عبر الإنترنت — متابعة بسيطة للدّفع نقداً، تتلاءم مع الممارسة الشّائعة في الجزائر.',
+    ],
+    why:'متابعة بسيطة للدّفع النّقديّ الشّهريّ، دون إدماج دفع إلكترونيّ — مُكيَّفة لواقع السّوق الجزائريّ.',
+  },
+  '27': {
+    title:'شكراً على تصفّحك Navanso',
+    body:[
+      'لقد اطّلعت على المسار من جانب الأستاذ: ظهور ملفّك، تنظيم الأفواج، تسجيل حصّة وإعداد تقرير للوليّ.',
+      'رأيك ثمين. بعض الأسئلة القصيرة (≈ 5 دقائق) حول الفائدة، واقعيّة الإدخال، القيمة لأولياء تلاميذك، واستعدادك لاستخدام مثل هذه الأداة يوميّاً.',
+      '<a href="https://docs.google.com/forms/d/e/1FAIpQLSeGL_XObO_f06v_PldRO2HH7iD-L7lV-lFOHxrT-auvOBOMoQ/viewform" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;margin-top:6px;padding:12px 20px;background:linear-gradient(135deg,#3A76E8,#2456B5);color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:14.5px;box-shadow:0 4px 12px rgba(58,118,232,.25)">← فتح استبيان الأستاذ</a>',
+    ],
+  },
   '19': {
     title:'التّقرير المُستلَم من طرف الوالد (الهاتف)',
     body:[
-      'التّقرير يتكوّن من سبع كتل قصيرة: ترويسة موثّقة · هذا الشّهر في جملة · الحضور والعلامة · تقدّم الشّهر · النّقاط التي تحتاج إلى مراجعة · ما يجب فعله في البيت · ملاحظة شخصيّة من الأستاذ.',
-      'في أسفل الصّفحة، يُمكن للوالد تأكيد الاستلام، المشاركة عبر WhatsApp، التّحميل أو طباعة التّقرير.',
+      'يتكوّن التّقرير من سبعة أقسام قصيرة: ترويسة مُصادَق عليها · ملخّص الشّهر في سطر · الحضور والعلامة · تقدّم الشّهر · نقاط تحتاج إلى مراجعة · ما يُنصَح به في البيت · ملاحظة شخصيّة من الأستاذ.',
+      'في الأسفل، يُمكن للوالد تأكيد الاستلام، المشاركة عبر WhatsApp، تحميل التّقرير أو طباعته.',
     ],
-    why:'التّقرير مُصمَّم ليُقرأ بسرعة على الهاتف ويُشارَك بسهولة مع العائلة. الكتل قصيرة للحفاظ على الجوهر دون إثقال.',
+    why:'صُمِّم التّقرير ليُقرأ بسرعة على الهاتف ويُشارَك بسهولة مع العائلة. الأقسام قصيرة عمداً لإيصال الجوهر دون إرهاق القارئ.',
   },
   '20': {
     title:'المشاركة عبر WhatsApp',
@@ -584,19 +754,19 @@ const SLIDE_TR = {
   '25': {
     title:'ثلاث طبقات، حلقة ثقة واحدة',
     body:[
-      'الطّبقة 1 — <b>الوعد الجوهري</b>: مساعدة الأولياء على إيجاد أستاذ موثوق، وإظهار تقدّم التّلميذ.',
-      'الطّبقة 2 — <b>المتابعة العمليّة</b>: أفواج، حصص، ملاحظات وتقارير — ما يجعل الوعد ممكناً يوميّاً.',
-      'الطّبقة 3 — <b>أدوات تكميليّة</b>: مدفوعات، جدول ومهام — ما يجعل يوم الأستاذ أبسط، دون تشتيت الانتباه عن المتابعة.',
+      'الطّبقة 1 — <b>الوعد الأساسيّ</b>: تسهيل بحث الأولياء عن أستاذ موثوق، وجعل تقدّم التّلميذ مرئيّاً.',
+      'الطّبقة 2 — <b>المتابعة اليوميّة</b>: أفواج، حصص، ملاحظات وتقارير — ما يحوّل هذا الوعد إلى ممارسة فعليّة كلّ يوم.',
+      'الطّبقة 3 — <b>أدوات مكمّلة</b>: مدفوعات، جدول ومهامّ — تُيسّر يوم الأستاذ، دون أن تُبعده عن جوهر مهمّته.',
     ],
-    quote:'Navanso تُركّز على حلقة المتابعة والثّقة، مع أدوات إدارة تكميليّة تُسهّل التّبنّي.',
+    quote:'تركّز Navanso على حلقة المتابعة والثّقة، وتُضيف حولها أدوات تسيير تُسهّل تبنّي المنصّة.',
   },
   '26': {
     title:'شكراً على تصفّحك Navanso',
     body:[
-      'لقد اطّلعت على المسار من جانب الوالد: البحث عن أستاذ، تصفّح الملفات الشخصيّة، طلب حصّة تجريبيّة، واستلام تقرير متابعة واضح.',
+      'لقد اطّلعت على المسار من جانب الوالد: البحث عن أستاذ، تصفّح الملفات الشّخصيّة، طلب حصّة تجريبيّة، واستلام تقرير متابعة واضح.',
       'رأيك ثمين. بعض الأسئلة القصيرة (≈ 3 دقائق) لفهم ما بدا لك مفيداً ومُطمئناً، أو ما قد ينقص لراحتك.',
+      '<a href="https://docs.google.com/forms/d/e/1FAIpQLSdEAK0F-6XVbG7ms66A8lmCIKKnyfupfeFOrBr-KhX8vRaPFA/viewform" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;margin-top:6px;padding:12px 20px;background:linear-gradient(135deg,#27A085,#1F8A6D);color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:14.5px;box-shadow:0 4px 12px rgba(39,160,133,.25)">← فتح استبيان الوليّ</a>',
     ],
-    quote:'رابط الاستبيان للوليّ: [يُضاف]',
   },
 };
 
@@ -898,9 +1068,9 @@ const SLIDES = [
     title:'Merci d\'avoir parcouru Navanso',
     body:[
       'Vous venez de découvrir le parcours côté parent : la recherche d\'un enseignant, la consultation des profils, la demande de séance d\'essai, et la réception d\'un rapport de suivi clair.',
-      'Votre retour est précieux. Quelques questions courtes (≈ 3 minutes) pour comprendre ce qui vous a paru utile, rassurant, ou ce qui manquerait à votre tranquillité.'
+      'Votre retour est précieux. Quelques questions courtes (≈ 3 minutes) pour comprendre ce qui vous a paru utile, rassurant, ou ce qui manquerait à votre tranquillité.',
+      '<a href="https://docs.google.com/forms/d/e/1FAIpQLSdEAK0F-6XVbG7ms66A8lmCIKKnyfupfeFOrBr-KhX8vRaPFA/viewform" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;margin-top:6px;padding:12px 20px;background:linear-gradient(135deg,#27A085,#1F8A6D);color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:14.5px;box-shadow:0 4px 12px rgba(39,160,133,.25)">→ Répondre au questionnaire parent</a>'
     ],
-    quote:'Lien du questionnaire parent : [à insérer]',
     closing:true,
     validationClosing:true
   },
@@ -909,9 +1079,9 @@ const SLIDES = [
     title:'Merci d\'avoir parcouru Navanso',
     body:[
       'Vous venez de découvrir le parcours côté enseignant : la visibilité de votre profil, l\'organisation des groupes, la saisie d\'une séance et la génération d\'un rapport pour le parent.',
-      'Votre retour est précieux. Quelques questions courtes (≈ 5 minutes) sur l\'utilité, le réalisme de la saisie, la valeur pour vos parents d\'élèves, et votre disposition à utiliser ce type d\'outil au quotidien.'
+      'Votre retour est précieux. Quelques questions courtes (≈ 5 minutes) sur l\'utilité, le réalisme de la saisie, la valeur pour vos parents d\'élèves, et votre disposition à utiliser ce type d\'outil au quotidien.',
+      '<a href="https://docs.google.com/forms/d/e/1FAIpQLSeGL_XObO_f06v_PldRO2HH7iD-L7lV-lFOHxrT-auvOBOMoQ/viewform" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;margin-top:6px;padding:12px 20px;background:linear-gradient(135deg,#3A76E8,#2456B5);color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:14.5px;box-shadow:0 4px 12px rgba(58,118,232,.25)">→ Répondre au questionnaire enseignant</a>'
     ],
-    quote:'Lien du questionnaire enseignant : [à insérer]',
     closing:true,
     validationClosing:true
   },
@@ -997,9 +1167,147 @@ function setMode(m){
   rebuildPicker();
   syncModeButtons();
   render();
+  // Show guidelines on first entry to parent / tutor mode (per browser).
+  maybeShowGuidelines(m);
 }
 
 modeBtns.forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+
+/* ───── Guidelines (one-time per mode) ───── */
+/* Labels for the "where to find the commentary" tip — adapts to viewport.
+   Desktop layout: commentary sits in the LEFT pane (RTL: right).
+   Mobile layout (<= 860px): commentary sits ABOVE the prototype iframe. */
+function commentaryLabels(){
+  const isMobile = window.matchMedia('(max-width: 860px)').matches;
+  return {
+    fr: {
+      key:   isMobile ? 'Lisez le panneau du haut'  : 'Lisez le panneau de côté',
+      parent:isMobile
+        ? 'Il s\'affiche au-dessus du prototype et décrit ce que voit le parent à chaque étape — c\'est le cœur du parcours.'
+        : 'Il décrit ce que voit le parent et pourquoi cela compte — c\'est le cœur du parcours.',
+      tutor: isMobile
+        ? 'Il s\'affiche au-dessus du prototype et explique ce que voit l\'enseignant à chaque étape, et pourquoi.'
+        : 'Il explique ce que voit l\'enseignant à cet endroit, et pourquoi.',
+    },
+    ar: {
+      key:   isMobile ? 'اقرأ اللّوحة في الأعلى' : 'اقرأ اللّوحة الجانبيّة',
+      parent:isMobile
+        ? 'تظهر فوق النّموذج وتشرح ما يراه الوالد في كلّ خطوة — وهي جوهر العرض.'
+        : 'تشرح ما يراه الوالد في كلّ خطوة ولماذا — وهي جوهر العرض.',
+      tutor: isMobile
+        ? 'تظهر فوق النّموذج وتشرح ما يراه الأستاذ في كلّ خطوة ولماذا.'
+        : 'تشرح ما يراه الأستاذ في كلّ خطوة ولماذا.',
+    },
+  };
+}
+function buildGuideTexts(){
+  const c = commentaryLabels();
+  return {
+    fr: {
+      parent: {
+        title:'Bienvenue dans le Mode Parent',
+        intro:'Vous allez parcourir l\'expérience d\'un parent qui découvre Navanso : la recherche d\'un enseignant, la prise de contact, la séance d\'essai, puis le rapport reçu.',
+        tips:[
+          ['→ ←', 'Utilisez les flèches pour avancer / reculer entre les étapes.'],
+          [c.fr.key, c.fr.parent],
+          ['Cliquez librement dans le prototype', 'Vous pouvez explorer, mais les flèches restent la meilleure façon de suivre le récit.'],
+          ['9 écrans, ~3 minutes', 'Le parcours est court et linéaire. À la fin, un lien vers un court questionnaire de retour.'],
+        ],
+        btn:'J\'ai compris — Commencer le parcours',
+      },
+      tutor: {
+        title:'Bienvenue dans le Mode Enseignant',
+        intro:'Vous allez voir comment Navanso aide un enseignant à organiser son suivi : groupes, séances, remarques, et la génération du rapport partagé au parent.',
+        tips:[
+          ['→ ←', 'Utilisez les flèches pour avancer / reculer entre les étapes.'],
+          [c.fr.key, c.fr.tutor],
+          ['Cliquez librement dans le prototype', 'Vous pouvez explorer, mais suivez les flèches pour ne rien manquer.'],
+          ['10 écrans, ~5 minutes', 'Le parcours couvre une séance type. À la fin, un court questionnaire de retour.'],
+        ],
+        btn:'J\'ai compris — Commencer le parcours',
+      },
+    },
+    ar: {
+      parent: {
+        title:'مرحباً في وضع الوالد',
+        intro:'ستكتشف تجربة وليّ يستعمل Navanso لأوّل مرّة: البحث عن أستاذ، التّواصل معه، طلب حصّة تجريبيّة، ثمّ استلام التّقرير.',
+        tips:[
+          ['→ ←', 'استعمل الأسهم للتّنقّل بين الخطوات.'],
+          [c.ar.key, c.ar.parent],
+          ['يمكنك النّقر في النّموذج', 'استكشف بحرّيّة، لكنّ الأسهم تبقى الطّريقة الأفضل لمتابعة القصّة.'],
+          ['9 شاشات، 3 دقائق تقريباً', 'مسار قصير ومتسلسل. في النّهاية رابط استبيان قصير.'],
+        ],
+        btn:'فهمت — لنبدأ',
+      },
+      tutor: {
+        title:'مرحباً في وضع الأستاذ',
+        intro:'ستكتشف كيف يُساعد Navanso الأستاذ على تنظيم متابعته: الأفواج، الحصص، الملاحظات، وإعداد التّقرير المُرسَل إلى الوليّ.',
+        tips:[
+          ['→ ←', 'استعمل الأسهم للتّنقّل بين الخطوات.'],
+          [c.ar.key, c.ar.tutor],
+          ['يمكنك النّقر في النّموذج', 'استكشف بحرّيّة، لكن تابع الأسهم حتّى لا تفوّتك خطوة.'],
+          ['10 شاشات، 5 دقائق تقريباً', 'يُغطّي المسار يوماً عاديّاً للأستاذ. في النّهاية استبيان قصير.'],
+        ],
+        btn:'فهمت — لنبدأ',
+      },
+    },
+  };
+}
+let GUIDE_TEXTS = buildGuideTexts();
+/* Rebuild on viewport flip so a desktop visitor who resizes to mobile (or vice
+   versa) sees the right wording the next time the modal opens. */
+window.addEventListener('resize', ()=>{ GUIDE_TEXTS = buildGuideTexts(); });
+const guideOv      = document.getElementById('guideOv');
+const guideContent = document.getElementById('guideContent');
+const guideClose   = document.getElementById('guideClose');
+const guideCloseLabel = document.getElementById('guideCloseLabel');
+function maybeShowGuidelines(modeName){
+  if(modeName !== 'parent' && modeName !== 'tutor') return;
+  const seenKey = 'nv_wt_guide_' + modeName;
+  if(localStorage.getItem(seenKey) === '1') return;
+  showGuidelines(modeName);
+}
+function showGuidelines(modeName){
+  const lang = (wtLang === 'ar') ? 'ar' : 'fr';
+  const g = (GUIDE_TEXTS[lang] && GUIDE_TEXTS[lang][modeName]) || GUIDE_TEXTS.fr[modeName];
+  if(!g) return;
+  const tipsHtml = g.tips.map(([k,v])=>(
+    '<div class="guide-tip"><span class="k">' + k + '</span><span class="v">' + v + '</span></div>'
+  )).join('');
+  guideContent.innerHTML =
+    '<h3 style="margin:0 0 10px;font-size:22px">' + g.title + '</h3>' +
+    '<p style="margin:0 0 14px;font-size:14.5px;line-height:1.55;color:#3C4A5C">' + g.intro + '</p>' +
+    '<div>' + tipsHtml + '</div>';
+  guideCloseLabel.textContent = g.btn;
+  guideOv.dataset.mode = modeName;
+  guideOv.classList.add('on');
+}
+guideClose.addEventListener('click', ()=>{
+  const m = guideOv.dataset.mode;
+  if(m) localStorage.setItem('nv_wt_guide_' + m, '1');
+  guideOv.classList.remove('on');
+});
+guideOv.addEventListener('click', e => { if(e.target===guideOv) guideClose.click(); });
+
+/* Initial-load trigger for guidelines.
+   Priority:
+   1. If URL has ?mode=parent or ?mode=tutor → ALWAYS show the modal (shared
+      link likely opened by someone new, regardless of stored seen-flag).
+   2. Otherwise, only show on the very first entry per browser (seen-flag).
+   This script tag runs after the DOM is built, so we call it immediately
+   without waiting for DOMContentLoaded (which may have already fired). */
+(function initGuidelines(){
+  const urlModeNow = new URLSearchParams(location.search).get('mode');
+  if(urlModeNow === 'parent' || urlModeNow === 'tutor'){
+    // Reset the seen-flag so the shared link always greets the new viewer.
+    localStorage.removeItem('nv_wt_guide_' + urlModeNow);
+    showGuidelines(urlModeNow);
+    return;
+  }
+  if(mode === 'parent' || mode === 'tutor'){
+    maybeShowGuidelines(mode);
+  }
+})();
 
 /* ───── Language toggle ─────
    Wires the FR/ع buttons in the topbar. Switching:

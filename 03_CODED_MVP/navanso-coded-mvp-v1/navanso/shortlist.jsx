@@ -44,28 +44,28 @@ function Shortlist({go}){
           {isMobile ? (
             /* Mobile — stacked comparison cards, no horizontal scroll. */
             <div className="col gap-14">
-              {tutors.map(t=> (
-                <div key={t.id} className="card" style={{padding:16}}>
+              {tutors.map(tu=> (
+                <div key={tu.id} className="card" style={{padding:16}}>
                   <div className="row gap-10" style={{marginBottom:12}}>
-                    <Avatar initials={t.initials} cls={t.av} size={42}/>
+                    <Avatar initials={tu.initials} cls={tu.av} size={42}/>
                     <div className="col" style={{gap:1,minWidth:0,flex:1}}>
-                      <span className="w-700 t-15">{isAr?txData(t.name):t.name}</span>
-                      <span className="faint t-12">{txData?txData(t.subject):t.subject} · {txData?txData(t.level):t.level}</span>
+                      <span className="w-700 t-15">{isAr&&txData?txData(tu.name):tu.name}</span>
+                      <span className="faint t-12">{txData?txData(tu.subject):tu.subject} · {txData?txData(tu.level):tu.level}</span>
                     </div>
                   </div>
                   <div className="col">
                     {rows.map(r=> (
                       <div key={r.key} className="row between" style={{padding:'8px 0',borderBottom:'1px solid var(--line-2)',gap:10}}>
                         <span className="t-11 faint w-700" style={{textTransform:'uppercase',letterSpacing:'.04em'}}>{r.label}</span>
-                        <span className="t-13 w-600" style={{color:'var(--ink-2)',textAlign:'right'}}>{r.fn(t)}</span>
+                        <span className="t-13 w-600" style={{color:'var(--ink-2)',textAlign:'right'}}>{r.fn(tu)}</span>
                       </div>
                     ))}
                   </div>
                   <div className="col gap-8" style={{marginTop:12}}>
-                    <Btn variant="green" size="sm" icon="wa" block onClick={()=>go('inquiry', t.id)}>{t('sl.contact')}</Btn>
-                    <Btn variant="ghost" size="sm" iconR="arrow" block onClick={()=>go('tutor-profile', t.id)}>{t('sl.profile')}</Btn>
+                    <Btn variant="green" size="sm" icon="wa" block onClick={()=>go('inquiry', tu.id)}>{t('sl.contact')}</Btn>
+                    <Btn variant="ghost" size="sm" iconR="arrow" block onClick={()=>go('tutor-profile', tu.id)}>{t('sl.profile')}</Btn>
                     <button className="t-12 w-700" style={{background:'none',border:'none',color:'var(--alert)',cursor:'pointer',padding:'4px 0'}}
-                      onClick={()=>{Nav.shortlistToggle(t.id); navToast(t('tc.toast.removed'),'blue');}}>
+                      onClick={()=>{Nav.shortlistToggle(tu.id); navToast(t('tc.toast.removed'),'blue');}}>
                       {isAr?'إزالة من القائمة المختصرة':'Retirer de la présélection'}
                     </button>
                   </div>
@@ -79,13 +79,13 @@ function Shortlist({go}){
                 <thead>
                   <tr>
                     <th style={{minWidth:140}}></th>
-                    {tutors.map(t=> <th key={t.id} style={{minWidth:180,verticalAlign:'top'}}>
+                    {tutors.map(tu=> <th key={tu.id} style={{minWidth:180,verticalAlign:'top'}}>
                       <div className="col gap-7" style={{padding:'8px 0'}}>
                         <div className="row gap-10">
-                          <Avatar initials={t.initials} cls={t.av} size={36}/>
+                          <Avatar initials={tu.initials} cls={tu.av} size={36}/>
                           <div className="col" style={{gap:1,minWidth:0}}>
-                            <span className="w-700 t-14">{isAr?txData(t.name):t.name}</span>
-                            <span className="faint t-12">{txData?txData(t.subject):t.subject} · {txData?txData(t.level):t.level}</span>
+                            <span className="w-700 t-14">{isAr&&txData?txData(tu.name):tu.name}</span>
+                            <span className="faint t-12">{txData?txData(tu.subject):tu.subject} · {txData?txData(tu.level):tu.level}</span>
                           </div>
                         </div>
                       </div>
@@ -95,16 +95,16 @@ function Shortlist({go}){
                 <tbody>
                   {rows.map(r=> <tr key={r.key}>
                     <td className="t-12 faint w-700" style={{textTransform:'uppercase',letterSpacing:'.04em',width:140}}>{r.label}</td>
-                    {tutors.map(t=> <td key={t.id} className="t-14 w-600">{r.fn(t)}</td>)}
+                    {tutors.map(tu=> <td key={tu.id} className="t-14 w-600">{r.fn(tu)}</td>)}
                   </tr>)}
                   <tr>
                     <td></td>
-                    {tutors.map(t=> <td key={t.id}>
+                    {tutors.map(tu=> <td key={tu.id}>
                       <div className="col gap-7" style={{padding:'10px 0'}}>
-                        <Btn variant="green" size="sm" icon="wa" onClick={()=>go('inquiry', t.id)}>{t('sl.contact')}</Btn>
-                        <Btn variant="ghost" size="sm" iconR="arrow" onClick={()=>go('tutor-profile', t.id)}>{t('sl.profile')}</Btn>
+                        <Btn variant="green" size="sm" icon="wa" onClick={()=>go('inquiry', tu.id)}>{t('sl.contact')}</Btn>
+                        <Btn variant="ghost" size="sm" iconR="arrow" onClick={()=>go('tutor-profile', tu.id)}>{t('sl.profile')}</Btn>
                         <button className="t-12 w-700" style={{background:'none',border:'none',color:'var(--alert)',cursor:'pointer',padding:'4px 0'}}
-                          onClick={()=>{Nav.shortlistToggle(t.id); navToast(t('tc.toast.removed'),'blue');}}>
+                          onClick={()=>{Nav.shortlistToggle(tu.id); navToast(t('tc.toast.removed'),'blue');}}>
                           {isAr?'إزالة':'Retirer'}
                         </button>
                       </div>

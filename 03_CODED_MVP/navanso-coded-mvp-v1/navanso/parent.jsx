@@ -162,7 +162,7 @@ function ParentSearch({go}){
     {/* layout: filters + results */}
     <div style={{maxWidth:1180,margin:'0 auto',padding:isMobile?'16px':'24px 40px 64px',display:'grid',gridTemplateColumns:isMobile?'1fr':'248px 1fr',gap:isMobile?16:28,alignItems:'start'}}>
       {/* FILTERS */}
-      <div className="card pad-20 col gap-18" style={{position:'sticky',top:90}}>
+      <div className="card pad-20 col gap-18" style={isMobile?{}:{position:'sticky',top:90}}>
         <div className="row between"><span className="w-700 t-15 row gap-8"><Icon name="filter" size={17}/>{t('ps.filters')}</span><span className="faint t-12 w-600" style={{cursor:'pointer'}} onClick={reset}>{t('ps.reset')}</span></div>
         <div className="hr"></div>
         <div className="col gap-9">

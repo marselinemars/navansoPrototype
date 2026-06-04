@@ -690,6 +690,12 @@ const NAV_DATA_AR = {
   'Suivre le rythme du groupe, exercices de révision avant la prochaine séance.': 'مواكبة وتيرة الفوج، تمارين مراجعة قبل الحصّة القادمة.',
   'Suivre le rythme du groupe.':                                              'مواكبة وتيرة الفوج.',
   'Quelques exercices courts avant la prochaine séance.':                     'بعض التّمارين القصيرة قبل الحصّة القادمة.',
+  'Je recommande de refaire 5 exercices courts sur les règles de signes, puis 3 problèmes guidés à la maison avant la prochaine séance.': 'أنصح بإعادة 5 تمارين قصيرة على قواعد الإشارات، ثمّ 3 مسائل موجَّهة في البيت قبل الحصّة القادمة.',
+  'Continuer sur sa lancée. Exercices d\'approfondissement disponibles à la maison si elle le souhaite.': 'مواصلة هذا التّقدّم. تمارين معمَّقة متوفّرة في البيت إذا رغبت.',
+  'Continuer les exercices de la fiche fournie.':                             'مواصلة تمارين الورقة المُسلَّمة.',
+  /* Testimonials */
+  'Parent de Yacine, 4AM':                                                    'وليّة ياسين، 4 متوسّط',
+  'Parent de Lina, 4AM':                                                      'وليّ لينا، 4 متوسّط',
   /* Subjects */
   'Mathématiques':                                                            'الرّياضيّات',
   'Physique':                                                                 'الفيزياء',

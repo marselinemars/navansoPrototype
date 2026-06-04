@@ -171,10 +171,10 @@ function TodosList({go}){
           <span className="faint t-12 w-700" style={{marginRight:2}}>{isAr?'النّطاق:':'Portée :'}</span>
           {[
             ['all',isAr?'الكلّ':'Toutes'],
-            ['unscoped',isAr?'بدون نطاق':'Sans portée'],
-            ['group',isAr?'مرتبطة بفوج':'Liées à un groupe'],
-            ['student',isAr?'مرتبطة بتلميذ':'Liées à un élève'],
-            ['session',isAr?'مرتبطة بحصّة':'Liées à une séance']
+            ['unscoped',isAr?'عامّة':'Sans portée'],
+            ['group',isAr?'تخصّ فوجاً':'Liées à un groupe'],
+            ['student',isAr?'تخصّ تلميذاً':'Liées à un élève'],
+            ['session',isAr?'تخصّ حصّة':'Liées à une séance']
           ].map(([k,lab])=>
             <button key={k} className={`pick ${filterScope===k?'on':''}`} onClick={()=>setFilterScope(k)} style={{fontSize:11.5,padding:'4px 10px'}}>{lab}</button>
           )}
@@ -197,7 +197,7 @@ function TodosList({go}){
           <h3 style={{fontSize:15}}>{isAr?'متابعات الوالدين المنتظِرة':'Suivis parents en attente'}</h3>
           <div className="col gap-12">
             {(()=>{const list=Nav.todosActive().filter(t=>t.tag==='parent-followup'); return list.length===0?<span className="faint t-13">{isAr?'لا شيء.':'Aucun.'}</span>:list.map(t=><div key={t.id} className="col" style={{gap:3}}>
-              <span className="w-600 t-13" style={{lineHeight:1.35}}>{t.text}</span>
+              <span className="w-600 t-13" style={{lineHeight:1.35}}>{txData?txData(t.text):t.text}</span>
               {t.studentId && <span className="faint t-12">{Nav.studentById(t.studentId)?.name}</span>}
             </div>);})()}
           </div>

@@ -440,12 +440,12 @@ function Landing({go}){
         <DemoTag>{t('testimonials.demoTag')}</DemoTag>
       </div>
       <div style={{display:'grid',gridTemplateColumns:isMobile?'1fr':'1fr 1fr',gap:isMobile?16:22}}>
-        {NAV.testimonials.map((t,i)=>
+        {NAV.testimonials.map((ts,i)=>
           <div key={i} className="card pad-24 col gap-14">
             <Icon name="star" size={20} style={{color:'var(--orange-500)',fill:'var(--orange-500)'}}/>
-            <p className="t-17 lh-15" style={{fontSize:17,color:'var(--ink-2)'}}>“{t.text}”</p>
-            <div className="row gap-10"><Avatar initials={t.initials} cls={t.av} size={38}/>
-              <div className="col" style={{gap:1}}><span className="w-700 t-14">{t.name}</span><span className="faint t-13">{t.role}</span></div>
+            <p className="t-17 lh-15" style={{fontSize:17,color:'var(--ink-2)'}}>“{typeof txData==='function'?txData(ts.text):ts.text}”</p>
+            <div className="row gap-10"><Avatar initials={ts.initials} cls={ts.av} size={38}/>
+              <div className="col" style={{gap:1}}><span className="w-700 t-14">{ts.name}</span><span className="faint t-13">{typeof txData==='function'?txData(ts.role):ts.role}</span></div>
             </div>
           </div>)}
       </div>
